@@ -15,12 +15,18 @@ namespace IsThisDarkSouls
         [SerializeField] private float rotateSpeed = 5;
 
         public bool grounded;
+        public bool lightAttack, heavyAttack, dodgeRoll;
+        public bool inAction;
+        public bool canMove;
 
         public GameObject activeModel;
         [HideInInspector] public Animator charAnim;
         [HideInInspector] public Rigidbody rigidBody;
         [HideInInspector] public float delta;
         [HideInInspector] public LayerMask ignoredLayers;
+        [HideInInspector] public AnimatorHook animHook;
+
+        private float actionDelay;
         #endregion
 
         /// <summary>
@@ -33,6 +39,8 @@ namespace IsThisDarkSouls
             rigidBody.angularDrag = 999;
             rigidBody.drag = 4;
             rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+            animHook = activeModel.AddComponent<AnimatorHook>();
+            animHook.Initialise(this);
             gameObject.layer = 8; // Set to player layer
             ignoredLayers = ~(1 << 8); // Ignore layers 1 to 8
         }
@@ -44,7 +52,7 @@ namespace IsThisDarkSouls
         {
             if (activeModel == null)
             {
-                charAnim = GetComponent<Animator>();
+                charAnim = GetComponentInChildren<Animator>();
 
                 if (charAnim == null)
                 {
@@ -58,7 +66,7 @@ namespace IsThisDarkSouls
 
             if (charAnim == null)
             {
-                charAnim = activeModel.GetComponent<Animator>();
+                charAnim = activeModel.GetComponentInChildren<Animator>();
             }
 
             charAnim.applyRootMotion = false;
@@ -71,7 +79,7 @@ namespace IsThisDarkSouls
         {
             delta = deltaTime;
             grounded = IsGrounded();
-            charAnim.SetBool("isGrounded", grounded);
+            charAnim.SetBool("canMove", grounded);
         }
 
         /// <summary>
@@ -79,7 +87,34 @@ namespace IsThisDarkSouls
         /// </summary>
         public void FixedTick(float fixedDeltaTime)
         {
-            delta = fixedDeltaTime;
+            delta = fixedDeltaTime;     
+
+            DetectAction();
+
+            if (inAction)
+            {
+                charAnim.applyRootMotion = true;
+                actionDelay += delta;
+
+                if (actionDelay > 0.5f)
+                {
+                    inAction = false;
+                    actionDelay = 0;
+                }
+                else
+                {
+                    return;
+                }           
+            }
+
+            canMove = charAnim.GetBool("canMove");
+
+            if (!canMove)
+            {
+                return;
+            }
+
+            charAnim.applyRootMotion = false;
 
             if (moveAmount > 0 || !grounded) // If there is any movement or if the player is not grounded...
             {
@@ -141,6 +176,43 @@ namespace IsThisDarkSouls
                 transform.position = targetPosition;
             }
             return grounded;
+        }
+
+        public void DetectAction()
+        {
+            if (!canMove)
+            {
+                return;
+            }
+
+            if (!lightAttack && !heavyAttack && !dodgeRoll)
+            {
+                return;
+            }
+
+            string desiredAnimation = null;
+
+            if (lightAttack)
+            {
+                desiredAnimation = "lightAttack";
+            }
+            if (heavyAttack)
+            {
+                desiredAnimation = "heavyAttack";
+            }
+            if (dodgeRoll)
+            {
+                desiredAnimation = "dodgeRoll";
+            }
+
+            if (string.IsNullOrEmpty(desiredAnimation))
+            {
+                return;
+            }
+
+            canMove = false;
+            inAction = true;
+            charAnim.CrossFade(desiredAnimation, 0.2f);
         }
     }
 }

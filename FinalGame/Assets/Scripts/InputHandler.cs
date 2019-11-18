@@ -8,6 +8,10 @@ namespace IsThisDarkSouls
     {
         private float vertical;
         private float horizontal;
+        private bool lightAttackInput;
+        private bool heavyAttackInput;
+        private bool dodgeRollInput;
+
         private StateManager states;
         CameraManager cameraManager;
         private float delta;
@@ -39,6 +43,9 @@ namespace IsThisDarkSouls
         {
             vertical = Input.GetAxis("Vertical");
             horizontal = Input.GetAxis("Horizontal");
+            lightAttackInput = Input.GetKeyDown(KeyCode.Mouse0);
+            heavyAttackInput = Input.GetKeyDown(KeyCode.Mouse1);
+            dodgeRollInput = Input.GetKeyDown(KeyCode.LeftControl);
         }
 
         /// <summary>
@@ -51,6 +58,10 @@ namespace IsThisDarkSouls
             states.movementDirection = (v + h).normalized; // Return normalized vector
             float desiredMovement = Mathf.Abs(horizontal) + Mathf.Abs(vertical); // Add both values together
             states.moveAmount = Mathf.Clamp01(desiredMovement); // Clamp between 0-1 and update StateManager 
+
+            states.lightAttack = lightAttackInput;
+            states.heavyAttack = heavyAttackInput;
+            states.dodgeRoll = dodgeRollInput;
         }
     }
 }
