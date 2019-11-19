@@ -23,6 +23,10 @@
 		_RimPower("Rim Power", Range(0.5, 6.0)) = 2.0
 		_GlowBrightness("Glow Brightness", Range(0.01, 20.0)) = 3.0
 
+
+		[Header(Fade Texture)]
+		_FadeLevel("Dissolve Level", Range(0, 1.0)) = 0.1
+
 		[Header(Fade Effect)]
 		[Toggle(FADE)] _FADE("Fade To Bottom", Float) = 1
 		[Toggle(INVERT)] _INVERT("Invert Fade", Float) = 0
@@ -102,7 +106,7 @@
 		float _RimPower, _NScale;
 		sampler2D _MainTex, _NoiseTEX, _Mask, _Normal;
 		float _FadeOffset, _NSpeed, _GlowBrightness, _EMIntensity;
-		float _Cutoff, _Smooth;
+		float _Cutoff, _Smooth, _FadeLevel;
 
 		// Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
 // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
@@ -113,10 +117,12 @@
 
 			void surf(Input IN, inout SurfaceOutput o)
 		{
+
 			//Albedo comes from texture + tinted Color
 			fixed4 c = tex2D(_MainTex, IN.uv_MainTex) * _Color;
 
 			o.Albedo = c.rgb;
+
 
 			//red mask for extra Emission
 			fixed4 mask = tex2D(_Mask, IN.uv_MainTex);
@@ -133,6 +139,7 @@
 
 			//combined noise
 			float combinedNoise = (n.r * n2.r * 2) * n3.r * 2; 
+
 
 #if NORMALS
 			o.Normal = UnpackNormal(tex2D(_Normal, IN.uv_Normal));
@@ -183,6 +190,11 @@
 			//Add extra glow
 
 			o.Emission *= _GlowBrightness;
+
+			float t = dot(IN.uv_MainTex.x, IN.uv_MainTex.y);
+
+			clip(t - _FadeLevel * c.r);
+
 
 		    }
 
