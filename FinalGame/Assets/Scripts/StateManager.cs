@@ -18,6 +18,9 @@ namespace IsThisDarkSouls
         public bool lightAttack, heavyAttack, dodgeRoll;
         public bool inAction;
         public bool canMove;
+        public bool lockOn;
+
+        public EnemyTarget lockOnTarget;
 
         public GameObject activeModel;
         [HideInInspector] public Animator charAnim;
@@ -96,7 +99,7 @@ namespace IsThisDarkSouls
                 charAnim.applyRootMotion = true;
                 actionDelay += delta;
 
-                if (actionDelay > 0.5f)
+                if (actionDelay > 1f)
                 {
                     inAction = false;
                     actionDelay = 0;
@@ -138,11 +141,32 @@ namespace IsThisDarkSouls
                 targetDirection = transform.forward;
             }
 
-            Quaternion targetRotation = Quaternion.LookRotation(targetDirection); // Calculate the rotation desired
-            Quaternion lerpedRotation = Quaternion.Slerp(transform.rotation, targetRotation, delta * moveAmount * rotateSpeed); // Lerp between current rotation and desired rotation
-            transform.rotation = lerpedRotation; // Apply lerped rotation
 
-            HandleMovementAnimations();
+            if (!lockOn)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(targetDirection); // Calculate the rotation desired
+                Quaternion lerpedRotation = Quaternion.Slerp(transform.rotation, targetRotation, delta * moveAmount * rotateSpeed); // Lerp between current rotation and desired rotation
+                transform.rotation = lerpedRotation; // Apply lerped rotation   
+                charAnim.SetBool("lockOn", lockOn);
+            }
+            else
+            {
+                targetDirection = lockOnTarget.transform.position - transform.position;
+                targetDirection.y = 0;
+                Quaternion targetRotation = Quaternion.LookRotation(targetDirection); // Calculate the rotation desired
+                Quaternion lerpedRotation = Quaternion.Slerp(transform.rotation, targetRotation, delta * moveAmount * rotateSpeed); // Lerp between current rotation and desired rotation
+                transform.rotation = lerpedRotation; // Apply lerped rotation
+                charAnim.SetBool("lockOn", lockOn);
+            }
+
+            if (!lockOn)
+            {
+                HandleMovementAnimations();
+            }
+            else
+            {
+                HandleLockOnAnimations(movementDirection);
+            }
         }
 
         /// <summary>
@@ -151,6 +175,18 @@ namespace IsThisDarkSouls
         private void HandleMovementAnimations()
         {
             charAnim.SetFloat("vertical", moveAmount, 0.1f, delta);
+        }
+
+        private void HandleLockOnAnimations(Vector3 movementDirection)
+        {
+            Vector3 relativeDirection = transform.InverseTransformDirection(movementDirection);
+            float h = relativeDirection.x;
+            float v = relativeDirection.z;
+
+            charAnim.SetFloat("vertical", v, 0.4f, delta);
+            charAnim.SetFloat("horizontal", h, 0.4f, delta);
+
+
         }
 
         /// <summary>
@@ -178,6 +214,26 @@ namespace IsThisDarkSouls
             return grounded;
         }
 
+        private void HandleDodgeRoll()
+        {
+            if (!dodgeRoll)
+            {
+                return;
+            }
+
+            if (movementDirection == Vector3.zero)
+            {
+                movementDirection = transform.forward;
+            }
+
+            Quaternion targetRotation = Quaternion.LookRotation(movementDirection);
+            transform.rotation = targetRotation;
+
+            canMove = false;
+            inAction = true;
+            charAnim.CrossFade("dodgeRoll", 0.2f);
+        }
+
         public void DetectAction()
         {
             if (!canMove)
@@ -202,7 +258,8 @@ namespace IsThisDarkSouls
             }
             if (dodgeRoll)
             {
-                desiredAnimation = "dodgeRoll";
+                HandleDodgeRoll();
+                return;
             }
 
             if (string.IsNullOrEmpty(desiredAnimation))

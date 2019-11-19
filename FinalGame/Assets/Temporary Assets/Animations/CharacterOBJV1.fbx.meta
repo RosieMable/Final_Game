@@ -1,12 +1,17 @@
 fileFormatVersion: 2
-guid: f51085920c71e0a439e637981d2fec05
+guid: 1a1d81e66ac3ca64d8b7422859ecf9dd
 ModelImporter:
   serializedVersion: 26
   internalIDToNameTable:
   - first:
       74: -203655887218126122
     second: mixamo.com
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: No Name
+    second: {fileID: 2100000, guid: f05e180ee3b3f354d91b5653915be03d, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
@@ -17,7 +22,7 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
-    motionNodeName: 
+    motionNodeName: mixamorig:Hips/mixamorig:Spine
     rigImportErrors: 
     rigImportWarnings: 
     animationImportErrors: 
@@ -33,36 +38,7 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations:
-    - serializedVersion: 16
-      name: Running
-      takeName: mixamo.com
-      internalID: -203655887218126122
-      firstFrame: 0
-      lastFrame: 25
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 1
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
+    clipAnimations: []
     isReadable: 0
   meshes:
     lODScreenPercentages: []
@@ -99,7 +75,8 @@ ModelImporter:
     legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
-  referencedClips: []
+  referencedClips:
+  - 3177240ad7b8d734b8ecbfc73368112e
   importAnimation: 1
   copyAvatar: 0
   humanDescription:

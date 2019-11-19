@@ -10,12 +10,13 @@ namespace IsThisDarkSouls
         #region Variables
         public static CameraManager instance; // Singleton
         
-        private bool lockedOn; // Possibly used later for a 'lockon' feature?
+        public bool lockedOn; // Possibly used later for a 'lockon' feature?
 
         [SerializeField] private float followSpeed = 10;
         [SerializeField] private float mouseSpeed = 4;
         // [SerializeField] private float controllerSpeed = 2;
         [SerializeField] private Transform target;
+        public Transform lockOnTarget;
 
         public Transform pivotPoint; // Point in world space that the camera rotates from
         public Transform cameraTransform;
@@ -94,17 +95,31 @@ namespace IsThisDarkSouls
                 smoothY = vertical;
             }
 
-            if (lockedOn)
+            tiltAngle -= smoothY * speed; // Calculate the new Y axis
+            tiltAngle = Mathf.Clamp(tiltAngle, minAngle, maxAngle); // Clamp the Y axis between the minimum and maximum values
+            pivotPoint.localRotation = Quaternion.Euler(tiltAngle, 0, 0); // Assign Y axis rotation to the camera
+
+            if (lockedOn && lockOnTarget != null)
             {
-                // TBD if a locked on feature is ever added.
+                Vector3 targetDirection = lockOnTarget.position - transform.position;
+                targetDirection.Normalize();
+
+                if (targetDirection == Vector3.zero)
+                {
+                    targetDirection = transform.forward;
+                }
+
+                Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, deltaTime * 10);
+                lookAngle = transform.eulerAngles.y;
+
+                return;
             }
 
             lookAngle += smoothX * speed; // Calculate the new X axis
             transform.rotation = Quaternion.Euler(0, lookAngle, 0); // Assign X axis rotation to the camera
 
-            tiltAngle -= smoothY * speed; // Calculate the new Y axis
-            tiltAngle = Mathf.Clamp(tiltAngle, minAngle, maxAngle); // Clamp the Y axis between the minimum and maximum values
-            pivotPoint.localRotation = Quaternion.Euler(tiltAngle, 0, 0); // Assign Y axis rotation to the camera
+            
         }
     }
 }

@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: d2a96bc1093979e459241d78518cdc01
+guid: 3177240ad7b8d734b8ecbfc73368112e
 ModelImporter:
   serializedVersion: 26
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: dodgeRollOld
+    second: dodgeRoll
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -35,7 +35,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: dodgeRollOld
+      name: dodgeRoll
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
@@ -114,7 +114,7 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     globalScale: 1
-    rootMotionBoneName: 
+    rootMotionBoneName: mixamorig:Hips
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1

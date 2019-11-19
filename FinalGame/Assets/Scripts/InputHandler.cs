@@ -11,6 +11,7 @@ namespace IsThisDarkSouls
         private bool lightAttackInput;
         private bool heavyAttackInput;
         private bool dodgeRollInput;
+        private bool lockOnInput;
 
         private StateManager states;
         CameraManager cameraManager;
@@ -46,6 +47,7 @@ namespace IsThisDarkSouls
             lightAttackInput = Input.GetKeyDown(KeyCode.Mouse0);
             heavyAttackInput = Input.GetKeyDown(KeyCode.Mouse1);
             dodgeRollInput = Input.GetKeyDown(KeyCode.LeftControl);
+            lockOnInput = Input.GetKeyDown(KeyCode.Tab);
         }
 
         /// <summary>
@@ -62,6 +64,20 @@ namespace IsThisDarkSouls
             states.lightAttack = lightAttackInput;
             states.heavyAttack = heavyAttackInput;
             states.dodgeRoll = dodgeRollInput;
+
+            if (lockOnInput)
+            {
+                states.lockOn = !states.lockOn;
+
+                if (states.lockOnTarget == null)
+                {
+                    states.lockOn = false;
+                }
+
+                cameraManager.lockOnTarget = states.lockOnTarget.transform;
+                cameraManager.lockedOn = states.lockOn;
+
+            }
         }
     }
 }
