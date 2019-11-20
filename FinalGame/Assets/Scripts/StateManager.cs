@@ -185,8 +185,6 @@ namespace IsThisDarkSouls
 
             charAnim.SetFloat("vertical", v, 0.4f, delta);
             charAnim.SetFloat("horizontal", h, 0.4f, delta);
-
-
         }
 
         /// <summary>

@@ -101,6 +101,7 @@ namespace IsThisDarkSouls
 
             if (lockedOn && lockOnTarget != null)
             {
+                minAngle = 40;
                 Vector3 targetDirection = lockOnTarget.position - transform.position;
                 targetDirection.Normalize();
 
@@ -115,7 +116,7 @@ namespace IsThisDarkSouls
 
                 return;
             }
-
+            minAngle = -10;
             lookAngle += smoothX * speed; // Calculate the new X axis
             transform.rotation = Quaternion.Euler(0, lookAngle, 0); // Assign X axis rotation to the camera
 
