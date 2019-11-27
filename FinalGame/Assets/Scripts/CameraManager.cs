@@ -22,8 +22,11 @@ namespace IsThisDarkSouls
         public Transform cameraTransform;
 
         private float turnSmoothing = 0.1f;
-        public float minAngle = -35; // Minimum rotation on the Y axis
-        public float maxAngle = 35; // Maximum rotation on the Y axis
+        private float originalMinAngle, originalMaxAngle;
+        public float minAngle = -10; // Minimum rotation on the Y axis
+        public float maxAngle = 50; // Maximum rotation on the Y axis
+        public float lockOnMinAngle = 60;
+        public float lockOnMaxAngle = 70;
         
         private float smoothX;
         private float smoothY;
@@ -53,6 +56,8 @@ namespace IsThisDarkSouls
             target = _target;
             cameraTransform = Camera.main.transform;
             pivotPoint = cameraTransform.parent;
+            originalMaxAngle = maxAngle;
+            originalMinAngle = minAngle;
         }
 
         /// <summary>
@@ -101,7 +106,20 @@ namespace IsThisDarkSouls
 
             if (lockedOn && lockOnTarget != null)
             {
-                minAngle = 40;
+            //    if (Vector3.Distance(target.position, lockOnTarget.position) > 5)
+            //    {
+            //        tiltAngle -= smoothY * speed; // Calculate the new Y axis
+            //        tiltAngle = Mathf.Clamp(tiltAngle, minAngle, maxAngle); // Clamp the Y axis between the minimum and maximum values
+            //        pivotPoint.localRotation = Quaternion.Euler(tiltAngle, 0, 0); // Assign Y axis rotation to the camera
+            //        print("Change");
+            //    }
+            //    else
+            //    {
+            //        print("Dont change");
+            //    }
+
+                minAngle = lockOnMinAngle;
+                maxAngle = lockOnMaxAngle;
                 Vector3 targetDirection = lockOnTarget.position - transform.position;
                 targetDirection.Normalize();
 
@@ -111,12 +129,17 @@ namespace IsThisDarkSouls
                 }
 
                 Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+                Mathf.Clamp(targetRotation.x, minAngle, maxAngle);
+                targetRotation.x = transform.rotation.x;
+                targetRotation.z = 0;
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, deltaTime * 10);
                 lookAngle = transform.eulerAngles.y;
 
                 return;
-            }
-            minAngle = -10;
+            }            
+
+            minAngle = originalMinAngle;
+            maxAngle = originalMaxAngle;
             lookAngle += smoothX * speed; // Calculate the new X axis
             transform.rotation = Quaternion.Euler(0, lookAngle, 0); // Assign X axis rotation to the camera
 

@@ -1095,8 +1095,10 @@ MonoBehaviour:
   lockOnTarget: {fileID: 0}
   pivotPoint: {fileID: 2058708139}
   cameraTransform: {fileID: 963194228}
-  minAngle: -35
-  maxAngle: 50
+  minAngle: 0
+  maxAngle: 30
+  lockOnMinAngle: 20
+  lockOnMaxAngle: 40
 --- !u!4 &1157667829
 Transform:
   m_ObjectHideFlags: 0
@@ -1130,11 +1132,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: T-Pose
       objectReference: {fileID: 0}
-    - target: {fileID: -6057140222963153312, guid: 7dfdff7bb16d2554c82deec1d3b4da35,
-        type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 63fbce70105df7b4da553a784f7c3ad8, type: 2}
     - target: {fileID: -4216859302048453862, guid: 7dfdff7bb16d2554c82deec1d3b4da35,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1190,6 +1187,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6057140222963153312, guid: 7dfdff7bb16d2554c82deec1d3b4da35,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 63fbce70105df7b4da553a784f7c3ad8, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7dfdff7bb16d2554c82deec1d3b4da35, type: 3}
 --- !u!1 &1647425330

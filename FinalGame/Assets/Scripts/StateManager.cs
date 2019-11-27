@@ -99,7 +99,7 @@ namespace IsThisDarkSouls
                 charAnim.applyRootMotion = true;
                 actionDelay += delta;
 
-                if (actionDelay > 1f)
+                if (actionDelay > 1.5f)
                 {
                     inAction = false;
                     actionDelay = 0;
