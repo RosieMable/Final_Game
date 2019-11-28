@@ -15,9 +15,12 @@ namespace IsThisDarkSouls
         [SerializeField] private float rotateSpeed = 5;
 
         public bool grounded;
-        public bool lightAttack, heavyAttack, dodgeRoll;
+        public bool lightAttack, heavyAttack, dodgeRoll, block, specialAttack;
         public bool inAction;
         public bool canMove;
+        public bool lockOn;
+
+        public EnemyStates lockOnTarget;
 
         public GameObject activeModel;
         [HideInInspector] public Animator charAnim;
@@ -25,8 +28,11 @@ namespace IsThisDarkSouls
         [HideInInspector] public float delta;
         [HideInInspector] public LayerMask ignoredLayers;
         [HideInInspector] public AnimatorHook animHook;
+        [HideInInspector] public ActionManager actionManager;
+        public WeaponHook weaponHook;
 
         private float actionDelay;
+        private float actionLockoutDuration = 1f;
         #endregion
 
         /// <summary>
@@ -39,8 +45,17 @@ namespace IsThisDarkSouls
             rigidBody.angularDrag = 999;
             rigidBody.drag = 4;
             rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-            animHook = activeModel.AddComponent<AnimatorHook>();
-            animHook.Initialise(this);
+            animHook = GetComponentInChildren<AnimatorHook>();
+            if (animHook == false)
+            {
+                print("Added AnimatorHook.cs to " + gameObject.name);
+                animHook = activeModel.AddComponent<AnimatorHook>();
+            }
+            animHook.Initialise(this, null);
+            actionManager = GetComponent<ActionManager>();
+            actionManager.Initialise();
+            weaponHook = GetComponentInChildren<WeaponHook>();
+            weaponHook.CloseDamageCollider();
             gameObject.layer = 8; // Set to player layer
             ignoredLayers = ~(1 << 8); // Ignore layers 1 to 8
         }
@@ -87,16 +102,19 @@ namespace IsThisDarkSouls
         /// </summary>
         public void FixedTick(float fixedDeltaTime)
         {
-            delta = fixedDeltaTime;     
+            delta = fixedDeltaTime;
 
-            DetectAction();
+            if (grounded)
+            {
+                DetectAction();
+            }
 
             if (inAction)
             {
                 charAnim.applyRootMotion = true;
                 actionDelay += delta;
 
-                if (actionDelay > 0.5f)
+                if (actionDelay > actionLockoutDuration)
                 {
                     inAction = false;
                     actionDelay = 0;
@@ -138,11 +156,32 @@ namespace IsThisDarkSouls
                 targetDirection = transform.forward;
             }
 
-            Quaternion targetRotation = Quaternion.LookRotation(targetDirection); // Calculate the rotation desired
-            Quaternion lerpedRotation = Quaternion.Slerp(transform.rotation, targetRotation, delta * moveAmount * rotateSpeed); // Lerp between current rotation and desired rotation
-            transform.rotation = lerpedRotation; // Apply lerped rotation
 
-            HandleMovementAnimations();
+            if (!lockOn)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(targetDirection); // Calculate the rotation desired
+                Quaternion lerpedRotation = Quaternion.Slerp(transform.rotation, targetRotation, delta * moveAmount * rotateSpeed); // Lerp between current rotation and desired rotation
+                transform.rotation = lerpedRotation; // Apply lerped rotation   
+                charAnim.SetBool("lockOn", lockOn);
+            }
+            else
+            {
+                targetDirection = lockOnTarget.transform.position - transform.position;
+                targetDirection.y = 0;
+                Quaternion targetRotation = Quaternion.LookRotation(targetDirection); // Calculate the rotation desired
+                Quaternion lerpedRotation = Quaternion.Slerp(transform.rotation, targetRotation, delta * moveAmount * rotateSpeed); // Lerp between current rotation and desired rotation
+                transform.rotation = lerpedRotation; // Apply lerped rotation
+                charAnim.SetBool("lockOn", lockOn);
+            }
+
+            if (!lockOn)
+            {
+                HandleMovementAnimations();
+            }
+            else
+            {
+                HandleLockOnAnimations(movementDirection);
+            }
         }
 
         /// <summary>
@@ -151,6 +190,16 @@ namespace IsThisDarkSouls
         private void HandleMovementAnimations()
         {
             charAnim.SetFloat("vertical", moveAmount, 0.1f, delta);
+        }
+
+        private void HandleLockOnAnimations(Vector3 movementDirection)
+        {
+            Vector3 relativeDirection = transform.InverseTransformDirection(movementDirection);
+            float h = relativeDirection.x;
+            float v = relativeDirection.z;
+
+            charAnim.SetFloat("vertical", v, 0.4f, delta);
+            charAnim.SetFloat("horizontal", h, 0.4f, delta);
         }
 
         /// <summary>
@@ -178,6 +227,26 @@ namespace IsThisDarkSouls
             return grounded;
         }
 
+        public void HandleDodgeRoll()
+        {
+            if (!dodgeRoll)
+            {
+                return;
+            }
+
+            if (movementDirection == Vector3.zero)
+            {
+                movementDirection = transform.forward;
+            }
+
+            Quaternion targetRotation = Quaternion.LookRotation(movementDirection);
+            transform.rotation = targetRotation;
+
+            canMove = false;
+            inAction = true;
+            charAnim.CrossFade("dodgeRoll", 0.2f);
+        }
+
         public void DetectAction()
         {
             if (!canMove)
@@ -192,21 +261,36 @@ namespace IsThisDarkSouls
 
             string desiredAnimation = null;
 
-            if (lightAttack)
+            Action slot = actionManager.GetActionSlot(this);
+            if (slot == null)
             {
-                desiredAnimation = "lightAttack";
+                return;
             }
-            if (heavyAttack)
+            else
             {
-                desiredAnimation = "heavyAttack";
+                desiredAnimation = slot.desiredAnimation;
             }
-            if (dodgeRoll)
-            {
-                desiredAnimation = "dodgeRoll";
-            }
+
+            //if (lightAttack)
+            //{
+            //    desiredAnimation = "lightAttack";
+            //    actionLockoutDuration = 0.5f;
+            //}
+            //if (heavyAttack)
+            //{
+            //    desiredAnimation = "heavyAttack";
+            //    actionLockoutDuration = 0.6f;
+            //}
+            //if (dodgeRoll)
+            //{
+            //    HandleDodgeRoll();
+            //    actionLockoutDuration = 1f;
+            //    return;
+            //}
 
             if (string.IsNullOrEmpty(desiredAnimation))
             {
+                print("No animation of " + desiredAnimation + " found, is this the correct animation to search for?");
                 return;
             }
 
