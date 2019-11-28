@@ -15,12 +15,12 @@ namespace IsThisDarkSouls
         [SerializeField] private float rotateSpeed = 5;
 
         public bool grounded;
-        public bool lightAttack, heavyAttack, dodgeRoll;
+        public bool lightAttack, heavyAttack, dodgeRoll, block, specialAttack;
         public bool inAction;
         public bool canMove;
         public bool lockOn;
 
-        public EnemyTarget lockOnTarget;
+        public EnemyStates lockOnTarget;
 
         public GameObject activeModel;
         [HideInInspector] public Animator charAnim;
@@ -28,8 +28,11 @@ namespace IsThisDarkSouls
         [HideInInspector] public float delta;
         [HideInInspector] public LayerMask ignoredLayers;
         [HideInInspector] public AnimatorHook animHook;
+        [HideInInspector] public ActionManager actionManager;
+        public WeaponHook weaponHook;
 
         private float actionDelay;
+        private float actionLockoutDuration = 1f;
         #endregion
 
         /// <summary>
@@ -42,8 +45,17 @@ namespace IsThisDarkSouls
             rigidBody.angularDrag = 999;
             rigidBody.drag = 4;
             rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-            animHook = activeModel.AddComponent<AnimatorHook>();
-            animHook.Initialise(this);
+            animHook = GetComponentInChildren<AnimatorHook>();
+            if (animHook == false)
+            {
+                print("Added AnimatorHook.cs to " + gameObject.name);
+                animHook = activeModel.AddComponent<AnimatorHook>();
+            }
+            animHook.Initialise(this, null);
+            actionManager = GetComponent<ActionManager>();
+            actionManager.Initialise();
+            weaponHook = GetComponentInChildren<WeaponHook>();
+            weaponHook.CloseDamageCollider();
             gameObject.layer = 8; // Set to player layer
             ignoredLayers = ~(1 << 8); // Ignore layers 1 to 8
         }
@@ -90,16 +102,19 @@ namespace IsThisDarkSouls
         /// </summary>
         public void FixedTick(float fixedDeltaTime)
         {
-            delta = fixedDeltaTime;     
+            delta = fixedDeltaTime;
 
-            DetectAction();
+            if (grounded)
+            {
+                DetectAction();
+            }
 
             if (inAction)
             {
                 charAnim.applyRootMotion = true;
                 actionDelay += delta;
 
-                if (actionDelay > 1.5f)
+                if (actionDelay > actionLockoutDuration)
                 {
                     inAction = false;
                     actionDelay = 0;
@@ -212,7 +227,7 @@ namespace IsThisDarkSouls
             return grounded;
         }
 
-        private void HandleDodgeRoll()
+        public void HandleDodgeRoll()
         {
             if (!dodgeRoll)
             {
@@ -246,22 +261,36 @@ namespace IsThisDarkSouls
 
             string desiredAnimation = null;
 
-            if (lightAttack)
+            Action slot = actionManager.GetActionSlot(this);
+            if (slot == null)
             {
-                desiredAnimation = "lightAttack";
-            }
-            if (heavyAttack)
-            {
-                desiredAnimation = "heavyAttack";
-            }
-            if (dodgeRoll)
-            {
-                HandleDodgeRoll();
                 return;
             }
+            else
+            {
+                desiredAnimation = slot.desiredAnimation;
+            }
+
+            //if (lightAttack)
+            //{
+            //    desiredAnimation = "lightAttack";
+            //    actionLockoutDuration = 0.5f;
+            //}
+            //if (heavyAttack)
+            //{
+            //    desiredAnimation = "heavyAttack";
+            //    actionLockoutDuration = 0.6f;
+            //}
+            //if (dodgeRoll)
+            //{
+            //    HandleDodgeRoll();
+            //    actionLockoutDuration = 1f;
+            //    return;
+            //}
 
             if (string.IsNullOrEmpty(desiredAnimation))
             {
+                print("No animation of " + desiredAnimation + " found, is this the correct animation to search for?");
                 return;
             }
 

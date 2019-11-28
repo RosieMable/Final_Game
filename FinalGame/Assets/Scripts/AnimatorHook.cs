@@ -4,38 +4,100 @@ using UnityEngine;
 
 namespace IsThisDarkSouls
 {
-    [RequireComponent(typeof(Animator))]
-    [RequireComponent(typeof(StateManager))]
     public class AnimatorHook : MonoBehaviour
     {
         private Animator charAnim;
         private StateManager states;
+        private EnemyStates enemyStates;
+        private Rigidbody rigidBody;
 
-        public void Initialise(StateManager stateManager)
+        public void Initialise(StateManager stateManager, EnemyStates enemyStateManager)
         {
             states = stateManager;
-            charAnim = stateManager.charAnim;
+            enemyStates = enemyStateManager;
+
+            if (states != null)
+            {
+                charAnim = stateManager.charAnim;
+                rigidBody = states.rigidBody;
+            }
+
+            if (enemyStates != null)
+            {
+                charAnim = enemyStates.charAnim;
+                rigidBody = enemyStates.rigidBody;
+            }
         }
 
         private void OnAnimatorMove()
         {
-            if (states.canMove)
+            if (states == null && enemyStates == null)
+            {
+                Debug.Log("No statemanager found for AnimiatorHook.cs !");
+                return;
+            }
+
+            if (rigidBody == null)
             {
                 return;
             }
 
-            states.rigidBody.drag = 0;
-            float multiplier = 1;
+            if (states != null)
+            {
+                if (states.canMove)
+                {
+                    return;
+                }
 
-            Vector3 delta = charAnim.deltaPosition;
-            delta.y = 0;
-            Vector3 velocity = (delta * multiplier) / states.delta;
-            states.rigidBody.velocity = velocity;
+                rigidBody.drag = 0;
+                float multiplier = 1;
+
+                Vector3 delta = charAnim.deltaPosition;
+                delta.y = 0;
+                Vector3 velocity = (delta * multiplier) / states.delta;
+                rigidBody.velocity = velocity;
+            }
+
+            if (enemyStates != null)
+            {
+                if (enemyStates.canMove)
+                {
+                    return;
+                }
+
+                rigidBody.drag = 0;
+                float multiplier = 1;
+
+                Vector3 delta = charAnim.deltaPosition;
+                delta.y = 0;
+                Vector3 velocity = (delta * multiplier) / enemyStates.delta;
+                rigidBody.velocity = velocity;
+            }            
         }
 
         public void LateTick()
         {
 
+        }
+
+        public void OpenDamageCollider()
+        {
+            if (states == null)
+            {
+                return;
+            }
+
+            states.weaponHook.OpenDamageCollider();
+        }
+
+        public void CloseDamageCollider()
+        {
+            if (states == null)
+            {
+                return;
+            }
+
+            states.weaponHook.CloseDamageCollider();
         }
     }
 }

@@ -106,18 +106,6 @@ namespace IsThisDarkSouls
 
             if (lockedOn && lockOnTarget != null)
             {
-            //    if (Vector3.Distance(target.position, lockOnTarget.position) > 5)
-            //    {
-            //        tiltAngle -= smoothY * speed; // Calculate the new Y axis
-            //        tiltAngle = Mathf.Clamp(tiltAngle, minAngle, maxAngle); // Clamp the Y axis between the minimum and maximum values
-            //        pivotPoint.localRotation = Quaternion.Euler(tiltAngle, 0, 0); // Assign Y axis rotation to the camera
-            //        print("Change");
-            //    }
-            //    else
-            //    {
-            //        print("Dont change");
-            //    }
-
                 minAngle = lockOnMinAngle;
                 maxAngle = lockOnMaxAngle;
                 Vector3 targetDirection = lockOnTarget.position - transform.position;

@@ -12,6 +12,8 @@ namespace IsThisDarkSouls
         private bool heavyAttackInput;
         private bool dodgeRollInput;
         private bool lockOnInput;
+        private bool specialAttackInput;
+        private bool blockInput;
 
         private StateManager states;
         CameraManager cameraManager;
@@ -29,6 +31,16 @@ namespace IsThisDarkSouls
         {
             delta = Time.deltaTime;
             states.Tick(delta);
+
+            if (states.lockOnTarget != null)
+            {
+                if (states.lockOnTarget.isDead)
+                {
+                    states.lockOn = false;
+                    states.lockOnTarget = null;
+                    cameraManager.lockOnTarget = null;
+                }
+            }
         }
 
         void FixedUpdate()
@@ -48,6 +60,8 @@ namespace IsThisDarkSouls
             heavyAttackInput = Input.GetKeyDown(KeyCode.Mouse1);
             dodgeRollInput = Input.GetKeyDown(KeyCode.LeftControl);
             lockOnInput = Input.GetKeyDown(KeyCode.Tab);
+            specialAttackInput = Input.GetKeyDown(KeyCode.Mouse2);
+            // blockInput = // What input needs to be decided, perhaps replace heavy attack
         }
 
         /// <summary>
@@ -64,6 +78,8 @@ namespace IsThisDarkSouls
             states.lightAttack = lightAttackInput;
             states.heavyAttack = heavyAttackInput;
             states.dodgeRoll = dodgeRollInput;
+            states.block = blockInput;
+            states.specialAttack = specialAttackInput;
 
             if (lockOnInput)
             {
