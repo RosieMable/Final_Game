@@ -52,6 +52,9 @@ namespace IsThisDarkSouls
             cameraManager.Tick(delta);
         }
 
+        /// <summary>
+        /// Listens for and records user inputs.
+        /// </summary>
         private void GetInput()
         {
             vertical = Input.GetAxis("Vertical");
@@ -65,7 +68,7 @@ namespace IsThisDarkSouls
         }
 
         /// <summary>
-        /// Updates
+        /// Updates 'StateManager' class with the values recorded, applies movement and actions to the player character through the StateManager.
         /// </summary>
         private void UpdateStates()
         {
@@ -81,16 +84,16 @@ namespace IsThisDarkSouls
             states.block = blockInput;
             states.specialAttack = specialAttackInput;
 
-            if (lockOnInput)
+            if (lockOnInput) // When the lock on key is pressed...
             {
-                states.lockOn = !states.lockOn;
+                states.lockOn = !states.lockOn; // Toggle lock on state
 
-                if (states.lockOnTarget == null)
+                if (states.lockOnTarget == null) // If there is no target to lock onto...
                 {
-                    states.lockOn = false;
+                    states.lockOn = false; // Toggle lock on state
                 }
 
-                cameraManager.lockOnTarget = states.lockOnTarget.transform;
+                cameraManager.lockOnTarget = states.lockOnTarget.transform; // Update CameraManager values to match with the StateManager
                 cameraManager.lockedOn = states.lockOn;
 
             }

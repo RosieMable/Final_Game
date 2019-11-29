@@ -21,14 +21,19 @@ namespace IsThisDarkSouls
             rigidBody = GetComponent<Rigidbody>();
             charAnim = GetComponent<Animator>();
             animHook = GetComponentInChildren<AnimatorHook>();
+
             if (animHook == false)
             {
                 //print("Added AnimatorHook.cs to " + gameObject.name);
                 //charAnim.gameObject.AddComponent<AnimatorHook>();
             }
+
             animHook.Initialise(null, this);
         }
 
+        /// <summary>
+        /// Deals damage to the NPCs health and plays hurt animations + applies root motion
+        /// </summary>
         public void TakeDamage(float value)
         {
             if (isInvulnerable)
@@ -58,21 +63,24 @@ namespace IsThisDarkSouls
                 }
             }
 
-            if (isInvulnerable)
+            if (isInvulnerable) // If the NPC is current invulnerable...
             {
-                isInvulnerable = !canMove;
+                isInvulnerable = !canMove; // Assign invulnerable to the opposite state of 'canMove' - meaning when the character is capable of moving again, they are no longer invulnerable.
             }
 
-            if (!canMove)
+            if (!canMove) // If the character can't move...
             {
-                //charAnim.applyRootMotion = false;
+                //charAnim.applyRootMotion = false; // Toggle root motion
             }
         }
 
+        /// <summary>
+        /// What occurs every tick, runs inside Update
+        /// </summary>
+        /// <param name="deltaTime"></param>
         public void Tick(float deltaTime)
         {
             delta = deltaTime;
         }
-
     }
 }

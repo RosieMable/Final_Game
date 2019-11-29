@@ -11,6 +11,9 @@ namespace IsThisDarkSouls
         private EnemyStates enemyStates;
         private Rigidbody rigidBody;
 
+        /// <summary>
+        /// Performs initial setup based on if the character is a player or enemy.
+        /// </summary>
         public void Initialise(StateManager stateManager, EnemyStates enemyStateManager)
         {
             states = stateManager;
@@ -29,6 +32,9 @@ namespace IsThisDarkSouls
             }
         }
 
+        /// <summary>
+        /// Runs when animated character is in motion, applies rootmotion physics.
+        /// </summary>
         private void OnAnimatorMove()
         {
             if (states == null && enemyStates == null)
@@ -80,6 +86,9 @@ namespace IsThisDarkSouls
 
         }
 
+        /// <summary>
+        /// Enables damage colliders
+        /// </summary>
         public void OpenDamageCollider()
         {
             if (states == null)
@@ -90,6 +99,9 @@ namespace IsThisDarkSouls
             states.weaponHook.OpenDamageCollider();
         }
 
+        /// <summary>
+        /// Disables damage colliders
+        /// </summary>
         public void CloseDamageCollider()
         {
             if (states == null)

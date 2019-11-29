@@ -16,9 +16,12 @@ namespace IsThisDarkSouls
 
         public void Initialise()
         {
-
+            // TBD
         }
 
+        /// <summary>
+        /// Constructor that sets up all action slots and inputs when added in the IDE.
+        /// </summary>
         public ActionManager()
         {
             for (int i = 0; i < 5; i++)
@@ -29,12 +32,18 @@ namespace IsThisDarkSouls
             }
         }
 
+        /// <summary>
+        /// Retrieves the input recorded in the StateManager and returns the corresponding actions data.
+        /// </summary>
         public Action GetActionSlot(StateManager state)
         {
-            ActionInput input = GetActionInput(state);
-            return GetAction(input);
+            ActionInput input = GetActionInput(state); // Record player input from StateManager
+            return GetAction(input); // Retrieve corresponding action information based on input
         }
 
+        /// <summary>
+        /// Returns the corresponding action based on input.
+        /// </summary>
         private Action GetAction(ActionInput input)
         {
             for (int i = 0; i < actionSlots.Count; i++)
@@ -48,6 +57,9 @@ namespace IsThisDarkSouls
             return null;
         }
 
+        /// <summary>
+        /// Returns an action input based on the values of the StateManager.
+        /// </summary>
         public ActionInput GetActionInput(StateManager state)
         {
             if (state.lightAttack)
@@ -79,7 +91,7 @@ namespace IsThisDarkSouls
     [System.Serializable]
     public class Action
     {
-        public ActionInput input;
-        public string desiredAnimation;
+        public ActionInput input; // Input that triggers this action.
+        public string desiredAnimation; // Case sensitive name of the animation this action maps to.
     }
 }

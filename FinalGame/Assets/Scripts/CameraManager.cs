@@ -10,7 +10,7 @@ namespace IsThisDarkSouls
         #region Variables
         public static CameraManager instance; // Singleton
         
-        public bool lockedOn; // Possibly used later for a 'lockon' feature?
+        public bool lockedOn;
 
         [SerializeField] private float followSpeed = 10;
         [SerializeField] private float mouseSpeed = 4;
@@ -49,7 +49,7 @@ namespace IsThisDarkSouls
         }
 
         /// <summary>
-        /// Performs set up references for variables needed for class methods.
+        /// Performs initial set up references for variables needed for class methods.
         /// </summary>
         public void Initialse(Transform _target)
         {
@@ -61,7 +61,7 @@ namespace IsThisDarkSouls
         }
 
         /// <summary>
-        /// Records user input necessary for camera controls
+        /// Records user input necessary for camera controls.
         /// </summary>
         public void Tick(float deltaTime)
         {
