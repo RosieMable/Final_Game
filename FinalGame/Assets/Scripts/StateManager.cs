@@ -32,7 +32,7 @@ namespace IsThisDarkSouls
         public WeaponHook weaponHook;
 
         private float actionDelay;
-        private float actionLockoutDuration = 1f;
+        public float actionLockoutDuration = 1f;
         #endregion
 
         /// <summary>
@@ -97,14 +97,6 @@ namespace IsThisDarkSouls
             delta = deltaTime;
             grounded = IsGrounded();
             charAnim.SetBool("canMove", grounded);
-        }
-
-        /// <summary>
-        /// Ran alongside FixedUpdate, records fixedDeltaTime, changes rigidbody drag based on movement and grounded status, applies rotation to the player character and movement animations.
-        /// </summary>
-        public void FixedTick(float fixedDeltaTime)
-        {
-            delta = fixedDeltaTime;
 
             if (grounded)
             {
@@ -124,10 +116,41 @@ namespace IsThisDarkSouls
                 else
                 {
                     return;
-                }           
+                }
             }
 
-            canMove = charAnim.GetBool("canMove");
+            canMove = charAnim.GetBool("canMove");           
+        }
+
+        /// <summary>
+        /// Ran alongside FixedUpdate, records fixedDeltaTime, changes rigidbody drag based on movement and grounded status, applies rotation to the player character and movement animations.
+        /// </summary>
+        public void FixedTick(float fixedDeltaTime)
+        {
+            delta = fixedDeltaTime;
+
+            //if (grounded)
+            //{
+            //    DetectAction(); // Listen for player inputs
+            //}
+
+            //if (inAction) // If an animation is playing...
+            //{
+            //    charAnim.applyRootMotion = true;
+            //    actionDelay += delta;
+
+            //    if (actionDelay > actionLockoutDuration) // After the duration that the animation locks the character out of performing other actions has passed...
+            //    {
+            //        inAction = false; // Flag animation no longer playing
+            //        actionDelay = 0; // Reset
+            //    }
+            //    else
+            //    {
+            //        return;
+            //    }           
+            //}
+
+            //canMove = charAnim.GetBool("canMove");
 
             if (!canMove) // If the player can't move, return out of the method to prevent applying movement/rotation on top of animation...
             {
@@ -144,7 +167,7 @@ namespace IsThisDarkSouls
             {
                 rigidBody.drag = 4;
             }
-            
+
             if (grounded)
             {
                 rigidBody.velocity = movementDirection * (moveSpeed * moveAmount); // Apply force in the direction the player is heading
@@ -158,7 +181,7 @@ namespace IsThisDarkSouls
                 targetDirection = transform.forward; // Target direction is equivalent to the current forward vector of the character
             }
 
-            
+
             if (!lockOn) // If not locking onto an enemy...
             {
                 Quaternion targetRotation = Quaternion.LookRotation(targetDirection); // Calculate the rotation desired

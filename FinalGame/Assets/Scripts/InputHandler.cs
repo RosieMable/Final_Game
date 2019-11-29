@@ -40,7 +40,7 @@ namespace IsThisDarkSouls
                     states.lockOnTarget = null;
                     cameraManager.lockOnTarget = null;
                 }
-            }
+            }            
         }
 
         void FixedUpdate()

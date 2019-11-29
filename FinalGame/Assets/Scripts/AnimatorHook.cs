@@ -111,6 +111,29 @@ namespace IsThisDarkSouls
 
             states.weaponHook.CloseDamageCollider();
         }
+
+        public void IgnoreInputs()
+        {
+            if (states == null)
+            {
+                return;
+            }
+
+            states.inAction = true;
+            states.actionLockoutDuration += 10;
+            print("Ignore");
+        }
+
+        public void ListenForInputs()
+        {
+            if (states == null)
+            {
+                return;
+            }
+
+            states.actionLockoutDuration = 0.3f;
+            print("Listen");
+        }
     }
 }
 
