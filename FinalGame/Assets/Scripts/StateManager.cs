@@ -19,6 +19,11 @@ namespace IsThisDarkSouls
         public bool inAction;
         public bool canMove;
         public bool lockOn;
+        public bool listenForCombos;
+
+        public AnimationClip[] lightAttacks;
+        public AnimationClip[] heavyAttacks;
+        public int animationClipIndex = -1;
 
         public EnemyStates lockOnTarget;
 
@@ -153,7 +158,7 @@ namespace IsThisDarkSouls
 
             //canMove = charAnim.GetBool("canMove");
 
-            if (!canMove) // If the player can't move, return out of the method to prevent applying movement/rotation on top of animation...
+            if (!canMove) // If the player can't move, return out of the method to allow root motion to continue being applied.
             {
                 return;
             }
@@ -283,18 +288,76 @@ namespace IsThisDarkSouls
         /// </summary>
         public void DetectAction()
         {
-            if (!canMove)
-            {
-                return;
-            }
+            string desiredAnimation = null;
+            Action slot = null;
 
             if (!lightAttack && !heavyAttack && !dodgeRoll)
             {
                 return;
             }
 
-            string desiredAnimation = null;
-            Action slot = actionManager.GetActionSlot(this);
+            if (listenForCombos)
+            {
+                slot = actionManager.GetActionSlot(this);
+
+                if (slot == null)
+                {
+                    return;
+                }
+                else
+                {
+                    desiredAnimation = slot.desiredAnimation;
+                }
+
+                if (slot.desiredAnimation == "lightAttack")
+                {
+                    animationClipIndex++;
+
+                    if (animationClipIndex >= lightAttacks.Length)
+                    {
+                        animationClipIndex = -1;
+                        return;
+                    }
+
+                    desiredAnimation = lightAttacks[animationClipIndex].name;
+                }
+                else if (slot.desiredAnimation == "heavyAttack")
+                {
+                    animationClipIndex++;
+
+                    if (animationClipIndex >= heavyAttacks.Length)
+                    {
+                        animationClipIndex = -1;
+                        return;
+                    }
+
+                    desiredAnimation = heavyAttacks[animationClipIndex].name;
+                }
+
+                if (string.IsNullOrEmpty(desiredAnimation)) // If desiredAnimation returns nothing...
+                {
+                    print("No animation of " + desiredAnimation + " found, is this the correct animation to search for?");
+                    return;
+                }
+
+                canMove = false;
+                inAction = true;
+                charAnim.CrossFade(desiredAnimation, 0.2f); // Apply animation crossfade.
+                return;
+            }
+            else
+            {
+                animationClipIndex = -1;
+            }
+            
+            // -----------
+
+            if (!canMove)
+            {
+                return;
+            }
+
+            slot = actionManager.GetActionSlot(this);
 
             if (slot == null)
             {
@@ -304,23 +367,6 @@ namespace IsThisDarkSouls
             {
                 desiredAnimation = slot.desiredAnimation;
             }
-
-            //if (lightAttack)
-            //{
-            //    desiredAnimation = "lightAttack";
-            //    actionLockoutDuration = 0.5f;
-            //}
-            //if (heavyAttack)
-            //{
-            //    desiredAnimation = "heavyAttack";
-            //    actionLockoutDuration = 0.6f;
-            //}
-            //if (dodgeRoll)
-            //{
-            //    HandleDodgeRoll();
-            //    actionLockoutDuration = 1f;
-            //    return;
-            //}
 
             if (string.IsNullOrEmpty(desiredAnimation)) // If desiredAnimation returns nothing...
             {

@@ -87,7 +87,7 @@ namespace IsThisDarkSouls
 
         public void LateTick()
         {
-
+            // TBD
         }
 
         /// <summary>
@@ -116,6 +116,28 @@ namespace IsThisDarkSouls
             states.weaponHook.CloseDamageCollider();
         }
 
+        public void OpenComboPeriod()
+        {
+            if (states == null)
+            {
+                return;
+            }
+
+            states.listenForCombos = true;
+            print("Open");
+        }
+
+        public void CloseComboPeriod()
+        {
+            if (states == null)
+            {
+                return;
+            }
+
+            states.listenForCombos = false;
+            print("Closed");
+        }
+
         public void IgnoreInputs()
         {
             if (states == null)
@@ -125,7 +147,7 @@ namespace IsThisDarkSouls
 
             states.inAction = true;
             states.actionLockoutDuration += 10;
-            print("Ignore");
+            print("Ignore inputs");
         }
 
         public void ListenForInputs()
@@ -136,7 +158,7 @@ namespace IsThisDarkSouls
             }
 
             states.actionLockoutDuration = 0.3f;
-            print("Listen");
+            print("Listen for inputs");
         }
     }
 }
