@@ -73,7 +73,7 @@ namespace IsThisDarkSouls
 
                 if (charAnim == null)
                 {
-                    Debug.Log("No model found for " + gameObject.name);
+                    Debug.Log("No animator found for " + gameObject.name);
                 }
                 else
                 {
@@ -105,6 +105,7 @@ namespace IsThisDarkSouls
 
             if (inAction) // If an animation is playing...
             {
+                moveAmount = 0;
                 charAnim.applyRootMotion = true;
                 actionDelay += delta;
 
@@ -248,7 +249,6 @@ namespace IsThisDarkSouls
             if (Physics.Raycast(origin, direction, out hit, distance, ignoredLayers)) // Possibly change to a boxcast later if raycast seems too inaccurate on ledges etc.
             {
                 grounded = true;
-
                 Vector3 targetPosition = hit.point;
                 transform.position = targetPosition;
             }

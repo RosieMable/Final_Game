@@ -29,6 +29,7 @@ namespace IsThisDarkSouls
 
         private void Update()
         {
+            SearchForLockOnTarget();
             delta = Time.deltaTime;
             states.Tick(delta);
 
@@ -76,26 +77,96 @@ namespace IsThisDarkSouls
             Vector3 h = horizontal * cameraManager.transform.right;
             states.movementDirection = (v + h).normalized; // Return normalized vector
             float desiredMovement = Mathf.Abs(horizontal) + Mathf.Abs(vertical); // Add both values together
-            states.moveAmount = Mathf.Clamp01(desiredMovement); // Clamp between 0-1 and update StateManager 
+
+            if (!states.inAction) // If the StateManager isn't currently performing an animation...
+            {
+                states.moveAmount = Mathf.Clamp01(desiredMovement); // Clamp between 0-1 and update StateManager 
+            }
 
             states.lightAttack = lightAttackInput;
             states.heavyAttack = heavyAttackInput;
             states.dodgeRoll = dodgeRollInput;
             states.block = blockInput;
-            states.specialAttack = specialAttackInput;
+            states.specialAttack = specialAttackInput;           
+        }
+
+
+        /// <summary>
+        /// When you press the lock on key, search for the closest valid target - Done
+        /// If we already have a target, skip them in the search - Done
+        /// Otherwise if there are no other targets, reset - ?
+        /// Need another key to get out of lock on mode if there are multiple enemies, for now, Q? - Done
+        /// </summary>
+        private void SearchForLockOnTarget()
+        {
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                if (states.lockOn) // If we are already locked onto something...
+                {
+                    // Reset
+                    states.lockOnTarget = null;
+                    cameraManager.lockOnTarget = null;
+                    states.lockOn = false;
+                    cameraManager.lockedOn = false;
+                }
+            }
 
             if (lockOnInput) // When the lock on key is pressed...
             {
-                states.lockOn = !states.lockOn; // Toggle lock on state
+                //states.lockOn = !states.lockOn; // Toggle lock on state
+                states.lockOn = true;
 
-                if (states.lockOnTarget == null) // If there is no target to lock onto...
+                Transform currentTarget = cameraManager.lockOnTarget;
+                Transform targetToReturn = null;
+                float closestDistance = Mathf.Infinity;
+
+                Collider[] nearbyColliders = Physics.OverlapSphere(transform.position, 10);
+                List<Transform> validTargets = new List<Transform>();
+
+                foreach (Collider collider in nearbyColliders)
                 {
-                    states.lockOn = false; // Toggle lock on state
+                    if (collider.GetComponent<EnemyStates>())
+                    {
+                        validTargets.Add(collider.transform);
+                    }
                 }
 
-                cameraManager.lockOnTarget = states.lockOnTarget.transform; // Update CameraManager values to match with the StateManager
-                cameraManager.lockedOn = states.lockOn;
+                foreach (Transform target in validTargets) // Loop through all valid targets
+                {
+                    if (target != currentTarget) // If the target is not the current target...
+                    {
+                        float distance = Vector3.Distance(target.position, transform.position); // Calculate distance between target and player
 
+                        if (distance < closestDistance) // If the calculated distance is less than the current closest...
+                        {
+                            closestDistance = distance; // Set new closest
+                            targetToReturn = target; // Set new target to return
+                        }
+                    }
+                }
+
+                if (targetToReturn != null)
+                {
+                    states.lockOnTarget = targetToReturn.GetComponent<EnemyStates>();
+                }
+
+                if (states.lockOnTarget == null)
+                {
+                    states.lockOn = false;
+                }
+                else
+                {
+                    cameraManager.lockOnTarget = states.lockOnTarget.transform;
+                    cameraManager.lockedOn = states.lockOn;
+                }                
+
+                //if (states.lockOnTarget == null) // If there is no target to lock onto...
+                //{
+                //    states.lockOn = false; // Toggle lock on state
+                //}
+
+                //cameraManager.lockOnTarget = states.lockOnTarget.transform; // Update CameraManager values to match with the StateManager
+                //cameraManager.lockedOn = states.lockOn;
             }
         }
     }

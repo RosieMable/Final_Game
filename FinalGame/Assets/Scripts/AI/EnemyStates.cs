@@ -82,5 +82,5 @@ namespace IsThisDarkSouls
         {
             delta = deltaTime;
         }
-    }
+    }    
 }

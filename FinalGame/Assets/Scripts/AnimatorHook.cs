@@ -55,13 +55,17 @@ namespace IsThisDarkSouls
                     return;
                 }
 
+                charAnim.SetFloat("vertical", 0); // Reset vertical float to ensure animator does not return to a running animation afterwards.
                 rigidBody.drag = 0;
                 float multiplier = 1;
 
-                Vector3 delta = charAnim.deltaPosition;
-                delta.y = 0;
-                Vector3 velocity = (delta * multiplier) / states.delta;
-                rigidBody.velocity = velocity;
+                if (states.grounded)
+                {
+                    Vector3 delta = charAnim.deltaPosition;
+                    delta.y = 0;
+                    Vector3 velocity = (delta * multiplier) / states.delta;
+                    rigidBody.velocity = velocity;
+                }                
             }
 
             if (enemyStates != null)

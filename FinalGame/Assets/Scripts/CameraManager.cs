@@ -129,9 +129,7 @@ namespace IsThisDarkSouls
             minAngle = originalMinAngle;
             maxAngle = originalMaxAngle;
             lookAngle += smoothX * speed; // Calculate the new X axis
-            transform.rotation = Quaternion.Euler(0, lookAngle, 0); // Assign X axis rotation to the camera
-
-            
+            transform.rotation = Quaternion.Euler(0, lookAngle, 0); // Assign X axis rotation to the camera            
         }
     }
 }
