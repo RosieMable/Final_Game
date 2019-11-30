@@ -19,6 +19,11 @@ namespace IsThisDarkSouls
         public bool inAction;
         public bool canMove;
         public bool lockOn;
+        public bool listenForCombos;
+
+        public AnimationClip[] lightAttacks;
+        public AnimationClip[] heavyAttacks;
+        public int animationClipIndex = -1;
 
         public EnemyStates lockOnTarget;
 
@@ -32,7 +37,7 @@ namespace IsThisDarkSouls
         public WeaponHook weaponHook;
 
         private float actionDelay;
-        private float actionLockoutDuration = 1f;
+        public float actionLockoutDuration = 1f;
         #endregion
 
         /// <summary>
@@ -46,11 +51,13 @@ namespace IsThisDarkSouls
             rigidBody.drag = 4;
             rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             animHook = GetComponentInChildren<AnimatorHook>();
+
             if (animHook == false)
             {
                 print("Added AnimatorHook.cs to " + gameObject.name);
                 animHook = activeModel.AddComponent<AnimatorHook>();
             }
+
             animHook.Initialise(this, null);
             actionManager = GetComponent<ActionManager>();
             actionManager.Initialise();
@@ -61,7 +68,7 @@ namespace IsThisDarkSouls
         }
 
         /// <summary>
-        /// Gains reference to attached Animator component and gameobject, disabled root motion.
+        /// Gains reference to attached Animator component and gameobject, disables root motion.
         /// </summary>
         private void SetUpAnimator()
         {
@@ -71,7 +78,7 @@ namespace IsThisDarkSouls
 
                 if (charAnim == null)
                 {
-                    Debug.Log("No model found for " + gameObject.name);
+                    Debug.Log("No animator found for " + gameObject.name);
                 }
                 else
                 {
@@ -88,13 +95,37 @@ namespace IsThisDarkSouls
         }
 
         /// <summary>
-        /// Ran alongside Update, records deltaTime, performs ground check.
+        /// Ran alongside Update, records deltaTime, performs ground check and updates animator variables.
         /// </summary>
         public void Tick(float deltaTime)
         {
             delta = deltaTime;
             grounded = IsGrounded();
             charAnim.SetBool("canMove", grounded);
+
+            if (grounded)
+            {
+                DetectAction(); // Listen for player inputs
+            }
+
+            if (inAction) // If an animation is playing...
+            {
+                moveAmount = 0;
+                charAnim.applyRootMotion = true;
+                actionDelay += delta;
+
+                if (actionDelay > actionLockoutDuration) // After the duration that the animation locks the character out of performing other actions has passed...
+                {
+                    inAction = false; // Flag animation no longer playing
+                    actionDelay = 0; // Reset
+                }
+                else
+                {
+                    return;
+                }
+            }
+
+            canMove = charAnim.GetBool("canMove");           
         }
 
         /// <summary>
@@ -104,30 +135,30 @@ namespace IsThisDarkSouls
         {
             delta = fixedDeltaTime;
 
-            if (grounded)
-            {
-                DetectAction();
-            }
+            //if (grounded)
+            //{
+            //    DetectAction(); // Listen for player inputs
+            //}
 
-            if (inAction)
-            {
-                charAnim.applyRootMotion = true;
-                actionDelay += delta;
+            //if (inAction) // If an animation is playing...
+            //{
+            //    charAnim.applyRootMotion = true;
+            //    actionDelay += delta;
 
-                if (actionDelay > actionLockoutDuration)
-                {
-                    inAction = false;
-                    actionDelay = 0;
-                }
-                else
-                {
-                    return;
-                }           
-            }
+            //    if (actionDelay > actionLockoutDuration) // After the duration that the animation locks the character out of performing other actions has passed...
+            //    {
+            //        inAction = false; // Flag animation no longer playing
+            //        actionDelay = 0; // Reset
+            //    }
+            //    else
+            //    {
+            //        return;
+            //    }           
+            //}
 
-            canMove = charAnim.GetBool("canMove");
+            //canMove = charAnim.GetBool("canMove");
 
-            if (!canMove)
+            if (!canMove) // If the player can't move, return out of the method to allow root motion to continue being applied.
             {
                 return;
             }
@@ -142,7 +173,7 @@ namespace IsThisDarkSouls
             {
                 rigidBody.drag = 4;
             }
-            
+
             if (grounded)
             {
                 rigidBody.velocity = movementDirection * (moveSpeed * moveAmount); // Apply force in the direction the player is heading
@@ -151,22 +182,22 @@ namespace IsThisDarkSouls
             Vector3 targetDirection = movementDirection;
             targetDirection.y = 0;
 
-            if (targetDirection == Vector3.zero)
+            if (targetDirection == Vector3.zero) // If there is no recorded target direction (No input)...
             {
-                targetDirection = transform.forward;
+                targetDirection = transform.forward; // Target direction is equivalent to the current forward vector of the character
             }
 
 
-            if (!lockOn)
+            if (!lockOn) // If not locking onto an enemy...
             {
                 Quaternion targetRotation = Quaternion.LookRotation(targetDirection); // Calculate the rotation desired
                 Quaternion lerpedRotation = Quaternion.Slerp(transform.rotation, targetRotation, delta * moveAmount * rotateSpeed); // Lerp between current rotation and desired rotation
                 transform.rotation = lerpedRotation; // Apply lerped rotation   
                 charAnim.SetBool("lockOn", lockOn);
             }
-            else
+            else // If locked onto an enemy...
             {
-                targetDirection = lockOnTarget.transform.position - transform.position;
+                targetDirection = lockOnTarget.transform.position - transform.position; // Calculate the direction based on the position of the player and the enemy.
                 targetDirection.y = 0;
                 Quaternion targetRotation = Quaternion.LookRotation(targetDirection); // Calculate the rotation desired
                 Quaternion lerpedRotation = Quaternion.Slerp(transform.rotation, targetRotation, delta * moveAmount * rotateSpeed); // Lerp between current rotation and desired rotation
@@ -192,6 +223,9 @@ namespace IsThisDarkSouls
             charAnim.SetFloat("vertical", moveAmount, 0.1f, delta);
         }
 
+        /// <summary>
+        /// Updates the animator movement variables based on the direction to the locked on target.
+        /// </summary>
         private void HandleLockOnAnimations(Vector3 movementDirection)
         {
             Vector3 relativeDirection = transform.InverseTransformDirection(movementDirection);
@@ -217,51 +251,114 @@ namespace IsThisDarkSouls
 
             Debug.DrawRay(origin, direction * distance);
 
-            if (Physics.Raycast(origin, direction, out hit, distance, ignoredLayers))
+            if (Physics.Raycast(origin, direction, out hit, distance, ignoredLayers)) // Possibly change to a boxcast later if raycast seems too inaccurate on ledges etc.
             {
                 grounded = true;
-
                 Vector3 targetPosition = hit.point;
                 transform.position = targetPosition;
             }
             return grounded;
         }
 
+        /// <summary>
+        /// Rotates the character in the direction of the current movement direction.
+        /// </summary>
         public void HandleDodgeRoll()
         {
-            if (!dodgeRoll)
+            if (!dodgeRoll) // If there is no input from the player to dodge roll return out of the method.
             {
                 return;
             }
 
-            if (movementDirection == Vector3.zero)
+            if (movementDirection == Vector3.zero) // If there is no recorded input...
             {
-                movementDirection = transform.forward;
+                movementDirection = transform.forward; // Movement direction is the current forward vector.
             }
 
-            Quaternion targetRotation = Quaternion.LookRotation(movementDirection);
+            Quaternion targetRotation = Quaternion.LookRotation(movementDirection); // Calculate rotation/direction of the roll based on movementDirection.
             transform.rotation = targetRotation;
 
             canMove = false;
             inAction = true;
-            charAnim.CrossFade("dodgeRoll", 0.2f);
+            charAnim.CrossFade("dodgeRoll", 0.2f); // Apply animation crossfade
         }
 
+        /// <summary>
+        /// Listens for inputs from the player if no other inputs are already true, returns and applies corresponding action based on input received.
+        /// </summary>
         public void DetectAction()
         {
-            if (!canMove)
-            {
-                return;
-            }
+            string desiredAnimation = null;
+            Action slot = null;
 
             if (!lightAttack && !heavyAttack && !dodgeRoll)
             {
                 return;
             }
 
-            string desiredAnimation = null;
+            if (listenForCombos)
+            {
+                slot = actionManager.GetActionSlot(this);
 
-            Action slot = actionManager.GetActionSlot(this);
+                if (slot == null)
+                {
+                    return;
+                }
+                else
+                {
+                    desiredAnimation = slot.desiredAnimation;
+                }
+
+                if (slot.desiredAnimation == "lightAttack")
+                {
+                    animationClipIndex++;
+
+                    if (animationClipIndex >= lightAttacks.Length)
+                    {
+                        animationClipIndex = -1;
+                        return;
+                    }
+
+                    desiredAnimation = lightAttacks[animationClipIndex].name;
+                }
+                else if (slot.desiredAnimation == "heavyAttack")
+                {
+                    animationClipIndex++;
+
+                    if (animationClipIndex >= heavyAttacks.Length)
+                    {
+                        animationClipIndex = -1;
+                        return;
+                    }
+
+                    desiredAnimation = heavyAttacks[animationClipIndex].name;
+                }
+
+                if (string.IsNullOrEmpty(desiredAnimation)) // If desiredAnimation returns nothing...
+                {
+                    print("No animation of " + desiredAnimation + " found, is this the correct animation to search for?");
+                    return;
+                }
+
+                canMove = false;
+                inAction = true;
+                charAnim.CrossFade(desiredAnimation, 0.2f); // Apply animation crossfade.
+                return;
+            }
+            else
+            {
+                animationClipIndex = -1;
+            }
+            
+            // -----------
+
+            if (!canMove)
+            {
+                return;
+            }
+
+            slot = actionManager.GetActionSlot(this);
+
             if (slot == null)
             {
                 return;
@@ -271,24 +368,7 @@ namespace IsThisDarkSouls
                 desiredAnimation = slot.desiredAnimation;
             }
 
-            //if (lightAttack)
-            //{
-            //    desiredAnimation = "lightAttack";
-            //    actionLockoutDuration = 0.5f;
-            //}
-            //if (heavyAttack)
-            //{
-            //    desiredAnimation = "heavyAttack";
-            //    actionLockoutDuration = 0.6f;
-            //}
-            //if (dodgeRoll)
-            //{
-            //    HandleDodgeRoll();
-            //    actionLockoutDuration = 1f;
-            //    return;
-            //}
-
-            if (string.IsNullOrEmpty(desiredAnimation))
+            if (string.IsNullOrEmpty(desiredAnimation)) // If desiredAnimation returns nothing...
             {
                 print("No animation of " + desiredAnimation + " found, is this the correct animation to search for?");
                 return;
@@ -296,7 +376,7 @@ namespace IsThisDarkSouls
 
             canMove = false;
             inAction = true;
-            charAnim.CrossFade(desiredAnimation, 0.2f);
+            charAnim.CrossFade(desiredAnimation, 0.2f); // Apply animation crossfade.
         }
     }
 }

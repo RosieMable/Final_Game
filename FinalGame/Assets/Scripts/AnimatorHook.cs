@@ -11,6 +11,9 @@ namespace IsThisDarkSouls
         private EnemyStates enemyStates;
         private Rigidbody rigidBody;
 
+        /// <summary>
+        /// Performs initial setup based on if the character is a player or enemy.
+        /// </summary>
         public void Initialise(StateManager stateManager, EnemyStates enemyStateManager)
         {
             states = stateManager;
@@ -29,6 +32,9 @@ namespace IsThisDarkSouls
             }
         }
 
+        /// <summary>
+        /// Runs when animated character is in motion, applies rootmotion physics.
+        /// </summary>
         private void OnAnimatorMove()
         {
             if (states == null && enemyStates == null)
@@ -49,13 +55,17 @@ namespace IsThisDarkSouls
                     return;
                 }
 
+                charAnim.SetFloat("vertical", 0); // Reset vertical float to ensure animator does not return to a running animation afterwards.
                 rigidBody.drag = 0;
                 float multiplier = 1;
 
-                Vector3 delta = charAnim.deltaPosition;
-                delta.y = 0;
-                Vector3 velocity = (delta * multiplier) / states.delta;
-                rigidBody.velocity = velocity;
+                if (states.grounded)
+                {
+                    Vector3 delta = charAnim.deltaPosition;
+                    delta.y = 0;
+                    Vector3 velocity = (delta * multiplier) / states.delta;
+                    rigidBody.velocity = velocity;
+                }                
             }
 
             if (enemyStates != null)
@@ -77,9 +87,12 @@ namespace IsThisDarkSouls
 
         public void LateTick()
         {
-
+            // TBD
         }
 
+        /// <summary>
+        /// Enables damage colliders
+        /// </summary>
         public void OpenDamageCollider()
         {
             if (states == null)
@@ -90,6 +103,9 @@ namespace IsThisDarkSouls
             states.weaponHook.OpenDamageCollider();
         }
 
+        /// <summary>
+        /// Disables damage colliders
+        /// </summary>
         public void CloseDamageCollider()
         {
             if (states == null)
@@ -98,6 +114,51 @@ namespace IsThisDarkSouls
             }
 
             states.weaponHook.CloseDamageCollider();
+        }
+
+        public void OpenComboPeriod()
+        {
+            if (states == null)
+            {
+                return;
+            }
+
+            states.listenForCombos = true;
+            print("Open");
+        }
+
+        public void CloseComboPeriod()
+        {
+            if (states == null)
+            {
+                return;
+            }
+
+            states.listenForCombos = false;
+            print("Closed");
+        }
+
+        public void IgnoreInputs()
+        {
+            if (states == null)
+            {
+                return;
+            }
+
+            states.inAction = true;
+            states.actionLockoutDuration += 10;
+            print("Ignore inputs");
+        }
+
+        public void ListenForInputs()
+        {
+            if (states == null)
+            {
+                return;
+            }
+
+            states.actionLockoutDuration = 0.3f;
+            print("Listen for inputs");
         }
     }
 }

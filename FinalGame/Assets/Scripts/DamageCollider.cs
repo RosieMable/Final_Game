@@ -15,7 +15,7 @@ namespace IsThisDarkSouls
                 return;
             }
 
-            enemyStates.TakeDamage(100);
+            enemyStates.TakeDamage(100); // Needs to be changed to a variable instead of hard coded value
 
         }
     }
