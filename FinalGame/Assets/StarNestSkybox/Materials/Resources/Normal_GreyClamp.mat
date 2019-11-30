@@ -20,19 +20,19 @@ Material:
     serializedVersion: 3
     m_TexEnvs: []
     m_Floats:
-    - _Brightness: 0.5
+    - _Brightness: 0.4
     - _CLAMPOUT: 1
     - _CamScroll: 55
-    - _Darkmatter: 555
+    - _Darkmatter: 640.9
     - _Distfading: 55
-    - _Formuparam: 420
-    - _Iterations: 15
-    - _Saturation: 77
-    - _StepSize: 355
-    - _Tile: 700
-    - _Volsteps: 8
+    - _Formuparam: 407.59
+    - _Iterations: 9.9
+    - _Saturation: 55.7
+    - _StepSize: 311.6
+    - _Tile: 604.3
+    - _Volsteps: 8.4
     m_Colors:
     - _Center: {r: 1, g: 0.3, b: 0.5, a: 0}
-    - _Color: {r: 0.52205884, g: 0.52205884, b: 0.52205884, a: 1}
+    - _Color: {r: 0.54427737, g: 0.6530455, b: 0.764151, a: 1}
     - _Rotation: {r: 0, g: 0, b: 0, a: 0.01}
     - _Scroll: {r: 0.1, g: 0.1, b: -0.3, a: 0}
