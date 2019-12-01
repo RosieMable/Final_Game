@@ -61,11 +61,11 @@ namespace IsThisDarkSouls
             vertical = Input.GetAxis("Vertical");
             horizontal = Input.GetAxis("Horizontal");
             lightAttackInput = Input.GetKeyDown(KeyCode.Mouse0);
-            heavyAttackInput = Input.GetKeyDown(KeyCode.Mouse1);
+            //heavyAttackInput = // Needs new input, probably when controller support added?
             dodgeRollInput = Input.GetKeyDown(KeyCode.LeftControl);
             lockOnInput = Input.GetKeyDown(KeyCode.Tab);
             specialAttackInput = Input.GetKeyDown(KeyCode.Mouse2);
-            // blockInput = // What input needs to be decided, perhaps replace heavy attack
+            blockInput = Input.GetKey(KeyCode.Mouse1);
         }
 
         /// <summary>
