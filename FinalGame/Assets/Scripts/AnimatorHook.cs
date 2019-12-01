@@ -149,6 +149,16 @@ namespace IsThisDarkSouls
             states.actionLockoutDuration += 10;
             //print("Ignore inputs");
         }
+
+        public void ListenForInputs()
+        {
+            if (states == null)
+            {
+                return;
+            }
+
+            states.actionLockoutDuration = 0.3f;
+        }
     }
 }
 
