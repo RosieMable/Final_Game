@@ -24,11 +24,12 @@ namespace IsThisDarkSouls
             states = GetComponent<StateManager>();
             states.Initialise();
             cameraManager = CameraManager.instance;
-            cameraManager.Initialse(this.transform);
+            cameraManager.Initialse(transform);
         }
 
         private void Update()
         {
+            GetInput();
             SearchForLockOnTarget();
             delta = Time.deltaTime;
             states.Tick(delta);
@@ -46,8 +47,7 @@ namespace IsThisDarkSouls
 
         void FixedUpdate()
         {
-            delta = Time.fixedDeltaTime;
-            GetInput();
+            delta = Time.fixedDeltaTime;            
             UpdateStates();
             states.FixedTick(delta);
             cameraManager.Tick(delta);
@@ -63,7 +63,6 @@ namespace IsThisDarkSouls
             lightAttackInput = Input.GetKeyDown(KeyCode.Mouse0);
             //heavyAttackInput = // Needs new input, probably when controller support added?
             dodgeRollInput = Input.GetKeyDown(KeyCode.LeftControl);
-            lockOnInput = Input.GetKeyDown(KeyCode.Tab);
             specialAttackInput = Input.GetKeyDown(KeyCode.Mouse2);
             blockInput = Input.GetKey(KeyCode.Mouse1);
         }
@@ -99,6 +98,8 @@ namespace IsThisDarkSouls
         /// </summary>
         private void SearchForLockOnTarget()
         {
+            lockOnInput = Input.GetKeyDown(KeyCode.Tab);
+
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 if (states.lockOn) // If we are already locked onto something...
@@ -129,6 +130,11 @@ namespace IsThisDarkSouls
                     {
                         validTargets.Add(collider.transform);
                     }
+                }
+
+                if (validTargets.Count <= 0)
+                {
+                    return;
                 }
 
                 foreach (Transform target in validTargets) // Loop through all valid targets
