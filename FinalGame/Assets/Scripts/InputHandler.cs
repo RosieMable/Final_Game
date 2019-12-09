@@ -134,6 +134,8 @@ namespace IsThisDarkSouls
 
                 if (validTargets.Count <= 0)
                 {
+                    states.lockOn = false;
+                    cameraManager.lockedOn = false;
                     return;
                 }
 
