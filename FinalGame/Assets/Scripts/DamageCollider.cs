@@ -18,12 +18,12 @@ namespace IsThisDarkSouls
 
             if (enemyStates != null)
             {
-                enemyStates.TakeDamage(100); // Needs to be changed to a variable instead of hard coded value
+                enemyStates.TakeDamage(10); // Needs to be changed to a variable instead of hard coded value
             }
 
             if (states != null)
             {
-                states.TakeDamage(10, transform);
+                states.TakeDamage(10, transform.root);
             }
 
         }

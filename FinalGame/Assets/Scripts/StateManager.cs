@@ -15,6 +15,7 @@ namespace IsThisDarkSouls
         [SerializeField] private float rotateSpeed = 5;
 
         public float health = 100;
+        public float stamina = 100;
         public bool isInvulnerable;
         public bool grounded;
         public bool lightAttack, heavyAttack, dodgeRoll, block, specialAttack;
@@ -98,42 +99,36 @@ namespace IsThisDarkSouls
             charAnim.applyRootMotion = false;
         }
 
-        private void OnDrawGizmos()
-        {
-            Gizmos.DrawWireCube(transform.position + transform.forward * 5, transform.localScale);
-            Gizmos.DrawRay(transform.position + transform.forward, transform.forward * 5);
-        }
-
         public void TakeDamage(float value, Transform location)
         {
+            print("Damage taken on player");
+            if (isInvulnerable)
+            {
+                print("Cannot take damage while invulnerable!");
+                return;
+            }
+
             if (isBlocking)
             {
                 RaycastHit[] hits = Physics.BoxCastAll(transform.position + transform.forward, transform.localScale / 2, transform.forward, transform.rotation, 5, ignoredLayers);
-                //Physics.BoxCast(transform.position, transform.localScale, transform.forward, out hit, transform.rotation, 5, ignoredLayers);
 
                 foreach (RaycastHit hit in hits)
                 {
+                    print(hit.collider.gameObject.name);
                     if (hit.transform == location)
                     {
                         print("Blocked attack!");
                         return;
                     }
                 }
-
-                //Vector3 difference = transform.position - location.position;
-                //float dot = Vector3.Dot(difference, transform.forward);
-                //print("Blocked attack!");
-                //return;
-            }
-
-            if (isInvulnerable)
-            {
-                return;
             }
 
             health -= value;
-            //charAnim.Play("hurt");
-            //charAnim.applyRootMotion = true;
+            isInvulnerable = true;
+            canMove = false;
+            print("Setting invulnerable to true!");
+            charAnim.Play("hurt");
+            charAnim.applyRootMotion = true;
         }
 
         /// <summary>
@@ -151,6 +146,7 @@ namespace IsThisDarkSouls
             if (isInvulnerable) // If the PC is currently invulnerable...
             {
                 isInvulnerable = !canMove; // Assign invulnerable to the opposite state of 'canMove' - meaning when the character is capable of moving again, they are no longer invulnerable.
+                print("Setting invulnerable to " + !canMove);
             }
 
             if (!canMove) // If the character can't move...
@@ -163,18 +159,27 @@ namespace IsThisDarkSouls
                 isBlocking = false;
             }
 
+            if (isBlocking)
+            {
+                moveSpeed = 4;
+            }
+            else
+            {
+                charAnim.SetBool("blocking", isBlocking);
+                moveSpeed = 6;
+            }
+
             grounded = IsGrounded();
-            charAnim.SetBool("canMove", grounded);
+            charAnim.SetBool("grounded", grounded);
 
             if (grounded)
             {
                 DetectAction(); // Listen for player inputs
             }
 
-            charAnim.SetBool("blocking", isBlocking);
-
             if (inAction) // If an animation is playing...
             {
+                isBlocking = false;
                 moveAmount = 0;
                 charAnim.applyRootMotion = true;
                 actionDelay += delta;
@@ -190,7 +195,7 @@ namespace IsThisDarkSouls
                 }
             }
 
-            canMove = charAnim.GetBool("canMove");           
+            canMove = charAnim.GetBool("canMove");
         }
 
         /// <summary>
@@ -356,49 +361,65 @@ namespace IsThisDarkSouls
             string desiredAnimation = null;
             Action slot = null;
 
-            if (!lightAttack && !heavyAttack && !dodgeRoll && !block)
+            if (!lightAttack && !heavyAttack && !dodgeRoll && !block) // If there are no actions detected...
             {
                 return;
             }
 
-            if (listenForCombos && !comboActive)
+            if (listenForCombos) // If we are listening for a combo input and are not in the middle of a combo...
             {
-                print("Detecting combo input");
-                slot = actionManager.GetActionSlot(this);
-                comboActive = true;
+                slot = actionManager.GetActionSlot(this); // Return action that matches input
+                comboActive = true; // Flag that a combo is now active
 
-                if (slot == null)
+                if (slot == null) // If there is nothing to return...
                 {
                     return;
                 }
                 else
-                {                    
+                {
+                    listenForCombos = false;
                     desiredAnimation = slot.desiredAnimation;
                 }
 
+                // Light Attack Combo
                 if (slot.desiredAnimation == "lightAttack")
                 {
                     animationClipIndex++;
 
-                    if (animationClipIndex >= lightAttacks.Length)
+                    if (animationClipIndex >= lightAttacks.Length) // Array bounds check
                     {
-                        animationClipIndex = -1;
-                        return;
+                        animationClipIndex = 0; // Reset array position
                     }
 
-                    desiredAnimation = lightAttacks[animationClipIndex].name;
+                    desiredAnimation = lightAttacks[animationClipIndex].name; // Set animation to call
                 }
+                // Heavy Attack Combo
                 else if (slot.desiredAnimation == "heavyAttack")
                 {
                     animationClipIndex++;
 
-                    if (animationClipIndex >= heavyAttacks.Length)
+                    if (animationClipIndex >= heavyAttacks.Length) // Array bounds check
                     {
-                        animationClipIndex = -1;
-                        return;
+                        animationClipIndex = 0; // Reset array position
                     }
 
-                    desiredAnimation = heavyAttacks[animationClipIndex].name;
+                    desiredAnimation = heavyAttacks[animationClipIndex].name; // Set animation to call
+                }
+                // Block mid combo
+                else if (desiredAnimation == "block")
+                {
+                    animationClipIndex = 0; // Reset array position
+                    isBlocking = true;
+                    charAnim.SetBool("blocking", isBlocking);
+                    charAnim.SetBool("canMove", true);
+                    canMove = true;
+                    actionLockoutDuration = 0.5f;
+
+                    if (lockOn)
+                    {
+                        transform.LookAt(lockOnTarget.transform.position);
+                    }
+                    return;
                 }
 
                 if (string.IsNullOrEmpty(desiredAnimation)) // If desiredAnimation returns nothing...
@@ -407,32 +428,38 @@ namespace IsThisDarkSouls
                     return;
                 }
 
-                if (!listenForCombos)
+                if (!listenForCombos) // If we aren't listening for combos...
                 {
-                    return;
+                    //return;
                 }
 
                 canMove = false;
                 inAction = true;
                 comboActive = false;
-                charAnim.CrossFade(desiredAnimation, 0.2f); // Apply animation crossfade.
+                charAnim.CrossFade(desiredAnimation, 0.2f); // Crossfade from current animation to the desired animation.
+
+                if (lockOn)
+                {
+                    transform.LookAt(lockOnTarget.transform.position);
+                }
+
                 return;
             }
             else
             {
-                animationClipIndex = -1;
+                //animationClipIndex = 0; // Reset array position
             }
             
             // -----------
 
-            if (!canMove)
+            if (!canMove) // If the player can't move (Such as mid roll, staggered from a hit, etc.)
             {
                 return;
             }
 
-            slot = actionManager.GetActionSlot(this);
+            slot = actionManager.GetActionSlot(this); // Return action that matches input
 
-            if (slot == null)
+            if (slot == null) // If there is nothing to return...
             {
                 return;
             }
@@ -444,8 +471,10 @@ namespace IsThisDarkSouls
             if (desiredAnimation == "block")
             {
                 isBlocking = true;
+                charAnim.SetBool("blocking", isBlocking);
                 canMove = true;
-                actionLockoutDuration = 0.1f;
+                charAnim.SetBool("canMove", true);
+                actionLockoutDuration = 0.5f;
                 return;
             }
 
@@ -455,11 +484,15 @@ namespace IsThisDarkSouls
                 return;
             }
 
-            print("Detecting initial input");
             comboActive = false;
             canMove = false;
             inAction = true;
             charAnim.CrossFade(desiredAnimation, 0.2f); // Apply animation crossfade.
+
+            if (lockOn)
+            {
+                transform.LookAt(lockOnTarget.transform.position);
+            }
         }
     }
 }

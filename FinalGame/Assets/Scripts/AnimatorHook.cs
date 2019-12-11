@@ -97,6 +97,15 @@ namespace IsThisDarkSouls
         {
             if (states == null)
             {
+                if (enemyStates == null)
+                {
+                    return;
+                }
+                else
+                {
+                    print("OPEN AI DAMAGE COLLIDER");
+                    enemyStates.weaponHook.OpenDamageCollider();
+                }
                 return;
             }
 
@@ -110,6 +119,16 @@ namespace IsThisDarkSouls
         {
             if (states == null)
             {
+                if (enemyStates == null)
+                {
+                    return;
+                }
+                else
+                {
+                    print("CLOSE AI DAMAGE COLLIDER");
+                    enemyStates.weaponHook.CloseDamageCollider();
+                }
+
                 return;
             }
 
@@ -124,7 +143,6 @@ namespace IsThisDarkSouls
             }
 
             states.listenForCombos = true;
-            print("Open");
         }
 
         public void CloseComboPeriod()
@@ -135,25 +153,40 @@ namespace IsThisDarkSouls
             }
 
             states.listenForCombos = false;
-            print("Closed");
         }
 
         public void IgnoreInputs()
         {
             if (states == null)
             {
+                if (enemyStates == null)
+                {
+                    return;
+                }
+                else
+                {
+                    enemyStates.inAction = true;
+                    enemyStates.actionLockoutDuration += 2;
+                }
                 return;
             }
 
             states.inAction = true;
-            states.actionLockoutDuration += 10;
-            //print("Ignore inputs");
+            states.actionLockoutDuration += 2;
         }
 
         public void ListenForInputs()
         {
             if (states == null)
             {
+                if (enemyStates == null)
+                {
+                    return;
+                }
+                else
+                {
+                    enemyStates.actionLockoutDuration = 0.3f;
+                }
                 return;
             }
 
