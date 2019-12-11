@@ -50,11 +50,13 @@ public abstract class Singleton<T> : MonoBehaviour where T : Component
         if (instance == null)
         {
             instance = this as T;
-            DontDestroyOnLoad(gameObject);
         }
-        else
+        else if (instance != this)
         {
             Destroy(gameObject);
+            GameObject obj = new GameObject();
+            obj.name = typeof(T).Name;
+            instance = obj.AddComponent<T>();
         }
     }
 

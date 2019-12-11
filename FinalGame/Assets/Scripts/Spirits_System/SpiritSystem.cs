@@ -9,15 +9,19 @@ public class SpiritSystem : MonoBehaviour
     [SerializeField]
     private Spirit_ScriptableObj spirit;
 
+    [SerializeField]
+    float HealthPlayerBase;
+
     private StateManager PlayerCharacter;
 
-    delegate void UIChecks(Spirit_ScriptableObj _spirit);
-    UIChecks UIDelegate;
+    delegate void OnSpiritChanged(Spirit_ScriptableObj _spirit);
+    OnSpiritChanged onSpiritChanged;
 
-
+    public Spirit_ScriptableObj[] DemoSpirits;
     private void OnEnable()
     {
-        UIDelegate += UIManager.Instance.ManageSpiritUI;
+        onSpiritChanged += UIManager.Instance.ManageSpiritUI;
+        onSpiritChanged += Spirits_PlayerModel.Instance.SetCorrectProps;
     }
 
     //for now it is going to be in update, but once the inventory system is on, this should happen when "equipping" the spirit
@@ -25,6 +29,22 @@ public class SpiritSystem : MonoBehaviour
     {
 
         OnEquipSpirit(spirit);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            OnEquipSpirit(DemoSpirits[0]);
+        }
+        else if(Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            OnEquipSpirit(DemoSpirits[1]);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            OnEquipSpirit(spirit);
+        }
     }
 
     protected void ActiveAbility()
@@ -42,6 +62,7 @@ public class SpiritSystem : MonoBehaviour
     {
         if (PlayerCharacter)
         {
+            PlayerCharacter.health = HealthPlayerBase;
             PlayerCharacter.health = PlayerCharacter.health + _EquippedSpirit.HealthModifier;
             print(PlayerCharacter.health);
         }
@@ -60,13 +81,13 @@ public class SpiritSystem : MonoBehaviour
             PassiveAbility(_SpiritToEquip);
 
             //Update UI
-            UIDelegate?.Invoke(_SpiritToEquip);
+            onSpiritChanged?.Invoke(_SpiritToEquip);
 
         }
         else
         {
             //Update UI
-            UIDelegate?.Invoke(_SpiritToEquip);
+            onSpiritChanged?.Invoke(_SpiritToEquip);
         }
 
 

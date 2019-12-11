@@ -16,6 +16,11 @@ public class UIManager : Singleton<UIManager>
 
     #endregion
 
+    private void Awake()
+    {
+        base.Awake();
+    }
+
     public void ManageSpiritUI(Spirit_ScriptableObj _spiritToDisplay)
     {
         if (_spiritToDisplay!=null)
