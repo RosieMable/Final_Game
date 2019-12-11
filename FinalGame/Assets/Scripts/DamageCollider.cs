@@ -9,13 +9,22 @@ namespace IsThisDarkSouls
         private void OnTriggerEnter(Collider other)
         {
             EnemyStates enemyStates = other.transform.GetComponentInParent<EnemyStates>(); // Finds the parent of the object hit and searches for an 'EnemyStates' reference.
+            StateManager states = other.transform.GetComponentInParent<StateManager>();
 
-            if (enemyStates == null)
+            if (enemyStates == null && states == null)
             {
                 return;
             }
 
-            enemyStates.TakeDamage(100); // Needs to be changed to a variable instead of hard coded value
+            if (enemyStates != null)
+            {
+                enemyStates.TakeDamage(100); // Needs to be changed to a variable instead of hard coded value
+            }
+
+            if (states != null)
+            {
+                states.TakeDamage(10, transform);
+            }
 
         }
     }

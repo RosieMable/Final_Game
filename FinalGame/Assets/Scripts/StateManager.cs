@@ -14,12 +14,16 @@ namespace IsThisDarkSouls
         [SerializeField] private float moveSpeed = 4;
         [SerializeField] private float rotateSpeed = 5;
 
+        public float health = 100;
+        public bool isInvulnerable;
         public bool grounded;
         public bool lightAttack, heavyAttack, dodgeRoll, block, specialAttack;
         public bool inAction;
         public bool canMove;
         public bool lockOn;
+        public bool isBlocking;
         public bool listenForCombos;
+        [SerializeField] private bool comboActive;
 
         public AnimationClip[] lightAttacks;
         public AnimationClip[] heavyAttacks;
@@ -94,12 +98,71 @@ namespace IsThisDarkSouls
             charAnim.applyRootMotion = false;
         }
 
+        private void OnDrawGizmos()
+        {
+            Gizmos.DrawWireCube(transform.position + transform.forward * 5, transform.localScale);
+            Gizmos.DrawRay(transform.position + transform.forward, transform.forward * 5);
+        }
+
+        public void TakeDamage(float value, Transform location)
+        {
+            if (isBlocking)
+            {
+                RaycastHit[] hits = Physics.BoxCastAll(transform.position + transform.forward, transform.localScale / 2, transform.forward, transform.rotation, 5, ignoredLayers);
+                //Physics.BoxCast(transform.position, transform.localScale, transform.forward, out hit, transform.rotation, 5, ignoredLayers);
+
+                foreach (RaycastHit hit in hits)
+                {
+                    if (hit.transform == location)
+                    {
+                        print("Blocked attack!");
+                        return;
+                    }
+                }
+
+                //Vector3 difference = transform.position - location.position;
+                //float dot = Vector3.Dot(difference, transform.forward);
+                //print("Blocked attack!");
+                //return;
+            }
+
+            if (isInvulnerable)
+            {
+                return;
+            }
+
+            health -= value;
+            //charAnim.Play("hurt");
+            //charAnim.applyRootMotion = true;
+        }
+
         /// <summary>
         /// Ran alongside Update, records deltaTime, performs ground check and updates animator variables.
         /// </summary>
         public void Tick(float deltaTime)
         {
             delta = deltaTime;
+
+            if (health <= 0)
+            {
+                // TBD
+            }
+
+            if (isInvulnerable) // If the PC is currently invulnerable...
+            {
+                isInvulnerable = !canMove; // Assign invulnerable to the opposite state of 'canMove' - meaning when the character is capable of moving again, they are no longer invulnerable.
+            }
+
+            if (!canMove) // If the character can't move...
+            {
+                //charAnim.applyRootMotion = false; // Toggle root motion
+            }
+
+            if (!block)
+            {
+                isBlocking = false;
+            }
+
             grounded = IsGrounded();
             charAnim.SetBool("canMove", grounded);
 
@@ -107,6 +170,8 @@ namespace IsThisDarkSouls
             {
                 DetectAction(); // Listen for player inputs
             }
+
+            charAnim.SetBool("blocking", isBlocking);
 
             if (inAction) // If an animation is playing...
             {
@@ -291,21 +356,23 @@ namespace IsThisDarkSouls
             string desiredAnimation = null;
             Action slot = null;
 
-            if (!lightAttack && !heavyAttack && !dodgeRoll)
+            if (!lightAttack && !heavyAttack && !dodgeRoll && !block)
             {
                 return;
             }
 
-            if (listenForCombos)
+            if (listenForCombos && !comboActive)
             {
+                print("Detecting combo input");
                 slot = actionManager.GetActionSlot(this);
+                comboActive = true;
 
                 if (slot == null)
                 {
                     return;
                 }
                 else
-                {
+                {                    
                     desiredAnimation = slot.desiredAnimation;
                 }
 
@@ -340,8 +407,14 @@ namespace IsThisDarkSouls
                     return;
                 }
 
+                if (!listenForCombos)
+                {
+                    return;
+                }
+
                 canMove = false;
                 inAction = true;
+                comboActive = false;
                 charAnim.CrossFade(desiredAnimation, 0.2f); // Apply animation crossfade.
                 return;
             }
@@ -368,12 +441,22 @@ namespace IsThisDarkSouls
                 desiredAnimation = slot.desiredAnimation;
             }
 
+            if (desiredAnimation == "block")
+            {
+                isBlocking = true;
+                canMove = true;
+                actionLockoutDuration = 0.1f;
+                return;
+            }
+
             if (string.IsNullOrEmpty(desiredAnimation)) // If desiredAnimation returns nothing...
             {
                 print("No animation of " + desiredAnimation + " found, is this the correct animation to search for?");
                 return;
             }
 
+            print("Detecting initial input");
+            comboActive = false;
             canMove = false;
             inAction = true;
             charAnim.CrossFade(desiredAnimation, 0.2f); // Apply animation crossfade.

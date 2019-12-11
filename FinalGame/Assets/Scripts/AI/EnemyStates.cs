@@ -63,7 +63,7 @@ namespace IsThisDarkSouls
                 }
             }
 
-            if (isInvulnerable) // If the NPC is current invulnerable...
+            if (isInvulnerable) // If the NPC is currently invulnerable...
             {
                 isInvulnerable = !canMove; // Assign invulnerable to the opposite state of 'canMove' - meaning when the character is capable of moving again, they are no longer invulnerable.
             }

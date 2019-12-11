@@ -147,7 +147,7 @@ namespace IsThisDarkSouls
 
             states.inAction = true;
             states.actionLockoutDuration += 10;
-            print("Ignore inputs");
+            //print("Ignore inputs");
         }
 
         public void ListenForInputs()
@@ -158,7 +158,6 @@ namespace IsThisDarkSouls
             }
 
             states.actionLockoutDuration = 0.3f;
-            print("Listen for inputs");
         }
     }
 }

@@ -72,7 +72,7 @@ namespace IsThisDarkSouls
             }
             if (state.block)
             {
-                return ActionInput.heavyAttack;
+                return ActionInput.block;
             }
             if (state.specialAttack)
             {
@@ -93,5 +93,10 @@ namespace IsThisDarkSouls
     {
         public ActionInput input; // Input that triggers this action.
         public string desiredAnimation; // Case sensitive name of the animation this action maps to.
+    }
+
+    public enum ActionType
+    {
+        attack, block
     }
 }
