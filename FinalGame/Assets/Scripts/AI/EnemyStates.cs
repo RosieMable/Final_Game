@@ -92,11 +92,6 @@ namespace IsThisDarkSouls
                 }
             }
 
-            if (isInvulnerable) // If the NPC is currently invulnerable...
-            {
-                isInvulnerable = !canMove; // Assign invulnerable to the opposite state of 'canMove' - meaning when the character is capable of moving again, they are no longer invulnerable.
-            }
-
             if (!canMove) // If the character can't move...
             {
                 //charAnim.applyRootMotion = false; // Toggle root motion
@@ -147,15 +142,14 @@ namespace IsThisDarkSouls
             {
                 case State.Idle:
                     // Maybe regen health later?
-                    if (health < 100)
-                    {
-                        health += 0.1f;
-                    }
                     break;
                 case State.Attacking:
                     // Attack logic here TBD
-                    transform.LookAt(player.transform.position);
-                    charAnim.Play("attack");
+                    if (!isInvulnerable && !inAction)
+                    {
+                        transform.LookAt(player.transform.position);
+                        charAnim.Play("attack");
+                    }
                     break;
                 case State.Pursuing:
                     rigidBody.velocity = Vector3.zero;

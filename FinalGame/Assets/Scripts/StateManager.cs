@@ -28,7 +28,7 @@ namespace IsThisDarkSouls
 
         public AnimationClip[] lightAttacks;
         public AnimationClip[] heavyAttacks;
-        public int animationClipIndex = -1;
+        public int animationClipIndex = 0;
 
         public EnemyStates lockOnTarget;
 
@@ -124,7 +124,7 @@ namespace IsThisDarkSouls
             }
 
             health -= value;
-            isInvulnerable = true;
+            //isInvulnerable = true;
             canMove = false;
             print("Setting invulnerable to true!");
             charAnim.Play("hurt");
@@ -141,12 +141,6 @@ namespace IsThisDarkSouls
             if (health <= 0)
             {
                 // TBD
-            }
-
-            if (isInvulnerable) // If the PC is currently invulnerable...
-            {
-                isInvulnerable = !canMove; // Assign invulnerable to the opposite state of 'canMove' - meaning when the character is capable of moving again, they are no longer invulnerable.
-                print("Setting invulnerable to " + !canMove);
             }
 
             if (!canMove) // If the character can't move...
@@ -172,7 +166,7 @@ namespace IsThisDarkSouls
             grounded = IsGrounded();
             charAnim.SetBool("grounded", grounded);
 
-            if (grounded)
+            if (grounded && !isInvulnerable)
             {
                 DetectAction(); // Listen for player inputs
             }

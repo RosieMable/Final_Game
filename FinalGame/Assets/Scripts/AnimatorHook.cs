@@ -103,7 +103,6 @@ namespace IsThisDarkSouls
                 }
                 else
                 {
-                    print("OPEN AI DAMAGE COLLIDER");
                     enemyStates.weaponHook.OpenDamageCollider();
                 }
                 return;
@@ -125,7 +124,6 @@ namespace IsThisDarkSouls
                 }
                 else
                 {
-                    print("CLOSE AI DAMAGE COLLIDER");
                     enemyStates.weaponHook.CloseDamageCollider();
                 }
 
@@ -190,6 +188,48 @@ namespace IsThisDarkSouls
                 return;
             }
 
+            states.actionLockoutDuration = 0.3f;
+        }
+
+        public void ToggleInvulnerabilityOn()
+        {
+            if (states == null)
+            {
+                if (enemyStates == null)
+                {
+                    return;
+                }
+                else
+                {
+                    enemyStates.isInvulnerable = true;
+                    print("INVULNERABLE");
+                }
+
+                return;
+            }
+
+            states.isInvulnerable = true;
+        }
+
+        public void ToggleInvulnerabilityOff()
+        {
+            if (states == null)
+            {
+                if (enemyStates == null)
+                {
+                    return;
+                }
+                else
+                {
+                    enemyStates.isInvulnerable = false;
+                    print("NOT INVULNERABLE");
+                    enemyStates.actionLockoutDuration = 0.3f;
+                }
+
+                return;
+            }
+
+            states.isInvulnerable = false;
             states.actionLockoutDuration = 0.3f;
         }
     }
