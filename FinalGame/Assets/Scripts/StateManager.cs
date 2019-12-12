@@ -101,7 +101,6 @@ namespace IsThisDarkSouls
 
         public void TakeDamage(float value, Transform location)
         {
-            print("Damage taken on player");
             if (isInvulnerable)
             {
                 print("Cannot take damage while invulnerable!");
@@ -126,7 +125,6 @@ namespace IsThisDarkSouls
             health -= value;
             //isInvulnerable = true;
             canMove = false;
-            print("Setting invulnerable to true!");
             charAnim.Play("hurt");
             charAnim.applyRootMotion = true;
         }

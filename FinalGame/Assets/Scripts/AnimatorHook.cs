@@ -202,7 +202,6 @@ namespace IsThisDarkSouls
                 else
                 {
                     enemyStates.isInvulnerable = true;
-                    print("INVULNERABLE");
                 }
 
                 return;
@@ -222,7 +221,6 @@ namespace IsThisDarkSouls
                 else
                 {
                     enemyStates.isInvulnerable = false;
-                    print("NOT INVULNERABLE");
                     enemyStates.actionLockoutDuration = 0.3f;
                 }
 
