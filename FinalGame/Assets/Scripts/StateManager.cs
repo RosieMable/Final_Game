@@ -67,7 +67,7 @@ namespace IsThisDarkSouls
             actionManager = GetComponent<ActionManager>();
             actionManager.Initialise();
             weaponHook = GetComponentInChildren<WeaponHook>();
-            weaponHook.CloseDamageCollider();
+            //weaponHook.CloseDamageCollider();
             gameObject.layer = 8; // Set to player layer
             ignoredLayers = ~(1 << 8); // Ignore layers 1 to 8
         }

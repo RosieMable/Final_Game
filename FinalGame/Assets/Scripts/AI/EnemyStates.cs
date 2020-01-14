@@ -147,13 +147,13 @@ namespace IsThisDarkSouls
                     // Attack logic here TBD
                     if (!isInvulnerable && !inAction)
                     {
-                        transform.LookAt(player.transform.position);
+                        transform.LookAt(new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z));
                         charAnim.Play("attack");
                     }
                     break;
                 case State.Pursuing:
                     rigidBody.velocity = Vector3.zero;
-                    transform.LookAt(player.transform.position);
+                    transform.LookAt(new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z));
                     if (agent.enabled)
                     {
                         agent.SetDestination(player.transform.position);

@@ -16,7 +16,7 @@ namespace IsThisDarkSouls
         private bool blockInput;
 
         private StateManager states;
-        CameraManager cameraManager;
+        private CameraManager cameraManager;
         private float delta;
 
         void Start()
