@@ -406,11 +406,6 @@ namespace IsThisDarkSouls
                     charAnim.SetBool("canMove", true);
                     canMove = true;
                     actionLockoutDuration = 0.5f;
-
-                    if (lockOn)
-                    {
-                        transform.LookAt(lockOnTarget.transform.position);
-                    }
                     return;
                 }
 
@@ -429,12 +424,6 @@ namespace IsThisDarkSouls
                 inAction = true;
                 comboActive = false;
                 charAnim.CrossFade(desiredAnimation, 0.2f); // Crossfade from current animation to the desired animation.
-
-                if (lockOn)
-                {
-                    transform.LookAt(lockOnTarget.transform.position);
-                }
-
                 return;
             }
             else
@@ -480,11 +469,6 @@ namespace IsThisDarkSouls
             canMove = false;
             inAction = true;
             charAnim.CrossFade(desiredAnimation, 0.2f); // Apply animation crossfade.
-
-            if (lockOn)
-            {
-                transform.LookAt(lockOnTarget.transform.position);
-            }
         }
     }
 }
