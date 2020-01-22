@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace IsThisDarkSouls
+namespace ZaldensGambit
 {
     public class AnimatorHook : MonoBehaviour
     {
         private Animator charAnim;
         private StateManager states;
-        private EnemyStates enemyStates;
+        private Enemy enemyStates;
         private Rigidbody rigidBody;
 
         /// <summary>
         /// Performs initial setup based on if the character is a player or enemy.
         /// </summary>
-        public void Initialise(StateManager stateManager, EnemyStates enemyStateManager)
+        public void Initialise(StateManager stateManager, Enemy enemyStateManager)
         {
             states = stateManager;
             enemyStates = enemyStateManager;

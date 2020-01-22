@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace IsThisDarkSouls
+namespace ZaldensGambit
 {
     public class StateManager : MonoBehaviour
     {
@@ -30,7 +30,7 @@ namespace IsThisDarkSouls
         public AnimationClip[] heavyAttacks;
         public int animationClipIndex = 0;
 
-        public EnemyStates lockOnTarget;
+        public Enemy lockOnTarget;
 
         public GameObject activeModel;
         [HideInInspector] public Animator charAnim;
@@ -68,8 +68,8 @@ namespace IsThisDarkSouls
             actionManager.Initialise();
             weaponHook = GetComponentInChildren<WeaponHook>();
             //weaponHook.CloseDamageCollider();
-            gameObject.layer = 8; // Set to player layer
-            ignoredLayers = ~(1 << 8); // Ignore layers 1 to 8
+            gameObject.layer = 9; // Set to player layer
+            ignoredLayers = ~(1 << 9); // Ignore layers 1 to 9
         }
 
         /// <summary>

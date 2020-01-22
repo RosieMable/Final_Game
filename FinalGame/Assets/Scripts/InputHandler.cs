@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace IsThisDarkSouls
+namespace ZaldensGambit
 {
     public class InputHandler : MonoBehaviour
     {
@@ -126,7 +126,7 @@ namespace IsThisDarkSouls
 
                 foreach (Collider collider in nearbyColliders)
                 {
-                    if (collider.GetComponent<EnemyStates>())
+                    if (collider.GetComponent<Enemy>())
                     {
                         validTargets.Add(collider.transform);
                     }
@@ -155,7 +155,7 @@ namespace IsThisDarkSouls
 
                 if (targetToReturn != null)
                 {
-                    states.lockOnTarget = targetToReturn.GetComponent<EnemyStates>();
+                    states.lockOnTarget = targetToReturn.GetComponent<Enemy>();
                 }
 
                 if (states.lockOnTarget == null)

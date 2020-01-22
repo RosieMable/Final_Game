@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace IsThisDarkSouls
+namespace ZaldensGambit
 {
     public enum ActionInput
     {

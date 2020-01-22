@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace IsThisDarkSouls
+namespace ZaldensGambit
 {
     public class DamageCollider : MonoBehaviour
     {
         private void OnTriggerEnter(Collider other)
         {
-            EnemyStates enemyStates = other.transform.GetComponentInParent<EnemyStates>(); // Finds the parent of the object hit and searches for an 'EnemyStates' reference.
+            Enemy enemyStates = other.transform.GetComponentInParent<Enemy>(); // Finds the parent of the object hit and searches for an 'EnemyStates' reference.
             StateManager states = other.transform.GetComponentInParent<StateManager>();
 
             if (enemyStates == null && states == null)

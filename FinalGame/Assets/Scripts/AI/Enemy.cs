@@ -3,32 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace IsThisDarkSouls
+namespace ZaldensGambit
 {
-    public class EnemyStates : MonoBehaviour
+    public abstract class Enemy : MonoBehaviour
     {
-        public float health = 100;
-        public float stamina = 100;
-        public bool isInvulnerable;
-        public Animator charAnim;
-        AnimatorHook animHook;
-        public bool canMove;
+        [SerializeField] protected float health = 100;
+        [HideInInspector] public bool isInvulnerable;
+        [HideInInspector] public Animator charAnim;
+        private AnimatorHook animHook;
+        [HideInInspector] public bool canMove;
         [HideInInspector] public float delta;
-        public Rigidbody rigidBody;
-        public NavMeshAgent agent;
-        private float attackRange = 1.5f;
-        private float aggroRange = 10;
-        private float speed = 4;
-        private GameObject player;
-        public bool isTrainingDummy;
-        public WeaponHook weaponHook;
+        [HideInInspector] public Rigidbody rigidBody;
+        [HideInInspector] public NavMeshAgent agent;
+        [SerializeField] protected float attackRange = 1.5f;
+        [SerializeField] protected float aggroRange = 10;
+        [SerializeField] protected float speed = 4;
+        [SerializeField] protected float rotationSpeed = 2;
+        protected GameObject player;
+        protected bool isTrainingDummy;
+        [HideInInspector] public WeaponHook weaponHook;
         private float actionDelay;
-        public bool inAction;
-        public float actionLockoutDuration;
+        [HideInInspector] public bool inAction;
+        [HideInInspector] public float actionLockoutDuration;
+        [SerializeField] private Transform[] patrolPoints;
+        private int currentPatrolPoint;
+        [SerializeField] private LayerMask playerLayer;
 
-        private enum State { Idle, Pursuing, Attacking }
-        private State currentState;   
-        
+        protected enum State { Idle, Pursuing, Attacking }
+        protected State currentState;
+
         public bool isDead;
 
         private void Awake()
@@ -46,14 +49,14 @@ namespace IsThisDarkSouls
             weaponHook = GetComponentInChildren<WeaponHook>();
             weaponHook.CloseDamageCollider();
 
-            if (animHook == false)
-            {
-                //print("Added AnimatorHook.cs to " + gameObject.name);
-                //charAnim.gameObject.AddComponent<AnimatorHook>();
-            }
+            //if (animHook == false)
+            //{
+            //    print("Added AnimatorHook.cs to " + gameObject.name);
+            //    charAnim.gameObject.AddComponent<AnimatorHook>();
+            //}
         }
-
-        private void Start()
+        
+        protected virtual void Start()
         {
             animHook.Initialise(null, this);
         }
@@ -73,7 +76,7 @@ namespace IsThisDarkSouls
             charAnim.applyRootMotion = true;
         }
 
-        public void Update()
+        protected virtual void Update()
         {
             Tick(Time.deltaTime);
             canMove = charAnim.GetBool("canMove");            
@@ -92,16 +95,16 @@ namespace IsThisDarkSouls
                 }
             }
 
-            if (!canMove) // If the character can't move...
-            {
-                //charAnim.applyRootMotion = false; // Toggle root motion
-            }
+            //if (!canMove) // If the character can't move...
+            //{
+            //    charAnim.applyRootMotion = false; // Toggle root motion
+            //}
         }
 
         /// <summary>
         /// What occurs every tick, runs inside Update
         /// </summary>
-        public void Tick(float deltaTime)
+        protected virtual void Tick(float deltaTime)
         {
             delta = deltaTime;
 
@@ -141,25 +144,71 @@ namespace IsThisDarkSouls
             switch (currentState)
             {
                 case State.Idle:
-                    // Maybe regen health later?
+                    // Maybe regen health?
+                    // Patrol behaviour TBD
+                    Patrol();
                     break;
                 case State.Attacking:
-                    // Attack logic here TBD
                     if (!isInvulnerable && !inAction)
                     {
-                        transform.LookAt(new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z));
                         charAnim.Play("attack");
+                        RotateTowardsTarget(player.transform);
+                    }
+                    else
+                    {
+                        RotateTowardsTarget(player.transform);
                     }
                     break;
                 case State.Pursuing:
-                    rigidBody.velocity = Vector3.zero;
-                    transform.LookAt(new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z));
-                    if (agent.enabled)
+                    if (!isInvulnerable && !inAction)
                     {
-                        agent.SetDestination(player.transform.position);
+                        CombatBehaviour();
                     }
                     break;
             }
+        }
+
+        private void Patrol()
+        {
+            if (patrolPoints.Length > 0)
+            {
+                if (!inAction)
+                {
+                    agent.SetDestination(patrolPoints[currentPatrolPoint].position);
+                    RotateTowardsTarget(patrolPoints[currentPatrolPoint]);
+
+                    if (Vector3.Distance(transform.position, patrolPoints[currentPatrolPoint].position) < 2)
+                    {
+                        if (currentPatrolPoint + 1 < patrolPoints.Length)
+                        {
+                            currentPatrolPoint++;
+                        }
+                        else
+                        {
+                            currentPatrolPoint = 0;
+                        }
+                    }
+                }                
+            }
+        }
+
+        private void RotateTowardsTarget(Transform target)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(target.position - transform.position, Vector3.up); // Calculate the rotation desired
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed);
+        }
+
+        protected virtual void CombatBehaviour()
+        {
+            rigidBody.velocity = Vector3.zero;
+            Quaternion targetRotation = Quaternion.LookRotation(player.transform.position - transform.position, Vector3.up); // Calculate the rotation desired
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed);
+
+            if (agent.enabled)
+            {
+                agent.SetDestination(player.transform.position);
+            }
+
         }
 
         private State UpdateState()
@@ -180,5 +229,14 @@ namespace IsThisDarkSouls
 
             return State.Idle;
         }
-    }    
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position + Vector3.up, aggroRange);
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position + Vector3.up, attackRange);
+        }
+    }        
 }
