@@ -7,6 +7,8 @@ namespace ZaldensGambit
 {
     public abstract class Enemy : MonoBehaviour
     {
+        private enum Type { Famine, War, Death, Pestilence } // Famine = Lifeleech on hit, War = More damage, Death = Delayed explosian on death, Pestilence = DoT effect
+        [SerializeField] private Type enemyType;
         [SerializeField] protected float health = 100;
         [HideInInspector] public bool isInvulnerable;
         [HideInInspector] public Animator charAnim;

@@ -8,41 +8,41 @@ namespace ZaldensGambit
     public class StateManager : MonoBehaviour
     {
         #region Variables
-        public float moveAmount;
-        public Vector3 movementDirection;
+        [HideInInspector] public float moveAmount;
+        [HideInInspector] public Vector3 movementDirection;
 
         [SerializeField] private float moveSpeed = 4;
         [SerializeField] private float rotateSpeed = 5;
 
         public float health = 100;
         public float stamina = 100;
-        public bool isInvulnerable;
-        public bool grounded;
-        public bool lightAttack, heavyAttack, dodgeRoll, block, specialAttack;
-        public bool inAction;
-        public bool canMove;
-        public bool lockOn;
-        public bool isBlocking;
-        public bool listenForCombos;
-        [SerializeField] private bool comboActive;
+        [HideInInspector] public bool isInvulnerable;
+        [HideInInspector] public bool grounded;
+        [HideInInspector] public bool lightAttack, heavyAttack, dodgeRoll, block, specialAttack;
+        [HideInInspector] public bool inAction;
+        [HideInInspector] public bool canMove;
+        [HideInInspector] public bool lockOn;
+        [HideInInspector] public bool isBlocking;
+        [HideInInspector] public bool listenForCombos;
+        private bool comboActive;
 
-        public AnimationClip[] lightAttacks;
-        public AnimationClip[] heavyAttacks;
-        public int animationClipIndex = 0;
+        [SerializeField] private AnimationClip[] lightAttacks;
+        [SerializeField] private AnimationClip[] heavyAttacks;
+        private int animationClipIndex = 0;
 
         public Enemy lockOnTarget;
 
-        public GameObject activeModel;
+        [HideInInspector] public GameObject activeModel;
         [HideInInspector] public Animator charAnim;
         [HideInInspector] public Rigidbody rigidBody;
         [HideInInspector] public float delta;
         [HideInInspector] public LayerMask ignoredLayers;
         [HideInInspector] public AnimatorHook animHook;
         [HideInInspector] public ActionManager actionManager;
-        public WeaponHook weaponHook;
+        [HideInInspector] public WeaponHook weaponHook;
 
         private float actionDelay;
-        public float actionLockoutDuration = 1f;
+        [HideInInspector] public float actionLockoutDuration = 1f;
         #endregion
 
         /// <summary>
@@ -350,7 +350,7 @@ namespace ZaldensGambit
         /// </summary>
         public void DetectAction()
         {
-            string desiredAnimation = null;
+            AnimationClip desiredAnimation = null;
             Action slot = null;
 
             if (!lightAttack && !heavyAttack && !dodgeRoll && !block) // If there are no actions detected...
@@ -374,7 +374,7 @@ namespace ZaldensGambit
                 }
 
                 // Light Attack Combo
-                if (slot.desiredAnimation == "lightAttack")
+                if (slot.desiredAnimation.name == "lightAttack")
                 {
                     animationClipIndex++;
 
@@ -383,10 +383,10 @@ namespace ZaldensGambit
                         animationClipIndex = 0; // Reset array position
                     }
 
-                    desiredAnimation = lightAttacks[animationClipIndex].name; // Set animation to call
+                    desiredAnimation = lightAttacks[animationClipIndex]; // Set animation to call
                 }
                 // Heavy Attack Combo
-                else if (slot.desiredAnimation == "heavyAttack")
+                else if (slot.desiredAnimation.name == "heavyAttack")
                 {
                     animationClipIndex++;
 
@@ -395,10 +395,10 @@ namespace ZaldensGambit
                         animationClipIndex = 0; // Reset array position
                     }
 
-                    desiredAnimation = heavyAttacks[animationClipIndex].name; // Set animation to call
+                    desiredAnimation = heavyAttacks[animationClipIndex]; // Set animation to call
                 }
                 // Block mid combo
-                else if (desiredAnimation == "block")
+                else if (desiredAnimation.name == "block")
                 {
                     animationClipIndex = 0; // Reset array position
                     isBlocking = true;
@@ -409,7 +409,7 @@ namespace ZaldensGambit
                     return;
                 }
 
-                if (string.IsNullOrEmpty(desiredAnimation)) // If desiredAnimation returns nothing...
+                if (desiredAnimation == null) // If desiredAnimation returns nothing...
                 {
                     print("No animation of " + desiredAnimation + " found, is this the correct animation to search for?");
                     return;
@@ -423,7 +423,7 @@ namespace ZaldensGambit
                 canMove = false;
                 inAction = true;
                 comboActive = false;
-                charAnim.CrossFade(desiredAnimation, 0.2f); // Crossfade from current animation to the desired animation.
+                charAnim.CrossFade(desiredAnimation.name, 0.2f); // Crossfade from current animation to the desired animation.
                 return;
             }
             else
@@ -449,7 +449,7 @@ namespace ZaldensGambit
                 desiredAnimation = slot.desiredAnimation;
             }
 
-            if (desiredAnimation == "block")
+            if (desiredAnimation.name == "block")
             {
                 isBlocking = true;
                 charAnim.SetBool("blocking", isBlocking);
@@ -459,7 +459,7 @@ namespace ZaldensGambit
                 return;
             }
 
-            if (string.IsNullOrEmpty(desiredAnimation)) // If desiredAnimation returns nothing...
+            if (string.IsNullOrEmpty(desiredAnimation.name)) // If desiredAnimation returns nothing...
             {
                 print("No animation of " + desiredAnimation + " found, is this the correct animation to search for?");
                 return;
@@ -468,7 +468,7 @@ namespace ZaldensGambit
             comboActive = false;
             canMove = false;
             inAction = true;
-            charAnim.CrossFade(desiredAnimation, 0.2f); // Apply animation crossfade.
+            charAnim.CrossFade(desiredAnimation.name, 0.2f); // Apply animation crossfade.
         }
     }
 }

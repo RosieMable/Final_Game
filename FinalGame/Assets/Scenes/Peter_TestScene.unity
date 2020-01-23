@@ -391,14 +391,12 @@ MonoBehaviour:
   lockOn: 0
   isBlocking: 0
   listenForCombos: 0
-  comboActive: 0
   lightAttacks:
   - {fileID: 7400000, guid: e9a74de8409c6c9428c3127ee1a3cafc, type: 2}
   - {fileID: 7400000, guid: 6986ba3bd718bbb41bfaf53e8bb9aade, type: 2}
   heavyAttacks:
   - {fileID: 7400000, guid: 6986ba3bd718bbb41bfaf53e8bb9aade, type: 2}
   - {fileID: 7400000, guid: e9a74de8409c6c9428c3127ee1a3cafc, type: 2}
-  animationClipIndex: 0
   lockOnTarget: {fileID: 0}
   activeModel: {fileID: 0}
   charAnim: {fileID: 0}
@@ -470,15 +468,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actionSlots:
   - input: 0
-    desiredAnimation: lightAttack
+    desiredAnimation: {fileID: 7400000, guid: e9a74de8409c6c9428c3127ee1a3cafc, type: 2}
   - input: 1
-    desiredAnimation: heavyAttack
+    desiredAnimation: {fileID: 7400000, guid: 6986ba3bd718bbb41bfaf53e8bb9aade, type: 2}
   - input: 2
-    desiredAnimation: block
+    desiredAnimation: {fileID: -6064320725909692092, guid: 830b8215bc09bd24bbd5a93210d1938a,
+      type: 3}
   - input: 3
-    desiredAnimation: 
+    desiredAnimation: {fileID: 0}
   - input: 4
-    desiredAnimation: dodgeRoll
+    desiredAnimation: {fileID: 7400000, guid: 3e980ca95a290b34bae8adf22d3a7d75, type: 2}
 --- !u!1001 &475480056
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2759,6 +2758,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b734fa7e17e513d4e81cdba87535ac70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyType: 0
   health: 100
   isInvulnerable: 0
   charAnim: {fileID: 0}
@@ -2767,7 +2767,7 @@ MonoBehaviour:
   rigidBody: {fileID: 0}
   agent: {fileID: 0}
   attackRange: 1
-  aggroRange: 2
+  aggroRange: 10
   speed: 4
   rotationSpeed: 2
   weaponHook: {fileID: 0}
@@ -2780,7 +2780,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   isDead: 0
-  enemyType: 0
 --- !u!4 &797802741
 Transform:
   m_ObjectHideFlags: 0

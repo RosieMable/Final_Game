@@ -92,11 +92,6 @@ namespace ZaldensGambit
     public class Action
     {
         public ActionInput input; // Input that triggers this action.
-        public string desiredAnimation; // Case sensitive name of the animation this action maps to.
-    }
-
-    public enum ActionType
-    {
-        attack, block
+        public AnimationClip desiredAnimation; //  Animation that the actioninput maps to.
     }
 }
