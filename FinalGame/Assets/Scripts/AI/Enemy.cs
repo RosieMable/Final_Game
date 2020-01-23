@@ -68,9 +68,9 @@ namespace ZaldensGambit
         /// </summary>
         public void TakeDamage(float value)
         {
-            if (isInvulnerable)
+            if (isInvulnerable) // If flagged as invulnerable due to taking damage recently...
             {
-                return;
+                return; // Return out of method, take no damage
             }
 
             health -= value;
@@ -110,15 +110,15 @@ namespace ZaldensGambit
         {
             delta = deltaTime;
 
-            charAnim.SetFloat("speed", Mathf.Abs(agent.velocity.x) + Mathf.Abs(agent.velocity.z));
+            charAnim.SetFloat("speed", Mathf.Abs(agent.velocity.x) + Mathf.Abs(agent.velocity.z)); // Update animiator with current speed and velocity of the character to understand when to change animation movement states
 
             if (!isDead)
             {
-                currentState = UpdateState();
+                currentState = UpdateState(); // Determine state behaviour
 
-                if (!isTrainingDummy)
+                if (!isTrainingDummy) // If not flagged as a training dummy
                 {
-                    PerformStateBehaviour();
+                    PerformStateBehaviour(); // Perform current state behaviour
                 }
 
                 if (inAction) // If an animation is playing...
@@ -131,7 +131,7 @@ namespace ZaldensGambit
                     {
                         agent.enabled = true;
                         inAction = false; // Flag animation no longer playing
-                        actionDelay = 0; // Reset
+                        actionDelay = 0; // Reset delay
                     }
                     else
                     {
@@ -141,13 +141,12 @@ namespace ZaldensGambit
             }
         }
 
-        private void PerformStateBehaviour()
+        protected virtual void PerformStateBehaviour()
         {
             switch (currentState)
             {
                 case State.Idle:
-                    // Maybe regen health?
-                    // Patrol behaviour TBD
+                    // Maybe regen health after a delay?
                     Patrol();
                     break;
                 case State.Attacking:
@@ -170,50 +169,66 @@ namespace ZaldensGambit
             }
         }
 
-        private void Patrol()
+        protected void MoveToTarget()
         {
-            if (patrolPoints.Length > 0)
+            if (agent.enabled)
             {
-                if (!inAction)
-                {
-                    agent.SetDestination(patrolPoints[currentPatrolPoint].position);
-                    RotateTowardsTarget(patrolPoints[currentPatrolPoint]);
+                agent.SetDestination(player.transform.position);
+            }
+        }
 
-                    if (Vector3.Distance(transform.position, patrolPoints[currentPatrolPoint].position) < 2)
+        protected void Patrol()
+        {
+            if (patrolPoints.Length > 0) // If there are any patrol points allocated...
+            {
+                if (!inAction) // If not performing an action...
+                {
+                    agent.SetDestination(patrolPoints[currentPatrolPoint].position); // Move to patrol point
+                    RotateTowardsTarget(patrolPoints[currentPatrolPoint]); // Rotate to face patrol point
+
+                    if (Vector3.Distance(transform.position, patrolPoints[currentPatrolPoint].position) < 2) // If close to destination...
                     {
-                        if (currentPatrolPoint + 1 < patrolPoints.Length)
+                        if (currentPatrolPoint + 1 < patrolPoints.Length) // If we are not at the end of the patrol path...
                         {
-                            currentPatrolPoint++;
+                            currentPatrolPoint++; // Look to next point
                         }
-                        else
+                        else // If we are at the end of the patrol path...
                         {
-                            currentPatrolPoint = 0;
+                            currentPatrolPoint = 0; // Reset
                         }
                     }
                 }                
             }
         }
 
-        private void RotateTowardsTarget(Transform target)
+        /// <summary>
+        /// Rotates the character towards another transform smoothly, based on character rotation speed
+        /// </summary>
+        protected void RotateTowardsTarget(Transform target)
         {
             Quaternion targetRotation = Quaternion.LookRotation(target.position - transform.position, Vector3.up); // Calculate the rotation desired
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed); // Apply rotation
         }
 
+        /// <summary>
+        /// The logic behind the characters combat decisions and behaviour, intended to be overridden by derived classes
+        /// </summary>
         protected virtual void CombatBehaviour()
         {
-            rigidBody.velocity = Vector3.zero;
-            Quaternion targetRotation = Quaternion.LookRotation(player.transform.position - transform.position, Vector3.up); // Calculate the rotation desired
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed);
+            rigidBody.velocity = Vector3.zero; // Reset velocity to ensure no gliding behaviour as navmesh agents do not follow ordinary rigidbody physics
+            RotateTowardsTarget(player.transform);
 
-            if (agent.enabled)
+            if (agent.enabled) // If the navmesh agent is active (Not performing an action...)
             {
-                agent.SetDestination(player.transform.position);
+                agent.SetDestination(player.transform.position); // Move towards target
             }
 
         }
 
-        private State UpdateState()
+        /// <summary>
+        /// Determines the state of the character based attack & aggro ranges
+        /// </summary>
+        protected virtual State UpdateState()
         {
             bool isInAttackRange = Vector3.Distance(transform.position, player.transform.position) < attackRange;
 
@@ -234,9 +249,11 @@ namespace ZaldensGambit
 
         private void OnDrawGizmosSelected()
         {
+            // Draw a yellow wire sphere into the scene editor viewport to match aggro range
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position + Vector3.up, aggroRange);
 
+            // Draw a red wire sphere into the scene editor viewport to match attack range
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position + Vector3.up, attackRange);
         }

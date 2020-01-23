@@ -391,10 +391,10 @@ MonoBehaviour:
   lockOn: 0
   isBlocking: 0
   listenForCombos: 0
-  lightAttacks:
+  lightAttacksChain:
   - {fileID: 7400000, guid: e9a74de8409c6c9428c3127ee1a3cafc, type: 2}
   - {fileID: 7400000, guid: 6986ba3bd718bbb41bfaf53e8bb9aade, type: 2}
-  heavyAttacks:
+  heavyAttacksChain:
   - {fileID: 7400000, guid: 6986ba3bd718bbb41bfaf53e8bb9aade, type: 2}
   - {fileID: 7400000, guid: e9a74de8409c6c9428c3127ee1a3cafc, type: 2}
   lockOnTarget: {fileID: 0}

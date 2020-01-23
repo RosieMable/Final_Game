@@ -8,7 +8,15 @@ namespace ZaldensGambit
     {
         private enum CombatPattern { Charge, HitAndRun }
         private CombatPattern combatPattern;
-        private Coroutine hitAndRunCoroutine;
+        [SerializeField] private bool attackMade;
+        [SerializeField] private bool movingToRetreatPosition;
+        public Vector3 retreatPosition;
+
+        // Hit and run Notes
+        // On detection, run up to hit
+        // After hit, run away
+        // After reaching run away location, repeat
+        // No timers, only bools to check when hit and when location reached
 
         protected override void Start()
         {
@@ -17,49 +25,94 @@ namespace ZaldensGambit
             Debug.Log(combatPattern);
         }
 
+        protected override void Update()
+        {
+            base.Update();
+
+            if (movingToRetreatPosition)
+            {
+                if (Vector3.Distance(transform.position, retreatPosition) < 2)
+                {
+                    movingToRetreatPosition = false;
+                    attackMade = false;
+                    print("Attack Not Made!");
+                    print("Position not found!");
+                }
+            }
+        }
+
         protected override void CombatBehaviour()
         {
             Quaternion targetRotation = Quaternion.LookRotation(player.transform.position - transform.position, Vector3.up); // Calculate the rotation desired
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed);
 
-
-
             switch (combatPattern)
             {
                 case CombatPattern.Charge:
-                    if (agent.enabled)
-                    {
-                        agent.SetDestination(player.transform.position);
-                    }
+                    MoveToTarget();
                     break;
-
                 case CombatPattern.HitAndRun:
-                    if (hitAndRunCoroutine == null)
+                    if (!attackMade)
                     {
-                        hitAndRunCoroutine = StartCoroutine(HitAndRun(3));
+                        MoveToTarget();
                     }
-                    break;
-
-                default:
-                    base.CombatBehaviour();
+                    else if(!movingToRetreatPosition)
+                    {
+                        retreatPosition = (Random.insideUnitSphere + transform.position);
+                        retreatPosition.x += Random.Range(-5, 6);
+                        retreatPosition.y = 0;
+                        retreatPosition.z += Random.Range(-5, 6);
+                        movingToRetreatPosition = true;
+                        agent.SetDestination(retreatPosition);
+                        print("Position found!");
+                    }
                     break;
             }
         }
 
-        private IEnumerator HitAndRun(float delay)
+        protected override void PerformStateBehaviour()
         {
-            if (agent.enabled)
+            switch (currentState)
             {
-                agent.SetDestination(player.transform.position);
+                case State.Idle:
+                    // Maybe regen health after a delay?
+                    Patrol();
+                    movingToRetreatPosition = false;
+                    attackMade = false;
+                    break;
+                case State.Attacking:
+                    if (!isInvulnerable && !inAction)
+                    {
+                        charAnim.Play("attack");
+                        RotateTowardsTarget(player.transform);
+                        attackMade = true;
+                        movingToRetreatPosition = false;
+                        print("Attack Made!");
+                    }
+                    else
+                    {
+                        RotateTowardsTarget(player.transform);
+                    }
+                    break;
+                case State.Pursuing:
+                    if (!isInvulnerable && !inAction)
+                    {
+                        CombatBehaviour();
+                    }
+                    break;
             }
-            yield return new WaitForSeconds(delay);
-            if (agent.enabled)
-            {
-                agent.SetDestination(Random.insideUnitSphere + transform.position * 5);
-            }
-            yield return new WaitForSeconds(delay);
-            hitAndRunCoroutine = null;
+        }
 
+        protected override State UpdateState()
+        {
+            if (combatPattern == CombatPattern.HitAndRun)
+            {
+                if (attackMade)
+                {
+                    return State.Pursuing;
+                }
+            }
+            return base.UpdateState();
         }
     }
 }

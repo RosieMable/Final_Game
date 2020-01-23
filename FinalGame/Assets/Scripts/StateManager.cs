@@ -26,8 +26,8 @@ namespace ZaldensGambit
         [HideInInspector] public bool listenForCombos;
         private bool comboActive;
 
-        [SerializeField] private AnimationClip[] lightAttacks;
-        [SerializeField] private AnimationClip[] heavyAttacks;
+        [SerializeField] private AnimationClip[] lightAttacksChain;
+        [SerializeField] private AnimationClip[] heavyAttacksChain;
         private int animationClipIndex = 0;
 
         public Enemy lockOnTarget;
@@ -374,28 +374,28 @@ namespace ZaldensGambit
                 }
 
                 // Light Attack Combo
-                if (slot.desiredAnimation.name == "lightAttack")
+                if (slot.desiredAnimation == lightAttacksChain[0])
                 {
                     animationClipIndex++;
 
-                    if (animationClipIndex >= lightAttacks.Length) // Array bounds check
+                    if (animationClipIndex >= lightAttacksChain.Length) // Array bounds check
                     {
                         animationClipIndex = 0; // Reset array position
                     }
 
-                    desiredAnimation = lightAttacks[animationClipIndex]; // Set animation to call
+                    desiredAnimation = lightAttacksChain[animationClipIndex]; // Set animation to call
                 }
                 // Heavy Attack Combo
-                else if (slot.desiredAnimation.name == "heavyAttack")
+                else if (slot.desiredAnimation == heavyAttacksChain[0])
                 {
                     animationClipIndex++;
 
-                    if (animationClipIndex >= heavyAttacks.Length) // Array bounds check
+                    if (animationClipIndex >= heavyAttacksChain.Length) // Array bounds check
                     {
                         animationClipIndex = 0; // Reset array position
                     }
 
-                    desiredAnimation = heavyAttacks[animationClipIndex]; // Set animation to call
+                    desiredAnimation = heavyAttacksChain[animationClipIndex]; // Set animation to call
                 }
                 // Block mid combo
                 else if (desiredAnimation.name == "block")
