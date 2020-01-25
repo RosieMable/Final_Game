@@ -80,7 +80,6 @@ namespace ZaldensGambit
             }
             if (state.dodgeRoll)
             {
-                state.HandleDodgeRoll();
                 return ActionInput.dodgeRoll;
             }
 

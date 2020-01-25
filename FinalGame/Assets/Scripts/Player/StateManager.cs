@@ -14,6 +14,10 @@ namespace ZaldensGambit
         [SerializeField] private float moveSpeed = 4;
         [SerializeField] private float rotateSpeed = 5;
 
+        [SerializeField] private float maxStepHeight = 0.4f;        // The maximum a player can step upwards in units when they hit a wall that's potentially a step
+        [SerializeField] private float stepSearchOvershoot = 0.01f; // How much to overshoot into the direction a potential step in units when testing. High values prevent player from walking up tiny steps but may cause problems.
+        private List<ContactPoint> contactPoints = new List<ContactPoint>();
+
         public float health = 100;
         public float stamina = 100;
         [HideInInspector] public bool isInvulnerable;
@@ -67,7 +71,7 @@ namespace ZaldensGambit
             actionManager = GetComponent<ActionManager>();
             actionManager.Initialise();
             weaponHook = GetComponentInChildren<WeaponHook>();
-            //weaponHook.CloseDamageCollider();
+            weaponHook.CloseDamageCollider();
             gameObject.layer = 9; // Set to player layer
             ignoredLayers = ~(1 << 9); // Ignore layers 1 to 9
         }
@@ -103,7 +107,7 @@ namespace ZaldensGambit
         {
             if (isInvulnerable)
             {
-                print("Cannot take damage while invulnerable!");
+                print("Cannot take damage whilst invulnerable!");
                 return;
             }
 
@@ -197,6 +201,24 @@ namespace ZaldensGambit
         {
             delta = fixedDeltaTime;
 
+            // Do stair step
+            ContactPoint groundCP;
+            bool grounded = FindGround(out groundCP, contactPoints);
+            Vector3 stepUpOffset = Vector3.zero;
+            Vector3 currentVelocity = rigidBody.velocity;
+            bool stepUp = false;
+            if (grounded)
+                stepUp = FindStep(out stepUpOffset, contactPoints, groundCP, out currentVelocity);
+
+            if (stepUp)
+            {
+                //Take the RigidBody and apply the stepUpOffset to its position
+                transform.position += stepUpOffset;
+                //When it hit the stair, it stopped our player, so reapply their last velocity
+                rigidBody.velocity = currentVelocity; //You'll need to store this from the last physics frame...
+            }
+            contactPoints.Clear();
+
             //if (grounded)
             //{
             //    DetectAction(); // Listen for player inputs
@@ -233,18 +255,21 @@ namespace ZaldensGambit
             }
             else
             {
-                rigidBody.drag = 4;
+                rigidBody.drag = 4;                
             }
 
             if (grounded)
             {
                 rigidBody.velocity = movementDirection * (moveSpeed * moveAmount); // Apply force in the direction the player is heading
+                //Debug.Log("Before " + rigidBody.velocity);
+                rigidBody.velocity = new Vector3(rigidBody.velocity.x, rigidBody.velocity.y * 200, rigidBody.velocity.z);
+                //Debug.Log("After " + rigidBody.velocity);
             }
 
             Vector3 targetDirection = movementDirection;
             targetDirection.y = 0;
 
-            if (targetDirection == Vector3.zero) // If there is no recorded target direction (No input)...
+            if (targetDirection == Vector3.zero && !lockOn) // If there is no recorded target direction (No input)...
             {
                 targetDirection = transform.forward; // Target direction is equivalent to the current forward vector of the character
             }
@@ -307,7 +332,7 @@ namespace ZaldensGambit
 
             Vector3 origin = transform.position + (Vector3.up * 0.5f);
             Vector3 direction = Vector3.down;
-            float distance = (0.5f + 0.3f);
+            float distance = 0.8f;
 
             RaycastHit hit;
 
@@ -343,6 +368,15 @@ namespace ZaldensGambit
             canMove = false;
             inAction = true;
             charAnim.CrossFade("dodgeRoll", 0.2f); // Apply animation crossfade
+        }
+
+        /// <summary>
+        /// Rotates the character towards another transform smoothly, based on character rotation speed
+        /// </summary>
+        protected void RotateTowardsTarget(Transform target)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(target.position - transform.position, Vector3.up); // Calculate the rotation desired
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotateSpeed); // Apply rotation
         }
 
         /// <summary>
@@ -408,6 +442,11 @@ namespace ZaldensGambit
                     actionLockoutDuration = 0.5f;
                     return;
                 }
+                else if (desiredAnimation.name == "DodgeRoll")
+                {
+                    HandleDodgeRoll();
+                    return;
+                }
 
                 if (desiredAnimation == null) // If desiredAnimation returns nothing...
                 {
@@ -419,16 +458,16 @@ namespace ZaldensGambit
                 {
                     //return;
                 }
-
+                
                 canMove = false;
                 inAction = true;
                 comboActive = false;
+                if (lockOn)
+                {
+                    RotateTowardsTarget(lockOnTarget.transform);
+                }
                 charAnim.CrossFade(desiredAnimation.name, 0.2f); // Crossfade from current animation to the desired animation.
                 return;
-            }
-            else
-            {
-                //animationClipIndex = 0; // Reset array position
             }
             
             // -----------
@@ -458,6 +497,11 @@ namespace ZaldensGambit
                 actionLockoutDuration = 0.5f;
                 return;
             }
+            else if (desiredAnimation.name == "DodgeRoll")
+            {
+                HandleDodgeRoll();
+                return;
+            }
 
             if (string.IsNullOrEmpty(desiredAnimation.name)) // If desiredAnimation returns nothing...
             {
@@ -468,7 +512,112 @@ namespace ZaldensGambit
             comboActive = false;
             canMove = false;
             inAction = true;
+            if (lockOn)
+            {
+                RotateTowardsTarget(lockOnTarget.transform);
+            }
             charAnim.CrossFade(desiredAnimation.name, 0.2f); // Apply animation crossfade.
+        }
+
+        private bool FindGround(out ContactPoint groundCP, List<ContactPoint> allCPs)
+        {
+            groundCP = default(ContactPoint);
+            bool found = false;
+            foreach (ContactPoint cp in allCPs)
+            {
+                //Pointing with some up direction
+                if (cp.normal.y > 0.0001f && (found == false || cp.normal.y > groundCP.normal.y))
+                {
+                    groundCP = cp;
+                    found = true;
+                }
+            }
+            print("Grounded");
+            return found;
+        }
+
+        private bool FindStep(out Vector3 stepUpOffset, List<ContactPoint> allCPs, ContactPoint groundCP, out Vector3 currentVelocity)
+        {
+            stepUpOffset = default(Vector3);
+            currentVelocity = rigidBody.velocity;
+
+            //No chance to step if the player is not moving
+            Vector2 velocityXZ = new Vector2(currentVelocity.x, currentVelocity.z);
+            if (velocityXZ.sqrMagnitude < 0.0001f)
+            {
+                print("Player not moving");
+                return false;
+            }
+
+            foreach (ContactPoint cp in allCPs)
+            {
+                bool test = ResolveStepUp(out stepUpOffset, cp, groundCP);
+                if (test)
+                    print("Found step");
+                return test;
+            }
+            print("Step not found");
+            return false;
+        }
+
+        private bool ResolveStepUp(out Vector3 stepUpOffset, ContactPoint stepTestCP, ContactPoint groundCP)
+        {
+            stepUpOffset = default(Vector3);
+            Collider stepCol = stepTestCP.otherCollider; //You'll need the collider of the potential step for this
+                                                         //Determine if stepTestCP is a stair...
+            //( 1 ) Check if the contact point normal matches that of a step (y close to 0)
+            if (Mathf.Abs(stepTestCP.normal.y) <= 0.01f)
+            {
+                print("Failed 1");
+                return false;
+            }
+
+            //( 2 ) Make sure the contact point is low enough to be a step
+            if (!(stepTestCP.point.y - groundCP.point.y < maxStepHeight))
+            {
+                print("Failed 2");
+                return false;
+            }
+
+            //( 3 ) Check to see if there's actually a place to step in front of us
+            RaycastHit hitInfo;
+            float stepHeight = groundCP.point.y + maxStepHeight + 0.001f;
+            Vector3 stepTestInvDir = new Vector3(-stepTestCP.normal.x, 0, -stepTestCP.normal.z).normalized;
+            Vector3 origin = new Vector3(stepTestCP.point.x, stepHeight, stepTestCP.point.z) + (stepTestInvDir * stepSearchOvershoot) + transform.forward / 2;
+            Vector3 direction = Vector3.down;
+            Debug.DrawRay(origin, direction * maxStepHeight, Color.red, 5);
+
+            if (!stepCol.Raycast(new Ray(origin, direction), out hitInfo, maxStepHeight))
+            {
+                if (hitInfo.collider == null)
+                {
+                    Debug.Log("null");
+                }
+                print("Failed 3");
+                return false;
+            }
+            else
+            {
+                Debug.Log(hitInfo.collider.gameObject.name);
+            }
+
+            //We have enough info to calculate the points
+            Vector3 stepUpPoint = new Vector3(stepTestCP.point.x, hitInfo.point.y + 0.0001f, stepTestCP.point.z) + (stepTestInvDir * stepSearchOvershoot);
+            Vector3 stepUpPointOffset = stepUpPoint - new Vector3(stepTestCP.point.x, groundCP.point.y, stepTestCP.point.z);
+
+            print("Stepping up");
+            stepUpOffset = stepUpPointOffset;
+            return true; //We're going to step up!
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            contactPoints.AddRange(collision.contacts);
+        }
+
+        private void OnCollisionStay(Collision collision)
+        {
+            contactPoints.AddRange(collision.contacts);
         }
     }
 }

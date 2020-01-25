@@ -16,16 +16,18 @@ namespace ZaldensGambit
                 return;
             }
 
-            if (enemyStates != null)
+            if (transform.root.GetComponent<StateManager>())
             {
-                enemyStates.TakeDamage(10); // Needs to be changed to a variable instead of hard coded value
+                if (enemyStates != null)
+                {
+                    enemyStates.TakeDamage(10); // Needs to be changed to a variable instead of hard coded value
+                }
             }
 
             if (states != null)
             {
                 states.TakeDamage(10, transform.root);
             }
-
         }
     }
 }

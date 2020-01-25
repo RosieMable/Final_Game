@@ -7,22 +7,16 @@ namespace ZaldensGambit
     public class Grunt : Enemy
     {
         private enum CombatPattern { Charge, HitAndRun }
-        private CombatPattern combatPattern;
-        [SerializeField] private bool attackMade;
-        [SerializeField] private bool movingToRetreatPosition;
-        public Vector3 retreatPosition;
-
-        // Hit and run Notes
-        // On detection, run up to hit
-        // After hit, run away
-        // After reaching run away location, repeat
-        // No timers, only bools to check when hit and when location reached
+        [SerializeField] private CombatPattern combatPattern;
+        private bool attackMade;
+        private bool movingToRetreatPosition;
+        private Vector3 retreatPosition;
 
         protected override void Start()
         {
             base.Start();
-            combatPattern = (CombatPattern)Random.Range(0, 2);
-            Debug.Log(combatPattern);
+            //combatPattern = (CombatPattern)Random.Range(0, 2);
+            //Debug.Log(combatPattern);
         }
 
         protected override void Update()
@@ -35,8 +29,6 @@ namespace ZaldensGambit
                 {
                     movingToRetreatPosition = false;
                     attackMade = false;
-                    print("Attack Not Made!");
-                    print("Position not found!");
                 }
             }
         }
@@ -58,13 +50,13 @@ namespace ZaldensGambit
                     }
                     else if(!movingToRetreatPosition)
                     {
-                        retreatPosition = (Random.insideUnitSphere + transform.position);
+                        retreatPosition = Random.insideUnitSphere + transform.position;
                         retreatPosition.x += Random.Range(-5, 6);
                         retreatPosition.y = 0;
                         retreatPosition.z += Random.Range(-5, 6);
                         movingToRetreatPosition = true;
+                        RotateTowardsTarget(retreatPosition);
                         agent.SetDestination(retreatPosition);
-                        print("Position found!");
                     }
                     break;
             }
@@ -87,7 +79,6 @@ namespace ZaldensGambit
                         RotateTowardsTarget(player.transform);
                         attackMade = true;
                         movingToRetreatPosition = false;
-                        print("Attack Made!");
                     }
                     else
                     {
@@ -97,7 +88,10 @@ namespace ZaldensGambit
                 case State.Pursuing:
                     if (!isInvulnerable && !inAction)
                     {
-                        CombatBehaviour();
+                        if (!movingToRetreatPosition)
+                        {
+                            CombatBehaviour();
+                        }
                     }
                     break;
             }

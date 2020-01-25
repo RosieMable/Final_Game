@@ -75,6 +75,11 @@ namespace ZaldensGambit
             Vector3 v = vertical * cameraManager.transform.forward;
             Vector3 h = horizontal * cameraManager.transform.right;
             states.movementDirection = (v + h).normalized; // Return normalized vector
+
+            //Debug.Log("V: " + vertical);
+            //Debug.Log("H: " + horizontal);
+            //Debug.Log("M: " + states.movementDirection);
+
             float desiredMovement = Mathf.Abs(horizontal) + Mathf.Abs(vertical); // Add both values together
 
             if (!states.inAction) // If the StateManager isn't currently performing an animation...

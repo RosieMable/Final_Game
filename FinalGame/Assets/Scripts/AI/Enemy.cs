@@ -22,7 +22,7 @@ namespace ZaldensGambit
         [SerializeField] protected float speed = 4;
         [SerializeField] protected float rotationSpeed = 2;
         protected GameObject player;
-        protected bool isTrainingDummy;
+        [SerializeField] protected bool isTrainingDummy;
         [HideInInspector] public WeaponHook weaponHook;
         private float actionDelay;
         [HideInInspector] public bool inAction;
@@ -60,7 +60,7 @@ namespace ZaldensGambit
         
         protected virtual void Start()
         {
-            animHook.Initialise(null, this);
+           // animHook.Initialise(null, this);
         }
 
         /// <summary>
@@ -210,6 +210,12 @@ namespace ZaldensGambit
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed); // Apply rotation
         }
 
+        protected void RotateTowardsTarget(Vector3 location)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(location - transform.position, Vector3.up); // Calculate the rotation desired
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed); // Apply rotation
+        }
+
         /// <summary>
         /// The logic behind the characters combat decisions and behaviour, intended to be overridden by derived classes
         /// </summary>
@@ -217,12 +223,7 @@ namespace ZaldensGambit
         {
             rigidBody.velocity = Vector3.zero; // Reset velocity to ensure no gliding behaviour as navmesh agents do not follow ordinary rigidbody physics
             RotateTowardsTarget(player.transform);
-
-            if (agent.enabled) // If the navmesh agent is active (Not performing an action...)
-            {
-                agent.SetDestination(player.transform.position); // Move towards target
-            }
-
+            MoveToTarget();
         }
 
         /// <summary>
