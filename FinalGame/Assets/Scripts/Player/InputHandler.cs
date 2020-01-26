@@ -76,10 +76,6 @@ namespace ZaldensGambit
             Vector3 h = horizontal * cameraManager.transform.right;
             states.movementDirection = (v + h).normalized; // Return normalized vector
 
-            //Debug.Log("V: " + vertical);
-            //Debug.Log("H: " + horizontal);
-            //Debug.Log("M: " + states.movementDirection);
-
             float desiredMovement = Mathf.Abs(horizontal) + Mathf.Abs(vertical); // Add both values together
 
             if (!states.inAction) // If the StateManager isn't currently performing an animation...
@@ -110,6 +106,8 @@ namespace ZaldensGambit
                 if (states.lockOn) // If we are already locked onto something...
                 {
                     // Reset
+                    states.lockOnTarget.HideLockOnHealth();
+                    states.lockOnTarget.lockedOnto = false;
                     states.lockOnTarget = null;
                     cameraManager.lockOnTarget = null;
                     states.lockOn = false;
@@ -161,6 +159,8 @@ namespace ZaldensGambit
                 if (targetToReturn != null)
                 {
                     states.lockOnTarget = targetToReturn.GetComponent<Enemy>();
+                    states.lockOnTarget.ShowLockOnHealth();
+                    states.lockOnTarget.lockedOnto = true;
                 }
 
                 if (states.lockOnTarget == null)

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
+using TMPro;
 
 namespace ZaldensGambit
 {
@@ -17,6 +19,12 @@ namespace ZaldensGambit
         [HideInInspector] public float delta;
         [HideInInspector] public Rigidbody rigidBody;
         [HideInInspector] public NavMeshAgent agent;
+        private Slider healthSlider;
+        private Coroutine healthCoroutine;
+        public bool lockedOnto;
+        private TextMeshProUGUI damageText;
+        private float damageTextValue;
+        private Coroutine damageTextCoroutine;
         [SerializeField] protected float attackRange = 1.5f;
         [SerializeField] protected float aggroRange = 10;
         [SerializeField] protected float speed = 4;
@@ -30,6 +38,7 @@ namespace ZaldensGambit
         [SerializeField] private Transform[] patrolPoints;
         private int currentPatrolPoint;
         [SerializeField] private LayerMask playerLayer;
+        private CameraManager cameraManager;
 
         protected enum State { Idle, Pursuing, Attacking }
         protected State currentState;
@@ -50,6 +59,12 @@ namespace ZaldensGambit
             agent.stoppingDistance = attackRange;
             weaponHook = GetComponentInChildren<WeaponHook>();
             weaponHook.CloseDamageCollider();
+            healthSlider = GetComponentInChildren<Slider>();
+            healthSlider.value = health;
+            healthSlider.gameObject.SetActive(false);
+            damageText = GetComponentInChildren<TextMeshProUGUI>();
+            damageText.gameObject.SetActive(false);
+            cameraManager = CameraManager.instance;
 
             //if (animHook == false)
             //{
@@ -66,14 +81,48 @@ namespace ZaldensGambit
         /// <summary>
         /// Deals damage to the NPCs health and plays hurt animations + applies root motion
         /// </summary>
-        public void TakeDamage(float value)
+        public void TakeDamage(float damageValue)
         {
             if (isInvulnerable) // If flagged as invulnerable due to taking damage recently...
             {
                 return; // Return out of method, take no damage
             }
 
-            health -= value;
+            float previousHealth = health;
+            health -= damageValue;
+            healthSlider.value = health;
+
+            if (damageText.IsActive()) // If already showing damage text...
+            {
+                damageTextValue += damageValue; // Add onto existing damage text displayed                
+            }
+            else // If not showing damage text...
+            {
+                damageTextValue = damageValue; // Show initial damage
+            }
+
+            damageText.text = damageTextValue.ToString();
+
+            if (healthCoroutine != null)
+            {
+                StopCoroutine(healthCoroutine);
+                healthCoroutine = StartCoroutine(RevealHealthBar(3));
+            }
+            else
+            {
+                healthCoroutine = StartCoroutine(RevealHealthBar(3));
+            }
+
+            if (damageTextCoroutine != null)
+            {
+                StopCoroutine(damageTextCoroutine);
+                damageTextCoroutine = StartCoroutine(RevealDamageText(3));
+            }
+            else
+            {
+                damageTextCoroutine = StartCoroutine(RevealDamageText(3));
+            }
+
             charAnim.Play("hurt");
             charAnim.applyRootMotion = true;
         }
@@ -88,6 +137,7 @@ namespace ZaldensGambit
                 if (!isDead)
                 {
                     isDead = true;
+                    healthSlider.gameObject.SetActive(false);
                     GetComponent<Collider>().enabled = false;
                     rigidBody.isKinematic = true;
                     print(gameObject.name + " died!");
@@ -95,6 +145,13 @@ namespace ZaldensGambit
                     agent.enabled = false;
                     Destroy(gameObject, 5);
                 }
+            }
+            else
+            {
+                healthSlider.transform.LookAt(new Vector3(cameraManager.transform.position.x, healthSlider.transform.position.y, cameraManager.transform.position.z), Vector3.up);
+                //damageText.transform.LookAt(new Vector3(cameraManager.transform.position.x, damageText.transform.position.y, cameraManager.transform.position.z), Vector3.up);
+                Quaternion rotationToFace = Quaternion.LookRotation(damageText.transform.position - cameraManager.transform.position);
+                damageText.transform.rotation = new Quaternion(transform.rotation.x, rotationToFace.y, transform.rotation.z, rotationToFace.w); 
             }
 
             //if (!canMove) // If the character can't move...
@@ -109,7 +166,6 @@ namespace ZaldensGambit
         protected virtual void Tick(float deltaTime)
         {
             delta = deltaTime;
-
             charAnim.SetFloat("speed", Mathf.Abs(agent.velocity.x) + Mathf.Abs(agent.velocity.z)); // Update animiator with current speed and velocity of the character to understand when to change animation movement states
 
             if (!isDead)
@@ -246,6 +302,39 @@ namespace ZaldensGambit
             }
 
             return State.Idle;
+        }
+
+        public void ShowLockOnHealth()
+        {
+            healthSlider.gameObject.SetActive(true);
+        }
+
+        public void HideLockOnHealth()
+        {
+            healthSlider.gameObject.SetActive(false);
+        }
+
+        private IEnumerator RevealHealthBar(float duration)
+        {
+            healthSlider.gameObject.SetActive(true);
+
+            yield return new WaitForSeconds(duration);
+
+            if (!lockedOnto)
+            {
+                healthSlider.gameObject.SetActive(false);
+                healthCoroutine = null;
+            }
+        }
+
+        private IEnumerator RevealDamageText(float duration)
+        {
+            damageText.gameObject.SetActive(true);
+
+            yield return new WaitForSeconds(duration);
+
+            damageText.gameObject.SetActive(false);
+            damageTextCoroutine = null;
         }
 
         private void OnDrawGizmosSelected()
