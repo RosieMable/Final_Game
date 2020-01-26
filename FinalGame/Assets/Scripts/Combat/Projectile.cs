@@ -15,6 +15,7 @@ namespace ZaldensGambit
         {
             rigidBody = GetComponent<Rigidbody>();
             rigidBody.velocity = forwardVector * projectileSpeed;
+            Destroy(gameObject, 5);
         }
 
         private void OnCollisionEnter(Collision collision)
