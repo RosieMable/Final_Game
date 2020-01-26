@@ -1,0 +1,171 @@
+fileFormatVersion: 2
+guid: 9009579a77fe1fb4fbdfc02cc94c385f
+ModelImporter:
+  serializedVersion: 26
+  internalIDToNameTable: []
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: "Invalid Avatar Rig Configuration. Missing or invalid transform:\n\tRequired
+      human bone 'Hips' not found\n"
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton:
+    - name: CharcterV3(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Legs
+      parentName: CharcterV3(Clone)
+      position: {x: 0.11048134, y: 0.09088142, z: -0.024341667}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: transform1
+      parentName: Legs
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Arm
+      parentName: CharcterV3(Clone)
+      position: {x: 0.5475753, y: 1.0352156, z: 0.028037034}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: transform2
+      parentName: Arm
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Body
+      parentName: CharcterV3(Clone)
+      position: {x: -0, y: 0, z: 0.001912055}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Trousers
+      parentName: CharcterV3(Clone)
+      position: {x: 0.100365676, y: 0.90036637, z: 0.10086453}
+      rotation: {x: 0.5848487, y: 0.0684761, z: -0.09640269, w: 0.8024771}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Top
+      parentName: CharcterV3(Clone)
+      position: {x: -0.0040262328, y: 1.5213379, z: 0.010164829}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1.1339808, y: 1, z: 1.2436836}
+    - name: ShoulderPads
+      parentName: CharcterV3(Clone)
+      position: {x: -0.32126322, y: 1.3905541, z: 0.0059797326}
+      rotation: {x: 0.00059185893, y: 0.026646372, z: 0.02219825, w: 0.9993983}
+      scale: {x: 1, y: 1, z: 1.6429629}
+    - name: Belt
+      parentName: CharcterV3(Clone)
+      position: {x: 0.0038077694, y: 0.9004079, z: 0.010697691}
+      rotation: {x: 0, y: -0, z: -0.03619184, w: 0.9993449}
+      scale: {x: 0.7934871, y: 1, z: 0.53835803}
+    - name: ClothFront
+      parentName: CharcterV3(Clone)
+      position: {x: 0.004466909, y: 0.75784636, z: 0.1337845}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: ClothLeft
+      parentName: CharcterV3(Clone)
+      position: {x: -0.2194697, y: 0.7713036, z: 0.0068737743}
+      rotation: {x: 0.121442005, y: 0.98758787, z: -0.0028242397, w: 0.099569514}
+      scale: {x: 1, y: 1, z: 1}
+    - name: ClothRight
+      parentName: CharcterV3(Clone)
+      position: {x: 0.2213947, y: 0.7472439, z: 0.004807109}
+      rotation: {x: 0.014777157, y: 0.009198671, z: 0.12068423, w: 0.99253833}
+      scale: {x: 1, y: 1, z: 1}
+    - name: KneeGuard
+      parentName: CharcterV3(Clone)
+      position: {x: 0.12193252, y: 0.34770167, z: 0.10817011}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: KneeGuard1
+      parentName: CharcterV3(Clone)
+      position: {x: -0.12228871, y: 0.34775952, z: 0.10817011}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
