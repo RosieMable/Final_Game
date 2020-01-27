@@ -64,7 +64,6 @@ namespace ZaldensGambit
             healthSlider.gameObject.SetActive(false);
             damageText = GetComponentInChildren<TextMeshProUGUI>();
             damageText.gameObject.SetActive(false);
-            cameraManager = CameraManager.instance;
 
             //if (animHook == false)
             //{
@@ -75,7 +74,8 @@ namespace ZaldensGambit
         
         protected virtual void Start()
         {
-           // animHook.Initialise(null, this);
+            animHook.Initialise(null, this);
+            cameraManager = CameraManager.instance;
         }
 
         /// <summary>
@@ -138,6 +138,7 @@ namespace ZaldensGambit
                 {
                     isDead = true;
                     healthSlider.gameObject.SetActive(false);
+                    damageText.gameObject.SetActive(false);
                     GetComponent<Collider>().enabled = false;
                     rigidBody.isKinematic = true;
                     print(gameObject.name + " died!");
@@ -312,6 +313,7 @@ namespace ZaldensGambit
         public void HideLockOnHealth()
         {
             healthSlider.gameObject.SetActive(false);
+            damageText.gameObject.SetActive(false);
         }
 
         private IEnumerator RevealHealthBar(float duration)
