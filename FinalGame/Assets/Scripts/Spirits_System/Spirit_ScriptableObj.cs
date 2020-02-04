@@ -25,6 +25,14 @@ public class Spirit_ScriptableObj : ScriptableObject
         Mage
     }
 
+    public enum SpiritLevel
+    {
+        Lv1,
+        Lv2,
+        Lv3
+    }
+
+    public SpiritLevel spiritLevel;
 
     public SpiritClass spiritClass;
 
