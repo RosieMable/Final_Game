@@ -106,8 +106,8 @@ namespace ZaldensGambit
                 if (states.lockOn) // If we are already locked onto something...
                 {
                     // Reset
-                    states.lockOnTarget.HideLockOnHealth();
                     states.lockOnTarget.lockedOnto = false;
+                    states.lockOnTarget.HideLockOnHealth();
                     states.lockOnTarget = null;
                     cameraManager.lockOnTarget = null;
                     states.lockOn = false;
