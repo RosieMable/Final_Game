@@ -15,11 +15,12 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
     [SerializeField]
     private List<Card_ScriptableObj> _possibleDungeonCardsReward; //reference to the difference between all the cards within the game and the player's owned one, from there the reward is calculated
 
-    [SerializeField]
     private List<Card_ScriptableObj> _cardReward;
+    public List<Card_ScriptableObj> DungeonCardsReward { get { return _cardReward; } private set { DungeonCardsReward = _cardReward; } }
 
-    [SerializeField]
     private List<Card_ScriptableObj> _drawnCards;
+
+    public List<Card_ScriptableObj> DrawnCards { get { return _drawnCards; } private set { DrawnCards = _drawnCards; } }
 
 
     [Header("Spirit Cards Section")]
@@ -30,8 +31,8 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
     [SerializeField]
     private List<Spirit_ScriptableObj> _possibleSpiritRewards; //reference to the difference between all the cards within the game and the player's owned one, from there the reward is calculated
 
-    [SerializeField]
     private List<Spirit_ScriptableObj> _spiritReward;
+    public List<Spirit_ScriptableObj> SpiritCardsReward { get { return _spiritReward; } private set { SpiritCardsReward = _spiritReward; } }
 
     [Header("Dungeon Prefabs Section")]
     [SerializeField]
@@ -128,7 +129,7 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
             if (_drawnCards.Count == 3)
             {
                 //Rewards for 3 Rooms Dungeons
-                DungeonCardsReward(3);
+                GetDungeonCardsReward(3);
                 string temp = "";
                 foreach (var item in _cardReward)
                 {
@@ -140,7 +141,7 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
             else if (_drawnCards.Count == 6)
             {
                 //Rewards for 6 Rooms Dungeons
-                DungeonCardsReward(6);
+                GetDungeonCardsReward(6);
                 string temp = "";
                 foreach (var item in _cardReward)
                 {
@@ -152,7 +153,7 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
             else if (_drawnCards.Count == 9)
             {
                 //Rewards for 9 Rooms Dungeons
-                DungeonCardsReward(9);
+                GetDungeonCardsReward(9);
                 string temp = "";
                 foreach (var item in _cardReward)
                 {
@@ -164,7 +165,7 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
         }
     }
 
-    private void DungeonCardsReward(int rewardAmount)
+    private void GetDungeonCardsReward(int rewardAmount)
     {
         _possibleDungeonCardsReward = GetDifferenceFromTwoLists(allDungeonCards, ownedDungeonCards);
 
