@@ -10,39 +10,61 @@ namespace ZaldensGambit
         [SerializeField] private bool stationary;
         [SerializeField] private float fireCooldown = 1.5f;
         private float timeToFire;
-        [SerializeField] private float minimumDistance = 8;
+        private bool movingToPosition;
+        private Vector3 desiredPosition;
+
+        protected override void Start()
+        {
+            base.Start();
+            agent.stoppingDistance = 1;
+        }
 
         protected override void PerformStateBehaviour()
         {
             switch (currentState)
             {
                 case State.Idle:
-                    Patrol();
+                    Patrol();                    
                     break;
                 case State.Pursuing:
                     CombatBehaviour();
+                    movingToPosition = false;
                     break;
                 case State.Attacking:
-                    if (Vector3.Distance(transform.position, player.transform.position) < minimumDistance)
-                    {
-                        // Run away to safe distance
-                        agent.isStopped = false;
-                        agent.SetDestination(transform.position - transform.forward * 3);
-                        RotateTowardsTarget(transform.position - transform.forward * 3);
-                        print("Retreat");
-                    }
-                    else
+
+                    if (!movingToPosition)
                     {
                         agent.isStopped = true;
                         RotateTowardsTarget(player.transform);
-
-                        if (timeToFire < Time.time)
-                        {
-                            GameObject _projectile = Instantiate(projectile, transform.position + transform.forward + new Vector3(0, 1, 0), Quaternion.identity, null);
-                            _projectile.GetComponent<Projectile>().forwardVector = transform.forward;
-                            timeToFire = Time.time + fireCooldown;
-                        }
                     }
+
+                    if (timeToFire < Time.time && agent.isStopped)
+                    {
+                        GameObject _projectile = Instantiate(projectile, transform.position + transform.forward + new Vector3(0, 1, 0), Quaternion.identity, null);
+                        _projectile.GetComponent<Projectile>().forwardVector = transform.forward;
+                        timeToFire = Time.time + fireCooldown;
+
+                        desiredPosition = Random.insideUnitSphere + transform.position;
+                        desiredPosition.x += Random.Range(-3, 4);
+                        desiredPosition.y = 0;
+                        desiredPosition.z += Random.Range(-3, 4);
+                        movingToPosition = true;
+                    }
+
+                    if (movingToPosition)
+                    {
+                        print("Moving to position");
+                        agent.isStopped = false;
+                        RotateTowardsTarget(desiredPosition);                        
+                        agent.SetDestination(desiredPosition);
+                    }
+
+                    if (Vector3.Distance(transform.position, desiredPosition) < 1)
+                    {
+                        print("Near position");
+                        movingToPosition = false;
+                    }
+
                     break;
             }
         }
@@ -54,6 +76,7 @@ namespace ZaldensGambit
 
             if (!stationary)
             {
+                agent.isStopped = false;
                 MoveToTarget();
                 print("Move");
             }

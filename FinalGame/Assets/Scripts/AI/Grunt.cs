@@ -11,6 +11,7 @@ namespace ZaldensGambit
         private bool attackMade;
         private bool movingToRetreatPosition;
         private Vector3 retreatPosition;
+        [SerializeField] AnimationClip[] attackAnimations;
 
         protected override void Start()
         {
@@ -75,7 +76,9 @@ namespace ZaldensGambit
                 case State.Attacking:
                     if (!isInvulnerable && !inAction)
                     {
-                        charAnim.Play("attack");
+                        int animationToPlay = Random.Range(0, attackAnimations.Length);
+                        charAnim.Play(attackAnimations[animationToPlay].name);
+                        print(attackAnimations[animationToPlay].name);
                         RotateTowardsTarget(player.transform);
                         attackMade = true;
                         movingToRetreatPosition = false;
