@@ -535,8 +535,8 @@ MonoBehaviour:
   isBlocking: 0
   listenForCombos: 0
   lightAttacksChain:
-  - {fileID: 7400000, guid: ed214573cc2156e4b96dcdda121f6308, type: 2}
-  - {fileID: 7400000, guid: 340b2810b55032246af03b98bdc43e30, type: 2}
+  - {fileID: 7400000, guid: e9a74de8409c6c9428c3127ee1a3cafc, type: 2}
+  - {fileID: 8431872214116501318, guid: ccd2be2e83611f546a77f135dcdc7c94, type: 3}
   heavyAttacksChain:
   - {fileID: 7400000, guid: 6986ba3bd718bbb41bfaf53e8bb9aade, type: 2}
   - {fileID: 7400000, guid: e9a74de8409c6c9428c3127ee1a3cafc, type: 2}
@@ -885,7 +885,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &482196135
 Transform:
   m_ObjectHideFlags: 0
@@ -894,8 +894,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 482196134}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0.268, z: -0}
+  m_LocalScale: {x: 0.1, y: 0.55091625, z: 0.1}
   m_Children: []
   m_Father: {fileID: 1721027879}
   m_RootOrder: 0
