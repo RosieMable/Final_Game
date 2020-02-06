@@ -37,7 +37,7 @@ namespace ZaldensGambit
         [HideInInspector] public float actionLockoutDuration;
         [SerializeField] private Transform[] patrolPoints;
         private int currentPatrolPoint;
-        [SerializeField] private LayerMask playerLayer;
+        [SerializeField] protected LayerMask playerLayer;
         private CameraManager cameraManager;
 
         protected enum State { Idle, Pursuing, Attacking }

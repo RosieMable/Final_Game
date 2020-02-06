@@ -41,6 +41,18 @@ public class SpiritSystem : MonoBehaviour
         {
             OnEquipSpirit(DemoSpirits[1]);
         }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            OnEquipSpirit(DemoSpirits[2]);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            OnEquipSpirit(DemoSpirits[3]);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            OnEquipSpirit(DemoSpirits[4]);
+        }
         else if (Input.GetKeyDown(KeyCode.Alpha0))
         {
             OnEquipSpirit(spirit);

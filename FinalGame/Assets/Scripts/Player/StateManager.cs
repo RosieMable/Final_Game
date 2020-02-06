@@ -532,7 +532,7 @@ namespace ZaldensGambit
                     found = true;
                 }
             }
-            print("Grounded");
+            //print("Grounded");
             return found;
         }
 
@@ -545,7 +545,7 @@ namespace ZaldensGambit
             Vector2 velocityXZ = new Vector2(currentVelocity.x, currentVelocity.z);
             if (velocityXZ.sqrMagnitude < 0.0001f)
             {
-                print("Player not moving");
+               // print("Player not moving");
                 return false;
             }
 
@@ -553,10 +553,10 @@ namespace ZaldensGambit
             {
                 bool test = ResolveStepUp(out stepUpOffset, cp, groundCP);
                 if (test)
-                    print("Found step");
+                    //print("Found step");
                 return test;
             }
-            print("Step not found");
+            //print("Step not found");
             return false;
         }
 
@@ -568,14 +568,14 @@ namespace ZaldensGambit
             //( 1 ) Check if the contact point normal matches that of a step (y close to 0)
             if (Mathf.Abs(stepTestCP.normal.y) <= 0.01f)
             {
-                print("Failed 1");
+               // print("Failed 1");
                 return false;
             }
 
             //( 2 ) Make sure the contact point is low enough to be a step
             if (!(stepTestCP.point.y - groundCP.point.y < maxStepHeight))
             {
-                print("Failed 2");
+                //print("Failed 2");
                 return false;
             }
 
@@ -585,27 +585,27 @@ namespace ZaldensGambit
             Vector3 stepTestInvDir = new Vector3(-stepTestCP.normal.x, 0, -stepTestCP.normal.z).normalized;
             Vector3 origin = new Vector3(stepTestCP.point.x, stepHeight, stepTestCP.point.z) + (stepTestInvDir * stepSearchOvershoot) + transform.forward / 2;
             Vector3 direction = Vector3.down;
-            Debug.DrawRay(origin, direction * maxStepHeight, Color.red, 5);
+            //Debug.DrawRay(origin, direction * maxStepHeight, Color.red, 5);
 
             if (!stepCol.Raycast(new Ray(origin, direction), out hitInfo, maxStepHeight))
             {
                 if (hitInfo.collider == null)
                 {
-                    Debug.Log("null");
+                    //Debug.Log("null");
                 }
-                print("Failed 3");
+                //print("Failed 3");
                 return false;
             }
             else
             {
-                Debug.Log(hitInfo.collider.gameObject.name);
+                //Debug.Log(hitInfo.collider.gameObject.name);
             }
 
             //We have enough info to calculate the points
             Vector3 stepUpPoint = new Vector3(stepTestCP.point.x, hitInfo.point.y + 0.0001f, stepTestCP.point.z) + (stepTestInvDir * stepSearchOvershoot);
             Vector3 stepUpPointOffset = stepUpPoint - new Vector3(stepTestCP.point.x, groundCP.point.y, stepTestCP.point.z);
 
-            print("Stepping up");
+           // print("Stepping up");
             stepUpOffset = stepUpPointOffset;
             return true; //We're going to step up!
         }
