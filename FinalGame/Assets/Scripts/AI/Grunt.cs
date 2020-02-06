@@ -76,21 +76,32 @@ namespace ZaldensGambit
                 case State.Attacking:
                     if (!isInvulnerable && !inAction)
                     {
-                        int animationToPlay = Random.Range(0, attackAnimations.Length);
-                        charAnim.Play(attackAnimations[animationToPlay].name);
-                        print(attackAnimations[animationToPlay].name);
-                        RotateTowardsTarget(player.transform);
-                        attackMade = true;
-                        movingToRetreatPosition = false;
+                        agent.isStopped = true;
+                        bool playerInFront = Physics.Raycast(transform.position, transform.forward, 2, playerLayer);
+
+                        if (playerInFront)
+                        {
+                            int animationToPlay = Random.Range(0, attackAnimations.Length);
+                            charAnim.Play(attackAnimations[animationToPlay].name);
+                            print(attackAnimations[animationToPlay].name);
+                            RotateTowardsTarget(player.transform);
+                            attackMade = true;
+                            movingToRetreatPosition = false;
+                        }
+                        else
+                        {
+                            RotateTowardsTarget(player.transform);
+                        }                        
                     }
                     else
                     {
                         RotateTowardsTarget(player.transform);
                     }
                     break;
-                case State.Pursuing:
+                case State.Pursuing:                    
                     if (!isInvulnerable && !inAction)
                     {
+                        agent.isStopped = false;
                         if (!movingToRetreatPosition)
                         {
                             CombatBehaviour();
