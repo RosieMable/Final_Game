@@ -333,7 +333,7 @@ namespace ZaldensGambit
 
             Vector3 origin = transform.position + (Vector3.up * 0.5f);
             Vector3 direction = Vector3.down;
-            float distance = 0.8f;
+            float distance = 1f;
 
             RaycastHit hit;
 
