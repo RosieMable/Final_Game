@@ -307,6 +307,7 @@ namespace ZaldensGambit
         /// </summary>
         private void HandleMovementAnimations()
         {
+            charAnim.SetFloat("horizontal", moveAmount, 0.1f, delta);
             charAnim.SetFloat("vertical", moveAmount, 0.1f, delta);
         }
 
