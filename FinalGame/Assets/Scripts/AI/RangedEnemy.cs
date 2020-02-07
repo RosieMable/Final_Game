@@ -38,17 +38,26 @@ namespace ZaldensGambit
                         RotateTowardsTarget(player.transform);
                     }
 
-                    if (timeToFire < Time.time && agent.isStopped)
+                    bool playerInFront = Physics.Raycast(transform.position + Vector3.up, transform.forward, Mathf.Infinity, playerLayer);
+                    Debug.DrawRay(transform.position + Vector3.up, transform.forward * 100);
+                    if (playerInFront)
                     {
-                        GameObject _projectile = Instantiate(projectile, transform.position + transform.forward + new Vector3(0, 1, 0), Quaternion.identity, null);
-                        _projectile.GetComponent<Projectile>().forwardVector = transform.forward;
-                        timeToFire = Time.time + fireCooldown;
+                        if (timeToFire < Time.time && agent.isStopped)
+                        {
+                            GameObject _projectile = Instantiate(projectile, transform.position + transform.forward + new Vector3(0, 1, 0), Quaternion.identity, null);
+                            _projectile.GetComponent<Projectile>().forwardVector = transform.forward;
+                            timeToFire = Time.time + fireCooldown;
 
-                        desiredPosition = Random.insideUnitSphere + transform.position;
-                        desiredPosition.x += Random.Range(-3, 4);
-                        desiredPosition.y = 0;
-                        desiredPosition.z += Random.Range(-3, 4);
-                        movingToPosition = true;
+                            desiredPosition = Random.insideUnitSphere + transform.position;
+                            desiredPosition.x += Random.Range(-3, 4);
+                            desiredPosition.y = 0;
+                            desiredPosition.z += Random.Range(-3, 4);
+                            movingToPosition = true;
+                        }
+                    }
+                    else
+                    {
+                        RotateTowardsTarget(player.transform);
                     }
 
                     if (movingToPosition)

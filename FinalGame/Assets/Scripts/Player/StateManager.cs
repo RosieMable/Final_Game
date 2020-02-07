@@ -120,6 +120,7 @@ namespace ZaldensGambit
                     print(hit.collider.gameObject.name);
                     if (hit.transform == location)
                     {
+                        charAnim.Play("BlockShieldHit");
                         print("Blocked attack!");
                         return;
                     }
@@ -619,6 +620,21 @@ namespace ZaldensGambit
         private void OnCollisionStay(Collision collision)
         {
             contactPoints.AddRange(collision.contacts);
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.GetComponent<Projectile>())
+            {
+                if (isBlocking)
+                {
+                    charAnim.Play("BlockShieldHit");
+                }
+                else
+                {
+                    TakeDamage(other.GetComponent<Projectile>().damageValue, other.transform);
+                }
+            }
         }
     }
 }
