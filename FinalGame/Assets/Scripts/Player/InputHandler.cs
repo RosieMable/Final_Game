@@ -29,7 +29,15 @@ namespace ZaldensGambit
 
         private void Update()
         {
-            GetInput();
+            if (!states.interacting)
+            {
+                GetInput();
+            }
+            else
+            {
+                vertical = 0;
+                horizontal = 0;
+            }
             SearchForLockOnTarget();
             delta = Time.deltaTime;
             states.Tick(delta);

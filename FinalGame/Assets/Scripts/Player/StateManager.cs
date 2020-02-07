@@ -8,6 +8,8 @@ namespace ZaldensGambit
     public class StateManager : MonoBehaviour
     {
         #region Variables
+        [HideInInspector] public bool interacting;
+
         [HideInInspector] public float moveAmount;
         [HideInInspector] public Vector3 movementDirection;
 
@@ -172,7 +174,10 @@ namespace ZaldensGambit
 
             if (grounded && !isInvulnerable)
             {
-                DetectAction(); // Listen for player inputs
+                if (!interacting)
+                {
+                    DetectAction(); // Listen for player inputs
+                }
             }
 
             if (inAction) // If an animation is playing...

@@ -53,6 +53,7 @@ namespace ZaldensGambit
         /// </summary>
         public void Initialse(Transform _target)
         {
+            ToggleCursorVisibleState(false);
             target = _target;
             cameraTransform = Camera.main.transform;
             pivotPoint = cameraTransform.parent;
@@ -130,6 +131,23 @@ namespace ZaldensGambit
             maxAngle = originalMaxAngle;
             lookAngle += smoothX * speed; // Calculate the new X axis
             transform.rotation = Quaternion.Euler(0, lookAngle, 0); // Assign X axis rotation to the camera            
+        }
+
+        /// <summary>
+        /// Sets the visible and lockstate of the Cursor. False for locked & not visible, true for unlocked & visible.
+        /// </summary>
+        public void ToggleCursorVisibleState(bool stateToChangeTo)
+        {
+            if (!stateToChangeTo)
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
         }
     }
 }
