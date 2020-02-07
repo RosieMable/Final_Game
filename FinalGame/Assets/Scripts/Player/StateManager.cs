@@ -34,6 +34,8 @@ namespace ZaldensGambit
         [SerializeField] private AnimationClip[] heavyAttacksChain;
         private int animationClipIndex = 0;
 
+        [SerializeField] private AnimationClip[] hurtAnimations;
+
         public Enemy lockOnTarget;
 
         [HideInInspector] public GameObject activeModel;
@@ -121,16 +123,15 @@ namespace ZaldensGambit
                     if (hit.transform == location)
                     {
                         charAnim.Play("BlockShieldHit");
-                        print("Blocked attack!");
                         return;
                     }
                 }
             }
 
             health -= value;
-            //isInvulnerable = true;
             canMove = false;
-            charAnim.Play("hurt");
+            int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length);
+            charAnim.Play(hurtAnimations[hurtAnimationToPlay].name);
             charAnim.applyRootMotion = true;
         }
 
@@ -334,7 +335,7 @@ namespace ZaldensGambit
 
             Vector3 origin = transform.position + (Vector3.up * 0.5f);
             Vector3 direction = Vector3.down;
-            float distance = 1f;
+            float distance = 0.8f;
 
             RaycastHit hit;
 

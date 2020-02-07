@@ -535,11 +535,17 @@ MonoBehaviour:
   isBlocking: 0
   listenForCombos: 0
   lightAttacksChain:
-  - {fileID: 7400000, guid: e9a74de8409c6c9428c3127ee1a3cafc, type: 2}
-  - {fileID: 8431872214116501318, guid: ccd2be2e83611f546a77f135dcdc7c94, type: 3}
+  - {fileID: 7400000, guid: ed214573cc2156e4b96dcdda121f6308, type: 2}
+  - {fileID: 7400000, guid: 340b2810b55032246af03b98bdc43e30, type: 2}
+  - {fileID: 7400000, guid: 1de1097b750028d46ac37c0b99be6a26, type: 2}
+  - {fileID: 7400000, guid: 24e940005b082e440a7519527ce3737d, type: 2}
   heavyAttacksChain:
   - {fileID: 7400000, guid: 6986ba3bd718bbb41bfaf53e8bb9aade, type: 2}
   - {fileID: 7400000, guid: e9a74de8409c6c9428c3127ee1a3cafc, type: 2}
+  hurtAnimations:
+  - {fileID: 7400000, guid: a841118dda39a6a40aa7bad5e36c927a, type: 2}
+  - {fileID: 7400000, guid: f1545cabb8b1ff94088aedaf6fdd8d2f, type: 2}
+  - {fileID: 7400000, guid: 1ce7165c2ee3d8249b875bd666c45c2a, type: 2}
   lockOnTarget: {fileID: 0}
   activeModel: {fileID: 0}
   charAnim: {fileID: 0}
@@ -611,7 +617,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   actionSlots:
   - input: 0
-    desiredAnimation: {fileID: 7400000, guid: e9a74de8409c6c9428c3127ee1a3cafc, type: 2}
+    desiredAnimation: {fileID: 7400000, guid: ed214573cc2156e4b96dcdda121f6308, type: 2}
   - input: 1
     desiredAnimation: {fileID: 7400000, guid: 6986ba3bd718bbb41bfaf53e8bb9aade, type: 2}
   - input: 2
@@ -1521,6 +1527,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_WarningMessage
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: -6057140222963153312, guid: 7179d926fd7958f4b992281646d0e423,
+        type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6167904293427101411, guid: 7179d926fd7958f4b992281646d0e423,
         type: 3}
@@ -3422,6 +3433,7 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 0
+  hurtAnimations: []
   isDead: 0
   combatPattern: 0
   attackAnimations: []
@@ -4047,6 +4059,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2075887411006638496, guid: efcabda3a236e1d41b616e4775c6343a,
         type: 3}
+      propertyPath: hurtAnimations.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2075887411006638496, guid: efcabda3a236e1d41b616e4775c6343a,
+        type: 3}
       propertyPath: patrolPoints.Array.data[0]
       value: 
       objectReference: {fileID: 1151311324}
@@ -4080,8 +4097,23 @@ PrefabInstance:
     - target: {fileID: 2075887411006638496, guid: efcabda3a236e1d41b616e4775c6343a,
         type: 3}
       propertyPath: isTrainingDummy
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2075887411006638496, guid: efcabda3a236e1d41b616e4775c6343a,
+        type: 3}
+      propertyPath: hurtAnimations.Array.data[0]
+      value: 
+      objectReference: {fileID: 7400000, guid: a841118dda39a6a40aa7bad5e36c927a, type: 2}
+    - target: {fileID: 2075887411006638496, guid: efcabda3a236e1d41b616e4775c6343a,
+        type: 3}
+      propertyPath: hurtAnimations.Array.data[1]
+      value: 
+      objectReference: {fileID: 7400000, guid: f1545cabb8b1ff94088aedaf6fdd8d2f, type: 2}
+    - target: {fileID: 2075887411006638496, guid: efcabda3a236e1d41b616e4775c6343a,
+        type: 3}
+      propertyPath: hurtAnimations.Array.data[2]
+      value: 
+      objectReference: {fileID: 7400000, guid: 1ce7165c2ee3d8249b875bd666c45c2a, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: efcabda3a236e1d41b616e4775c6343a, type: 3}
 --- !u!1001 &8216772090846339944
@@ -4180,6 +4212,11 @@ PrefabInstance:
         type: 3}
       propertyPath: attackRange
       value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 8216772091304252483, guid: 4f0f02f7f66e73f468fb7585508b7df0,
+        type: 3}
+      propertyPath: playerLayer.m_Bits
+      value: 512
       objectReference: {fileID: 0}
     - target: {fileID: 8216772090723015069, guid: 4f0f02f7f66e73f468fb7585508b7df0,
         type: 3}
