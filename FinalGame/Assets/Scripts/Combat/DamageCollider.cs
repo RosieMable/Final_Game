@@ -26,7 +26,7 @@ namespace ZaldensGambit
 
             if (states != null)
             {
-                states.TakeDamage(10, transform.root);
+                states.TakeDamage(10, GetComponentInParent<Enemy>().gameObject.transform);
             }
         }
     }

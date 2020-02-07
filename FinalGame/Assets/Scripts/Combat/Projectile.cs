@@ -37,10 +37,10 @@ namespace ZaldensGambit
                 }
             }
 
-            if (enemyStates != null)
-            {
-                enemyStates.TakeDamage(damageValue);
-            }
+            //if (enemyStates != null)
+            //{
+            //    enemyStates.TakeDamage(damageValue);
+            //}
 
             GetComponent<MeshRenderer>().enabled = false;
             GetComponent<Collider>().enabled = false;
