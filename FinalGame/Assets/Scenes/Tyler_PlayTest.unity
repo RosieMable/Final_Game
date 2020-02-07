@@ -119,7 +119,7 @@ NavMeshSettings:
     accuratePlacement: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 23800000, guid: 11b8e001e78fbd64fb31afabe353847b, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: be424c9b4c5e2e347951a4eed3d533b6, type: 2}
 --- !u!1 &12907410
 GameObject:
   m_ObjectHideFlags: 0
@@ -17331,16 +17331,6 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: 0.4999996
       objectReference: {fileID: 0}
-    - target: {fileID: 8449595414277121496, guid: efcabda3a236e1d41b616e4775c6343a,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -2.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 8449595414277121496, guid: efcabda3a236e1d41b616e4775c6343a,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0
-      objectReference: {fileID: 0}
     - target: {fileID: 5488176539767363586, guid: efcabda3a236e1d41b616e4775c6343a,
         type: 3}
       propertyPath: m_LocalRotation.z
@@ -17365,6 +17355,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0.36420655
+      objectReference: {fileID: 0}
+    - target: {fileID: 8449595414277121496, guid: efcabda3a236e1d41b616e4775c6343a,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -2.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8449595414277121496, guid: efcabda3a236e1d41b616e4775c6343a,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: efcabda3a236e1d41b616e4775c6343a, type: 3}
