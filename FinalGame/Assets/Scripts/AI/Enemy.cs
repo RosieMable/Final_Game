@@ -37,8 +37,9 @@ namespace ZaldensGambit
         [HideInInspector] public float actionLockoutDuration;
         [SerializeField] private Transform[] patrolPoints;
         private int currentPatrolPoint;
-        [SerializeField] private LayerMask playerLayer;
+        [SerializeField] protected LayerMask playerLayer;
         private CameraManager cameraManager;
+        [SerializeField] protected AnimationClip[] hurtAnimations;
 
         protected enum State { Idle, Pursuing, Attacking }
         protected State currentState;
@@ -123,7 +124,9 @@ namespace ZaldensGambit
                 damageTextCoroutine = StartCoroutine(RevealDamageText(3));
             }
 
-            charAnim.Play("hurt");
+            int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length);
+            charAnim.Play(hurtAnimations[hurtAnimationToPlay].name);
+            charAnim.applyRootMotion = true;
             charAnim.applyRootMotion = true;
         }
 

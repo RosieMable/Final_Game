@@ -10,6 +10,7 @@ namespace ZaldensGambit
         public float damageValue;
         private Rigidbody rigidBody;
         public Vector3 forwardVector;
+        private bool hitShield;
 
         void Start()
         {
@@ -23,28 +24,36 @@ namespace ZaldensGambit
             Enemy enemyStates = collision.transform.GetComponentInParent<Enemy>(); // Finds the parent of the object hit and searches for an 'EnemyStates' reference.
             StateManager states = collision.transform.GetComponentInParent<StateManager>();
 
-            if (states != null)
+            if (!hitShield)
             {
-                RaycastHit hitInfo;
-                Physics.Raycast(transform.position, forwardVector, out hitInfo, 0.5f);
-
-                if (hitInfo.collider != null)
+                if (states != null)
                 {
-                    if (hitInfo.collider.gameObject.name != "Shield")
+                    RaycastHit hitInfo;
+                    Physics.Raycast(transform.position, forwardVector, out hitInfo, 0.5f);
+
+                    if (hitInfo.collider != null)
                     {
-                        states.TakeDamage(damageValue, transform);
+                        if (hitInfo.collider.gameObject.name != "Shield")
+                        {
+                            states.TakeDamage(damageValue, transform);
+                        }
                     }
                 }
             }
 
-            if (enemyStates != null)
-            {
-                enemyStates.TakeDamage(damageValue);
-            }
+            //if (enemyStates != null)
+            //{
+            //    enemyStates.TakeDamage(damageValue);
+            //}
 
             GetComponent<MeshRenderer>().enabled = false;
             GetComponent<Collider>().enabled = false;
             Destroy(gameObject, 1);
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            hitShield = true;           
         }
     }
 }
