@@ -10,11 +10,12 @@ namespace ZaldensGambit
         private AudioSource audioSource;
         private StateManager player;
         [SerializeField] private AudioClip[] audioClips;
-        private bool enteredRange;
+        private bool inRange;
 
         private void Start()
         {
             player = FindObjectOfType<StateManager>();
+            audioSource = GetComponent<AudioSource>();
             audioSource.clip = audioClips[0];
         }
 
@@ -22,20 +23,20 @@ namespace ZaldensGambit
         {
             float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
 
-            if (distanceToPlayer < audioSource.minDistance && !enteredRange)
+            if (distanceToPlayer < audioSource.maxDistance && !inRange)
             {
-                enteredRange = true;
+                inRange = true;
                 int clipToPlay = Random.Range(0, audioClips.Length - 1);
                 audioSource.clip = audioClips[clipToPlay];
                 audioSource.Play();
             }
             else if (distanceToPlayer > audioSource.maxDistance)
             {
-                enteredRange = false;
+                inRange = false;
                 audioSource.Stop();
             }
 
-            if (!audioSource.isPlaying && enteredRange)
+            if (!audioSource.isPlaying && inRange)
             {
                 int clipToPlay = Random.Range(0, audioClips.Length - 1);
                 audioSource.clip = audioClips[clipToPlay];
