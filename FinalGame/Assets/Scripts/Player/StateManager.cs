@@ -123,7 +123,7 @@ namespace ZaldensGambit
                 {
                     if (hit.transform == location)
                     {
-                        charAnim.Play("BlockShieldHit");
+                        charAnim.CrossFade("BlockShieldHit", 0.1f);
                         return;
                     }
                 }
@@ -132,7 +132,7 @@ namespace ZaldensGambit
             health -= value;
             canMove = false;
             int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length);
-            charAnim.Play(hurtAnimations[hurtAnimationToPlay].name);
+            charAnim.CrossFade(hurtAnimations[hurtAnimationToPlay].name, 0.1f);
             charAnim.applyRootMotion = true;
         }
 
@@ -633,7 +633,7 @@ namespace ZaldensGambit
             {
                 if (isBlocking)
                 {
-                    charAnim.Play("BlockShieldHit");
+                    charAnim.CrossFade("BlockShieldHit", 0.1f);
                 }
                 else
                 {
