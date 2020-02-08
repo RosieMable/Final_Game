@@ -121,7 +121,6 @@ namespace ZaldensGambit
 
                 foreach (RaycastHit hit in hits)
                 {
-                    print(hit.collider.gameObject.name);
                     if (hit.transform == location)
                     {
                         charAnim.Play("BlockShieldHit");

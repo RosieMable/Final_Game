@@ -16,7 +16,7 @@ namespace ZaldensGambit
                 return;
             }
 
-            if (transform.root.GetComponent<StateManager>())
+            if (GetComponentInParent<StateManager>())
             {
                 if (enemyStates != null)
                 {

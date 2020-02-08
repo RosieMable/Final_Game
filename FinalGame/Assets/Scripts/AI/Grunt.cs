@@ -8,10 +8,13 @@ namespace ZaldensGambit
     {
         private enum CombatPattern { Charge, HitAndRun }
         [SerializeField] private CombatPattern combatPattern;
+        private float attackDelay;
+        [SerializeField] private float attacksCooldown = 0.5f;
         private bool attackMade;
         private bool movingToRetreatPosition;
         private Vector3 retreatPosition;
         [SerializeField] AnimationClip[] attackAnimations;
+
 
         protected override void Start()
         {
@@ -74,16 +77,16 @@ namespace ZaldensGambit
                     attackMade = false;
                     break;
                 case State.Attacking:
-                    if (!isInvulnerable && !inAction)
+                    if (!isInvulnerable && !inAction && Time.time > attackDelay)
                     {
                         agent.isStopped = true;
                         bool playerInFront = Physics.Raycast(transform.position, transform.forward, 2, playerLayer);
 
                         if (playerInFront)
                         {
+                            attackDelay = Time.time + attacksCooldown;
                             int animationToPlay = Random.Range(0, attackAnimations.Length);
-                            charAnim.Play(attackAnimations[animationToPlay].name);
-                            print(attackAnimations[animationToPlay].name);
+                            charAnim.CrossFade(attackAnimations[animationToPlay].name, 0.2f);
                             RotateTowardsTarget(player.transform);
                             attackMade = true;
                             movingToRetreatPosition = false;

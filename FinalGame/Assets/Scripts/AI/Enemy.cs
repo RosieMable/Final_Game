@@ -125,7 +125,8 @@ namespace ZaldensGambit
             }
 
             int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length);
-            charAnim.Play(hurtAnimations[hurtAnimationToPlay].name);
+            //charAnim.Play(hurtAnimations[hurtAnimationToPlay].name);
+            charAnim.CrossFade(hurtAnimations[hurtAnimationToPlay].name, 0.1f);
             charAnim.applyRootMotion = true;
             charAnim.applyRootMotion = true;
         }
@@ -212,7 +213,7 @@ namespace ZaldensGambit
                 case State.Attacking:
                     if (!isInvulnerable && !inAction)
                     {
-                        charAnim.Play("attack");
+                        charAnim.CrossFade("attack", 0.1f);
                         RotateTowardsTarget(player.transform);
                     }
                     else
