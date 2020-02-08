@@ -14,6 +14,7 @@ namespace ZaldensGambit
 
         private void Start()
         {
+            player = FindObjectOfType<StateManager>();
             audioSource.clip = audioClips[0];
         }
 
