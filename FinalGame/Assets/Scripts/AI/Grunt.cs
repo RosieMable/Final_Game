@@ -45,7 +45,20 @@ namespace ZaldensGambit
             switch (combatPattern)
             {
                 case CombatPattern.Charge:
-                    MoveToTarget();
+                    if (movingToAttack)
+                    {
+                        MoveToTarget();
+                    }
+                    else
+                    {
+                        if (agent.enabled)
+                        {
+                            Vector3 targetPosition = Random.insideUnitSphere;
+                            targetPosition += player.transform.position;
+                            targetPosition.y = 0;
+                            agent.SetDestination(targetPosition);
+                        }
+                    }
                     break;
                 case CombatPattern.HitAndRun:
                     if (!attackMade)
@@ -75,9 +88,14 @@ namespace ZaldensGambit
                     Patrol();
                     movingToRetreatPosition = false;
                     attackMade = false;
+                    withinRangeOfTarget = false;
+                    if (currentAttackers.Contains(this))
+                    {
+                        RemoveFromAttackersList();
+                    }
                     break;
                 case State.Attacking:
-                    if (!isInvulnerable && !inAction && Time.time > attackDelay)
+                    if (!isInvulnerable && !inAction && Time.time > attackDelay && currentAttackers.Contains(this))
                     {
                         agent.isStopped = true;
                         bool playerInFront = Physics.Raycast(transform.position, transform.forward, 2, playerLayer);
@@ -90,6 +108,7 @@ namespace ZaldensGambit
                             RotateTowardsTarget(player.transform);
                             attackMade = true;
                             movingToRetreatPosition = false;
+                            Invoke("RemoveFromAttackersList", 1f);
                         }
                         else
                         {
@@ -101,10 +120,12 @@ namespace ZaldensGambit
                         RotateTowardsTarget(player.transform);
                     }
                     break;
-                case State.Pursuing:                    
+                case State.Pursuing:
+                    withinRangeOfTarget = true;
                     if (!isInvulnerable && !inAction)
                     {
                         agent.isStopped = false;
+
                         if (!movingToRetreatPosition)
                         {
                             CombatBehaviour();

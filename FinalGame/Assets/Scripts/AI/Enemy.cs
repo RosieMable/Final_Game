@@ -124,6 +124,11 @@ namespace ZaldensGambit
                 damageTextCoroutine = StartCoroutine(RevealDamageText(3));
             }
 
+            if (currentAttackers.Contains(this))
+            {
+                RemoveFromAttackersList();
+            }
+
             int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length);
             //charAnim.Play(hurtAnimations[hurtAnimationToPlay].name);
             charAnim.CrossFade(hurtAnimations[hurtAnimationToPlay].name, 0.1f);
@@ -133,6 +138,8 @@ namespace ZaldensGambit
 
         protected virtual void Update()
         {
+            //print(currentAttackers.Count);
+
             Tick(Time.deltaTime);
             canMove = charAnim.GetBool("canMove");            
 
@@ -141,6 +148,7 @@ namespace ZaldensGambit
                 if (!isDead)
                 {
                     isDead = true;
+                    RemoveFromAttackersList();
                     healthSlider.gameObject.SetActive(false);
                     damageText.gameObject.SetActive(false);
                     GetComponent<Collider>().enabled = false;
@@ -168,7 +176,7 @@ namespace ZaldensGambit
         /// <summary>
         /// What occurs every tick, runs inside Update
         /// </summary>
-        protected virtual void Tick(float deltaTime)
+        protected void Tick(float deltaTime)
         {
             delta = deltaTime;
             charAnim.SetFloat("speed", Mathf.Abs(agent.velocity.x) + Mathf.Abs(agent.velocity.z)); // Update animiator with current speed and velocity of the character to understand when to change animation movement states
@@ -179,7 +187,11 @@ namespace ZaldensGambit
 
                 if (!isTrainingDummy) // If not flagged as a training dummy
                 {
-                    PerformStateBehaviour(); // Perform current state behaviour
+                    if (!strafing)
+                    {
+                        PerformStateBehaviour(); // Perform current state behaviour
+                    }
+                    CombatCircleBehaviour();
                 }
 
                 if (inAction) // If an animation is playing...
@@ -209,11 +221,16 @@ namespace ZaldensGambit
                 case State.Idle:
                     // Maybe regen health after a delay?
                     Patrol();
+                    if (currentAttackers.Contains(this))
+                    {
+                        RemoveFromAttackersList();
+                    }
                     break;
                 case State.Attacking:
-                    if (!isInvulnerable && !inAction)
+                    if (!isInvulnerable && !inAction && currentAttackers.Contains(this))
                     {
                         charAnim.CrossFade("attack", 0.1f);
+                        Invoke("RemoveFromAttackersList", 1f);
                         RotateTowardsTarget(player.transform);
                     }
                     else
@@ -222,6 +239,7 @@ namespace ZaldensGambit
                     }
                     break;
                 case State.Pursuing:
+                    withinRangeOfTarget = true;
                     if (!isInvulnerable && !inAction)
                     {
                         CombatBehaviour();
@@ -284,7 +302,21 @@ namespace ZaldensGambit
         {
             rigidBody.velocity = Vector3.zero; // Reset velocity to ensure no gliding behaviour as navmesh agents do not follow ordinary rigidbody physics
             RotateTowardsTarget(player.transform);
-            MoveToTarget();
+
+            if (movingToAttack)
+            {
+                MoveToTarget();
+            }
+            else
+            {
+                if (agent.enabled)
+                {
+                    Vector3 targetPosition = Random.insideUnitSphere;
+                    targetPosition += player.transform.position;
+                    targetPosition.y = 0;
+                    agent.SetDestination(targetPosition);
+                }
+            }            
         }
 
         /// <summary>
@@ -292,10 +324,33 @@ namespace ZaldensGambit
         /// </summary>
         protected virtual State UpdateState()
         {
-            bool isInAttackRange = Vector3.Distance(transform.position, player.transform.position) < attackRange;
+            bool canConsiderAttacking = Vector3.Distance(transform.position, player.transform.position) < aggroRange;
+
+            if (canConsiderAttacking)
+            {
+                //print(gameObject.name + " has asked for permission to attack");
+
+
+                if (currentAttackers.Count < maximumNumberOfAttackers)
+                {
+                    //print(gameObject.name + " permission granted");
+                    if (!currentAttackers.Contains(this))                       
+                    {
+                        currentAttackers.Add(this);
+                        movingToAttack = true;
+                    }
+                }
+                else
+                {
+                    //print(gameObject.name + " permission denied");
+
+                }
+            }
+
+            bool isInAttackRange = Vector3.Distance(transform.position, player.transform.position) < attackRange;            
 
             if (isInAttackRange)
-            {
+            {                
                 return State.Attacking;
             }
 
@@ -352,6 +407,112 @@ namespace ZaldensGambit
             // Draw a red wire sphere into the scene editor viewport to match attack range
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position + Vector3.up, attackRange);
+        }
+
+        // Experimental 'Combat Circle' logic attempt below
+
+        /* Logic:
+         * 1) Move towards the player when within aggro range. - Done
+         * 2) When within a reasonable range, avoid other AIs unless moving to attack. - Done
+         * 3) Move towards the player whilst avoiding other AIs unless moving to attack. - Done
+         * 4) When the player is within attack range, check if I'm allowed to attack. - Done
+         * 
+         * Notes on permission given for attacks:
+         * - Cannot attack if there is already a maximum number of allowed attackers - Done
+         * - When denied, continue to move around the player and repeat
+         * - If the player moves out of attack range, remove from attackers list - Done
+         * - If killed, remove from attackers list - Done
+         * 
+         * Variables Needed:
+         * Aggro range - Done
+         * Attack range - Done
+         * In-range boolean - Done
+         * Moving-to-attack boolean - Done
+         * Avoid radius - Done
+         * List of attackers - Done
+         * Maximum number of allowed attackers- Done
+         * 
+         * Possible States:
+         * - Idle
+         * - Pursuing
+         * - LookingToAttack
+         * - Attacking
+        */
+
+        private float avoidRadius = 3;
+        protected bool withinRangeOfTarget;
+        protected bool movingToAttack;
+        [SerializeField] protected static List<Enemy> currentAttackers = new List<Enemy>();
+        protected static int maximumNumberOfAttackers = 2;
+        protected bool strafing;
+
+        private void CombatCircleBehaviour()
+        {
+            if (withinRangeOfTarget)
+            {
+                if (!movingToAttack)
+                {
+                    //print(gameObject.name + " is searching for AIs to avoid!");
+                    Collider[] objectsInRange = Physics.OverlapSphere(transform.position, avoidRadius);
+
+                    foreach (Collider collider in objectsInRange)
+                    {
+                        if (collider.gameObject.GetComponent<Enemy>() && collider.gameObject.GetComponent<Enemy>() != this && !strafing)
+                        {
+                            ////Transform startTransform = transform;
+                            //Vector3 directionFrom = transform.position - collider.transform.position;
+                            //Vector3 positionToMoveTo = directionFrom + directionFrom.normalized;
+                            ////transform.rotation = Quaternion.LookRotation(transform.position - collider.transform.position);                        
+                            ////Vector3 positionToMoveTo = transform.position + transform.forward * 2;
+                            ////transform.rotation = startTransform.rotation;
+                            //if (agent.enabled)
+                            //{
+                            //    agent.SetDestination(positionToMoveTo);
+                            //    RotateTowardsTarget(positionToMoveTo);
+                            //    avoidingOrStarfing = true;
+                            //    Invoke("StopAvoidingAI", 1f);
+                            //}
+                            Strafe();
+                           // print(gameObject.name + " is attempting to avoid " + collider.gameObject.name);
+                            break;
+                        }
+                    }
+                }
+            }            
+        }
+
+        protected void StopStrafing()
+        {
+            strafing = false;
+        }
+
+        protected void Strafe()
+        {
+            if (agent.enabled)
+            {
+                Vector3 targetPosition = transform.position;
+
+                int direction = Random.Range(0, 2);
+                switch (direction)
+                {
+                    case 1:
+                        targetPosition = transform.position + Vector3.left;
+                        break;
+                    case 2:
+                        targetPosition = transform.position + Vector3.right;
+                        break;
+                }
+
+                agent.SetDestination(targetPosition);
+                Invoke("StopStrafing", 5f);
+            }
+        }
+
+        protected void RemoveFromAttackersList()
+        {
+            currentAttackers.Remove(this);
+            movingToAttack = false;
+           // print(gameObject.name + " is removed from the attackers list.");
         }
     }        
 }
