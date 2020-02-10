@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-
+using Coffee.UIExtensions;
 
 public class CardUI : MonoBehaviour
 {
+    [Header("Cards Detais=ls")]
     [SerializeField]
     Sprite backCard;
 
@@ -32,6 +33,8 @@ public class CardUI : MonoBehaviour
 
     public Image selfImage;
 
+    private UIShadow shadow;
+
 
     private void Start()
     {
@@ -46,7 +49,40 @@ public class CardUI : MonoBehaviour
         valueText.gameObject.SetActive(false);
 
         selfImage.sprite = backCard;
+
+        shadow = FindObjectOfType<UIShadow>();
+
+        shadow.effectColor = new Color(shadow.effectColor.r, shadow.effectColor.g, shadow.effectColor.b, 0);
     }
+
+
+    public void Glouwin()
+    {
+        if (!selected)
+        {
+            iTween.MoveBy(this.gameObject, new Vector3(0f, 10f, 0f), 0.2f);
+        }
+        else
+        {
+            iTween.ScaleTo(this.gameObject, new Vector3(2.2f, 2.2f, 2.2f), .2f);
+        }
+
+        shadow.effectColor = new Color(shadow.effectColor.r, shadow.effectColor.g, shadow.effectColor.b, 1);
+    }
+
+        public void Glowout()
+    {
+        if (!selected)
+        {
+            iTween.MoveBy(this.gameObject, new Vector3(0f, -10f, 0f), 0.2f);
+        }
+        else
+        {
+            iTween.ScaleTo(this.gameObject, new Vector3(2f, 2f, 2f), .2f);
+        }
+
+            shadow.effectColor = new Color(shadow.effectColor.r, shadow.effectColor.g, shadow.effectColor.b, 0);
+        }
 
     public void OnClickCard()
     {

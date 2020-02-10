@@ -1549,6 +1549,7 @@ GameObject:
   - component: {fileID: 1985686511}
   - component: {fileID: 1985686510}
   - component: {fileID: 1985686509}
+  - component: {fileID: 1985686512}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1574,7 +1575,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -1600,7 +1601,7 @@ Camera:
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
   m_TargetEye: 3
-  m_HDR: 1
+  m_HDR: 0
   m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
@@ -1621,6 +1622,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1985686512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1985686508}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28fa0001aad2ddc4ea34cfff383e7202, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Intensity: 0.5
+  _compositeMat: {fileID: 0}
 --- !u!1 &2031504382
 GameObject:
   m_ObjectHideFlags: 0
@@ -1653,7 +1668,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -120, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2061071468
@@ -1752,14 +1767,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ownedDungeonCards:
+  - {fileID: 11400000, guid: 0c430a293e574bd4ab4691430f0a680d, type: 2}
+  - {fileID: 11400000, guid: 7d7554133b12ca246b48057424ed02e1, type: 2}
   - {fileID: 11400000, guid: 7d2dcdf5987abc947ad1f87ff16ea282, type: 2}
-  - {fileID: 11400000, guid: cd133860e1738e34fb39aa34928de237, type: 2}
-  - {fileID: 11400000, guid: 57f65858340addd409ff690ec81f5693, type: 2}
   - {fileID: 11400000, guid: 772f36d2111a2304ba87898555c7e6a3, type: 2}
   - {fileID: 11400000, guid: 15f91563620e6eb4a848ed44a424d459, type: 2}
-  - {fileID: 11400000, guid: 2b96820e3ffb21e4bb1aa01caf10806f, type: 2}
+  - {fileID: 11400000, guid: d059782902d048a418bc6517066b686f, type: 2}
   - {fileID: 11400000, guid: cc7ae495c156ab8459f92e940cb95a4c, type: 2}
-  - {fileID: 11400000, guid: b51396a3e5307e644b8aad8bcc43b374, type: 2}
+  - {fileID: 11400000, guid: c50be4a3a085bb541862585ce53015df, type: 2}
   - {fileID: 11400000, guid: be6ddbae0f0806b4792cd5a1123d9075, type: 2}
   allDungeonCards:
   - {fileID: 11400000, guid: 24d784b38c74b7e4ea9fc1ab2a36c88f, type: 2}
@@ -1782,6 +1797,26 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 23b3736713720c7448ef18e01cb1ae50, type: 2}
   - {fileID: 11400000, guid: 2922dc55b9db0f0418afbdc26981c1c7, type: 2}
   - {fileID: 11400000, guid: 2e21c12db7b1a65418a23e6f62e98d88, type: 2}
+  - {fileID: 11400000, guid: 72a8c1d4642177b409aeeb14a10ff723, type: 2}
+  - {fileID: 11400000, guid: 2dee5e7ebfded7749b99ff8362fd7c9d, type: 2}
+  - {fileID: 11400000, guid: 562a3174af75a5f4191602fb2a0cbfa6, type: 2}
+  - {fileID: 11400000, guid: 0f8826f83618e8a40a08c41d1d0eb44c, type: 2}
+  - {fileID: 11400000, guid: b2d4ebb9fb9a8094a8a8e61635da88a6, type: 2}
+  - {fileID: 11400000, guid: d059782902d048a418bc6517066b686f, type: 2}
+  - {fileID: 11400000, guid: c50be4a3a085bb541862585ce53015df, type: 2}
+  - {fileID: 11400000, guid: 6f5299e06147457429db9279d1a730ef, type: 2}
+  - {fileID: 11400000, guid: 0b1f23f1314937c45803469b37ff56da, type: 2}
+  - {fileID: 11400000, guid: 4de13bcd92e90ad47abe687dd89f59b3, type: 2}
+  - {fileID: 11400000, guid: be6ddbae0f0806b4792cd5a1123d9075, type: 2}
+  - {fileID: 11400000, guid: 2e21c12db7b1a65418a23e6f62e98d88, type: 2}
+  - {fileID: 11400000, guid: 2922dc55b9db0f0418afbdc26981c1c7, type: 2}
+  - {fileID: 11400000, guid: cd133860e1738e34fb39aa34928de237, type: 2}
+  - {fileID: 11400000, guid: 7d2dcdf5987abc947ad1f87ff16ea282, type: 2}
+  - {fileID: 11400000, guid: 13bfc2855ed2b0c4bac3a2fd20b821ec, type: 2}
+  - {fileID: 11400000, guid: ea10b453c532bb34386ab2dec0506e94, type: 2}
+  - {fileID: 11400000, guid: 299c8dfbf3efcf2408e780c696e7f6ed, type: 2}
+  - {fileID: 11400000, guid: 57f65858340addd409ff690ec81f5693, type: 2}
+  - {fileID: 11400000, guid: 23b3736713720c7448ef18e01cb1ae50, type: 2}
   _possibleDungeonCardsReward: []
   GlobalAmountCD: 0
   ownedSpirits:

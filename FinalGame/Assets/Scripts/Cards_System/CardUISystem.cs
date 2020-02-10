@@ -73,18 +73,20 @@ public class CardUISystem : MonoBehaviour
     }
 
 
-   public void CheckCardsSelected()
+    public void CheckCardsSelected()
     {
         cardsClickedOn = 0;
+        CenterPoint.position = GetCentreForCards(dungeonCard.DrawnCards.Count);
 
-            foreach (var card in CardsSelected)
+        foreach (var card in CardsSelected)
             {
                 card.chosenCard = drawnCards[cardsClickedOn++];
                 Vector3 parentPos = CenterPoint.position;
-                Vector3 newPos = parentPos += new Vector3(200f * cardsClickedOn, 0f, 0f);
+                Vector3 newPos = parentPos += new Vector3(GapBasedOnCardsamount(dungeonCard.DrawnCards.Count) * cardsClickedOn, 0f, 0f);
                 iTween.MoveTo(card.gameObject, newPos, 0.5f);
                 iTween.RotateTo(card.gameObject, Vector3.zero, 0.25f);
                 card.gameObject.transform.SetParent(CenterPoint);
+                iTween.ScaleTo(card.gameObject, ScaleBasedNumberOfCards(dungeonCard.DrawnCards.Count), 0.2f);
                 card.selected = true;
                 print(cardsClickedOn);
 
@@ -92,7 +94,7 @@ public class CardUISystem : MonoBehaviour
 
             if (CardsSelected.Count == dungeonCard.GlobalAmountCD)
             {
-                iTween.MoveTo(HandDeck.gameObject, new Vector3(HandDeck.gameObject.transform.position.x, -300, HandDeck.gameObject.transform.position.z), 1f);
+                iTween.MoveTo(HandDeck.gameObject, new Vector3(HandDeck.gameObject.transform.position.x, -300, HandDeck.gameObject.transform.position.z), 1f); //Moves the hand out of the way
                 CardUI.buttonClickDelegate -= CheckCardsSelected;
                  cardsClickedOn = 0;
             }
@@ -134,8 +136,6 @@ public class CardUISystem : MonoBehaviour
                 cardGO.transform.Rotate(0f, 0f, twistForThisCard);
                 cardGO.transform.position += new Vector3((howManyAdded * gapFromOneItemToTheNextOne), -nudgeThisCard, 0); // Moving my card 1f to the right
                 cardGO.transform.Translate(0f, -nudgeThisCard, 0f);
-
-
                 CardsDealt.Add(cardGO);
                 howManyAdded++;
 
@@ -164,6 +164,69 @@ public class CardUISystem : MonoBehaviour
             }
         }
 
+    }
+
+    Vector3 GetCentreForCards(float numberOfCards)
+    {
+        Vector3 val = Vector3.zero;
+
+        if (numberOfCards!= 0)
+        {
+            float x = Screen.width / numberOfCards;
+            float y = Screen.height / 2;
+
+            val = new Vector3(x, y, -1);
+        }
+
+
+        return val;
+    }
+
+    Vector3 ScaleBasedNumberOfCards(float numberOfCards)
+    {
+        Vector3 val = Vector3.zero;
+
+        //if (numberOfCards != 0)
+        //{
+        //    float height = Camera.main.orthographicSize * 2.0f;
+        //    float width = height * Screen.height / Screen.width;
+        //    val = Vector3.one * width / numberOfCards;
+
+        //}
+
+        if (numberOfCards == 3)
+        {
+            val = Vector3.one * 2;
+        }
+        if (numberOfCards == 6)
+        {
+            val = Vector3.one * 1.75f;
+        }
+        if (numberOfCards == 9)
+        {
+            val = Vector3.one * 1.5f;
+        }
+
+        return val;
+    }
+
+    float GapBasedOnCardsamount(float numberOfCards)
+    {
+        float val = 0;
+
+        if (numberOfCards == 3)
+        {
+            val = 200f;
+        }
+        if (numberOfCards == 6)
+        {
+            val = 175f;
+        }
+        if (numberOfCards == 9)
+        {
+            val = 150f;
+        }
+        return val;
     }
 
     private void OnDisable()
