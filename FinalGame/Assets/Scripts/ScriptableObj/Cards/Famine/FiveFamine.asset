@@ -16,4 +16,4 @@ MonoBehaviour:
   _cardValue: 5
   _cardDescription: //
   cardSuit: 0
-  _cardSprite: {fileID: 0}
+  _cardSprite: {fileID: 21300000, guid: dd899418af8bab349865ab64ad943da2, type: 3}
