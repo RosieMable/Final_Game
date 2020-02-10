@@ -39,6 +39,7 @@ namespace ZaldensGambit
 
         protected override void CombatBehaviour()
         {
+            var slotManager = player.GetComponent<AttackSlotManager>();
             Quaternion targetRotation = Quaternion.LookRotation(player.transform.position - transform.position, Vector3.up); // Calculate the rotation desired
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed);
 
@@ -53,10 +54,21 @@ namespace ZaldensGambit
                     {
                         if (agent.enabled)
                         {
-                            Vector3 targetPosition = Random.insideUnitSphere;
-                            targetPosition += player.transform.position;
-                            targetPosition.y = 0;
-                            agent.SetDestination(targetPosition);
+                            //Vector3 targetPosition = Random.insideUnitSphere;
+                            //targetPosition += player.transform.position;
+                            //targetPosition.y = 0;
+                            //agent.SetDestination(targetPosition);
+
+                            if (slot == -1)
+                            {
+                                slot = slotManager.ReserveSlot(this);
+                            }
+
+                            if (slot == -1)
+                            {
+                                return;
+                            }
+                            agent.destination = slotManager.GetSlotPosition(slot);
                         }
                     }
                     break;
@@ -91,7 +103,7 @@ namespace ZaldensGambit
                     withinRangeOfTarget = false;
                     if (currentAttackers.Contains(this))
                     {
-                        RemoveFromAttackersList();
+                        //RemoveFromAttackersList();
                     }
                     break;
                 case State.Attacking:

@@ -126,7 +126,7 @@ namespace ZaldensGambit
 
             if (currentAttackers.Contains(this))
             {
-                RemoveFromAttackersList();
+                //RemoveFromAttackersList();
             }
 
             int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length);
@@ -191,7 +191,7 @@ namespace ZaldensGambit
                     {
                         PerformStateBehaviour(); // Perform current state behaviour
                     }
-                    CombatCircleBehaviour();
+                    //CombatCircleBehaviour();
                 }
 
                 if (inAction) // If an animation is playing...
@@ -300,6 +300,7 @@ namespace ZaldensGambit
         /// </summary>
         protected virtual void CombatBehaviour()
         {
+            var slotManager = player.GetComponent<AttackSlotManager>();
             rigidBody.velocity = Vector3.zero; // Reset velocity to ensure no gliding behaviour as navmesh agents do not follow ordinary rigidbody physics
             RotateTowardsTarget(player.transform);
 
@@ -311,10 +312,22 @@ namespace ZaldensGambit
             {
                 if (agent.enabled)
                 {
-                    Vector3 targetPosition = Random.insideUnitSphere;
-                    targetPosition += player.transform.position;
-                    targetPosition.y = 0;
-                    agent.SetDestination(targetPosition);
+                    //Vector3 targetPosition = Random.insideUnitSphere;
+                    //targetPosition += player.transform.position;
+                    //targetPosition.y = 0;
+                    //agent.SetDestination(targetPosition);
+
+                    if (slot == -1)
+                    {
+                        slot = slotManager.ReserveSlot(this);
+                    }
+
+                    if (slot == -1)
+                    {
+                        return;
+                    }
+
+                    agent.destination = slotManager.GetSlotPosition(slot);
                 }
             }            
         }
@@ -433,18 +446,19 @@ namespace ZaldensGambit
          * Maximum number of allowed attackers- Done
          * 
          * Possible States:
-         * - Idle
-         * - Pursuing
-         * - LookingToAttack
-         * - Attacking
+         * - Idle - Done
+         * - Pursuing - Done
+         * - LookingToAttack - 
+         * - Attacking - Done
         */
 
         private float avoidRadius = 3;
         protected bool withinRangeOfTarget;
         protected bool movingToAttack;
         [SerializeField] protected static List<Enemy> currentAttackers = new List<Enemy>();
-        protected static int maximumNumberOfAttackers = 2;
+        protected static int maximumNumberOfAttackers = 1;
         protected bool strafing;
+        protected int slot = -1;
 
         private void CombatCircleBehaviour()
         {
@@ -472,7 +486,7 @@ namespace ZaldensGambit
                             //    avoidingOrStarfing = true;
                             //    Invoke("StopAvoidingAI", 1f);
                             //}
-                            Strafe();
+                            //Strafe();
                            // print(gameObject.name + " is attempting to avoid " + collider.gameObject.name);
                             break;
                         }
@@ -480,7 +494,6 @@ namespace ZaldensGambit
                 }
             }            
         }
-
         protected void StopStrafing()
         {
             strafing = false;
