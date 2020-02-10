@@ -24,7 +24,7 @@ namespace ZaldensGambit
         {
             float degreesPerIndex = 360f / count;
             var position = transform.position;
-            var offset = new Vector3(0, 0, distance);
+            var offset = new Vector3(0, 0, distance); //+ new Vector3(Random.Range(-1,2), 0, Random.Range(-1, 2));
             return position + (Quaternion.Euler(new Vector3(0, degreesPerIndex * index, 0)) * offset);
         }
 

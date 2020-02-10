@@ -423,7 +423,8 @@ namespace ZaldensGambit
         }
 
         // Experimental 'Combat Circle' logic attempt below
-
+        //https://www.trickyfast.com/2017/10/09/building-an-attack-slot-system-in-unity/
+        //https://gamedevelopment.tutsplus.com/tutorials/battle-circle-ai-let-your-player-feel-like-theyre-fighting-lots-of-enemies--gamedev-13535
         /* Logic:
          * 1) Move towards the player when within aggro range. - Done
          * 2) When within a reasonable range, avoid other AIs unless moving to attack. - Done
@@ -456,7 +457,7 @@ namespace ZaldensGambit
         protected bool withinRangeOfTarget;
         protected bool movingToAttack;
         [SerializeField] protected static List<Enemy> currentAttackers = new List<Enemy>();
-        protected static int maximumNumberOfAttackers = 1;
+        protected static int maximumNumberOfAttackers = 0;
         protected bool strafing;
         protected int slot = -1;
 
