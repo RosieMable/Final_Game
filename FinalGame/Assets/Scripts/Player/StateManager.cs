@@ -77,7 +77,7 @@ namespace ZaldensGambit
             weaponHook = GetComponentInChildren<WeaponHook>();
             weaponHook.CloseDamageCollider();
             gameObject.layer = 9; // Set to player layer
-            ignoredLayers = ~(1 << 9); // Ignore layers 1 to 9
+            ignoredLayers = ~(1 << 10); // Ignore layers 1 to 10
         }
 
         /// <summary>
@@ -107,8 +107,10 @@ namespace ZaldensGambit
             charAnim.applyRootMotion = false;
         }
 
-        public void TakeDamage(float value, Transform location)
+        public void TakeDamage(float value, Transform damageSource)
         {
+            Enemy enemy = damageSource.GetComponent<Enemy>();
+
             if (isInvulnerable)
             {
                 print("Cannot take damage whilst invulnerable!");
@@ -121,9 +123,13 @@ namespace ZaldensGambit
 
                 foreach (RaycastHit hit in hits)
                 {
-                    if (hit.transform == location)
+                    if (hit.transform == damageSource)
                     {
                         charAnim.CrossFade("BlockShieldHit", 0.1f);
+                        if (enemy)
+                        {
+                            enemy.attackDelay = Time.time + enemy.attackCooldown * 1.5f;
+                        }
                         return;
                     }
                 }
