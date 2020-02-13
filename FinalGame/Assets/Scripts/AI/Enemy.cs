@@ -25,6 +25,8 @@ namespace ZaldensGambit
         private TextMeshProUGUI damageText;
         private float damageTextValue;
         private Coroutine damageTextCoroutine;
+        public float attackDelay;
+        public float attackCooldown = 0.5f;
         [SerializeField] protected float attackRange = 1.5f;
         [SerializeField] protected float aggroRange = 10;
         [SerializeField] protected float speed = 4;
@@ -61,6 +63,7 @@ namespace ZaldensGambit
             weaponHook = GetComponentInChildren<WeaponHook>();
             weaponHook.CloseDamageCollider();
             healthSlider = GetComponentInChildren<Slider>();
+            healthSlider.maxValue = health;
             healthSlider.value = health;
             healthSlider.gameObject.SetActive(false);
             damageText = GetComponentInChildren<TextMeshProUGUI>();
@@ -88,6 +91,8 @@ namespace ZaldensGambit
             {
                 return; // Return out of method, take no damage
             }
+
+            attackDelay = Time.time + attackCooldown;
 
             float previousHealth = health;
             health -= damageValue;
@@ -124,8 +129,14 @@ namespace ZaldensGambit
                 damageTextCoroutine = StartCoroutine(RevealDamageText(3));
             }
 
+            if (!currentAttackers.Contains(this))
+            {
+                currentAttackers[Random.Range(0, currentAttackers.Count - 1)].GetComponent<Enemy>().RemoveFromAttackersList();
+                currentAttackers.Add(this);
+                movingToAttack = true;
+            }            
+
             int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length);
-            //charAnim.Play(hurtAnimations[hurtAnimationToPlay].name);
             charAnim.CrossFade(hurtAnimations[hurtAnimationToPlay].name, 0.1f);
             charAnim.applyRootMotion = true;
             charAnim.applyRootMotion = true;
@@ -141,6 +152,7 @@ namespace ZaldensGambit
                 if (!isDead)
                 {
                     isDead = true;
+                    RemoveFromAttackersList();
                     healthSlider.gameObject.SetActive(false);
                     damageText.gameObject.SetActive(false);
                     GetComponent<Collider>().enabled = false;
@@ -168,7 +180,7 @@ namespace ZaldensGambit
         /// <summary>
         /// What occurs every tick, runs inside Update
         /// </summary>
-        protected virtual void Tick(float deltaTime)
+        protected void Tick(float deltaTime)
         {
             delta = deltaTime;
             charAnim.SetFloat("speed", Mathf.Abs(agent.velocity.x) + Mathf.Abs(agent.velocity.z)); // Update animiator with current speed and velocity of the character to understand when to change animation movement states
@@ -179,7 +191,10 @@ namespace ZaldensGambit
 
                 if (!isTrainingDummy) // If not flagged as a training dummy
                 {
-                    PerformStateBehaviour(); // Perform current state behaviour
+                    if (!strafing)
+                    {
+                        PerformStateBehaviour(); // Perform current state behaviour
+                    }
                 }
 
                 if (inAction) // If an animation is playing...
@@ -209,11 +224,13 @@ namespace ZaldensGambit
                 case State.Idle:
                     // Maybe regen health after a delay?
                     Patrol();
+                    RemoveFromAttackersList();
                     break;
                 case State.Attacking:
                     if (!isInvulnerable && !inAction)
                     {
                         charAnim.CrossFade("attack", 0.1f);
+                        Invoke("RemoveFromAttackersList", 1f);
                         RotateTowardsTarget(player.transform);
                     }
                     else
@@ -222,6 +239,7 @@ namespace ZaldensGambit
                     }
                     break;
                 case State.Pursuing:
+                    withinRangeOfTarget = true;
                     if (!isInvulnerable && !inAction)
                     {
                         CombatBehaviour();
@@ -282,9 +300,56 @@ namespace ZaldensGambit
         /// </summary>
         protected virtual void CombatBehaviour()
         {
+            var slotManager = player.GetComponent<AttackSlotManager>();
             rigidBody.velocity = Vector3.zero; // Reset velocity to ensure no gliding behaviour as navmesh agents do not follow ordinary rigidbody physics
             RotateTowardsTarget(player.transform);
-            MoveToTarget();
+
+            if (movingToAttack)
+            {
+                MoveToTarget();
+            }
+            else
+            {
+                if (agent.enabled)
+                {
+                    //Vector3 targetPosition = Random.insideUnitSphere;
+                    //targetPosition += player.transform.position;
+                    //targetPosition.y = 0;
+                    //agent.SetDestination(targetPosition);
+
+                    if (currentSlot == -1)
+                    {
+                        currentSlot = slotManager.ReserveSlot(this, currentSlot, false);
+                    }
+
+                    if (currentSlot == -1)
+                    {
+                        return;
+                    }
+
+                    NavMeshPath path = new NavMeshPath();
+                    agent.CalculatePath(slotManager.GetSlotPosition(currentSlot), path);
+
+                    if (path.status == NavMeshPathStatus.PathPartial)
+                    {
+                        print("Path out of bounds");
+                        RemoveFromAttackersList();
+                        return;
+                    }
+                    if (path.status == NavMeshPathStatus.PathInvalid)
+                    {
+                        print("Path invalid");
+                        RemoveFromAttackersList();
+                        return;
+                    }
+                    if (path.status == NavMeshPathStatus.PathComplete)
+                    {
+                        print("Path complete");
+                    }
+
+                    agent.destination = slotManager.GetSlotPosition(currentSlot);
+                }
+            }            
         }
 
         /// <summary>
@@ -292,10 +357,24 @@ namespace ZaldensGambit
         /// </summary>
         protected virtual State UpdateState()
         {
-            bool isInAttackRange = Vector3.Distance(transform.position, player.transform.position) < attackRange;
+            bool canConsiderAttacking = Vector3.Distance(transform.position, player.transform.position) < aggroRange;
+
+            if (canConsiderAttacking)
+            {
+                if (currentAttackers.Count < maximumNumberOfAttackers)
+                {
+                    if (!currentAttackers.Contains(this))                       
+                    {
+                        currentAttackers.Add(this);
+                        movingToAttack = true;
+                    }
+                }
+            }
+
+            bool isInAttackRange = Vector3.Distance(transform.position, player.transform.position) < attackRange;            
 
             if (isInAttackRange)
-            {
+            {                
                 return State.Attacking;
             }
 
@@ -352,6 +431,70 @@ namespace ZaldensGambit
             // Draw a red wire sphere into the scene editor viewport to match attack range
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position + Vector3.up, attackRange);
+        }
+
+        // Experimental 'Combat Circle' logic attempt below
+        //https://www.trickyfast.com/2017/10/09/building-an-attack-slot-system-in-unity/
+        //https://gamedevelopment.tutsplus.com/tutorials/battle-circle-ai-let-your-player-feel-like-theyre-fighting-lots-of-enemies--gamedev-13535
+        /* Logic:
+         * 1) Move towards the player when within aggro range. - Done
+         * 2) When within a reasonable range, avoid other AIs unless moving to attack. - Done
+         * 3) Move towards the player whilst avoiding other AIs unless moving to attack. - Done
+         * 4) When the player is within attack range, check if I'm allowed to attack. - Done
+         * 
+         * Notes on permission given for attacks:
+         * - Cannot attack if there is already a maximum number of allowed attackers - Done
+         * - When denied, continue to move around the player and repeat
+         * - If the player moves out of attack range, remove from attackers list - Done
+         * - If killed, remove from attackers list - Done
+         * 
+         * Variables Needed:
+         * Aggro range - Done
+         * Attack range - Done
+         * In-range boolean - Done
+         * Moving-to-attack boolean - Done
+         * Avoid radius - Done
+         * List of attackers - Done
+         * Maximum number of allowed attackers- Done
+         * 
+         * Possible States:
+         * - Idle - Done
+         * - Pursuing - Done
+         * - LookingToAttack - 
+         * - Attacking - Done
+         * 
+         * 
+         * Additional Logic:
+         * 1) When the player is in range, check if we are able to attack. - Done
+         * 2) If we are able to attack, attack. If we are not, move to a attack slot position. - Done
+         * 3) If we are not able to attack and are at our attack slot position, move slightly around the position. - Done
+         * 4) If the target enters our attack range, no matter what we are to attack them. - Done
+         * 5) If the target attacks us, forcefully enter the list of attackers. - Done
+         * 6) If the player moves away from us, attempt to follow - Done
+        */
+
+        private float avoidRadius = 3;
+        protected bool withinRangeOfTarget;
+        protected bool movingToAttack;
+        [SerializeField] protected static List<Enemy> currentAttackers = new List<Enemy>();
+        protected static int maximumNumberOfAttackers = 1;
+        protected bool strafing;
+        protected int currentSlot = -1; 
+
+        protected void RemoveFromAttackersList()
+        {
+            if (currentAttackers.Contains(this))
+            {
+                currentAttackers.Remove(this);
+            }
+            movingToAttack = false;
+            var slotManager = player.GetComponent<AttackSlotManager>();
+            if (currentSlot != -1)
+            {
+                slotManager.ClearSlot(currentSlot);
+                currentSlot = -1;
+            }
+            // print(gameObject.name + " is removed from the attackers list.");
         }
     }        
 }

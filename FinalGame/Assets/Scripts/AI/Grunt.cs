@@ -1,68 +1,76 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace ZaldensGambit
 {
     public class Grunt : Enemy
     {
-        private enum CombatPattern { Charge, HitAndRun }
+        private enum CombatPattern { Charge }
         [SerializeField] private CombatPattern combatPattern;
-        private float attackDelay;
-        [SerializeField] private float attacksCooldown = 0.5f;
-        private bool attackMade;
-        private bool movingToRetreatPosition;
         private Vector3 retreatPosition;
         [SerializeField] AnimationClip[] attackAnimations;
-
-
-        protected override void Start()
-        {
-            base.Start();
-            //combatPattern = (CombatPattern)Random.Range(0, 2);
-            //Debug.Log(combatPattern);
-        }
-
-        protected override void Update()
-        {
-            base.Update();
-
-            if (movingToRetreatPosition)
-            {
-                if (Vector3.Distance(transform.position, retreatPosition) < 2)
-                {
-                    movingToRetreatPosition = false;
-                    attackMade = false;
-                }
-            }
-        }
+        private float slotMovementTimer;
+        private float slotMovementCooldown = 1.5f;    
 
         protected override void CombatBehaviour()
         {
+            //slot = -1;
+            var slotManager = player.GetComponent<AttackSlotManager>();
             Quaternion targetRotation = Quaternion.LookRotation(player.transform.position - transform.position, Vector3.up); // Calculate the rotation desired
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed);
 
             switch (combatPattern)
             {
                 case CombatPattern.Charge:
-                    MoveToTarget();
-                    break;
-                case CombatPattern.HitAndRun:
-                    if (!attackMade)
+                    if (movingToAttack)
                     {
                         MoveToTarget();
                     }
-                    else if(!movingToRetreatPosition)
+                    else
                     {
-                        retreatPosition = Random.insideUnitSphere + transform.position;
-                        retreatPosition.x += Random.Range(-5, 6);
-                        retreatPosition.y = 0;
-                        retreatPosition.z += Random.Range(-5, 6);
-                        movingToRetreatPosition = true;
-                        RotateTowardsTarget(retreatPosition);
-                        agent.SetDestination(retreatPosition);
+                        if (Time.time > slotMovementTimer)
+                        {
+                            slotMovementTimer = Time.time + slotMovementCooldown + Random.Range(0.1f, 1.5f);
+
+                            if (agent.enabled)
+                            {
+                                currentSlot = slotManager.ReserveSlot(this, currentSlot, true);
+
+                                if (currentSlot == -1)
+                                {
+                                    return;
+                                }
+
+                                NavMeshPath path = new NavMeshPath();
+                                agent.CalculatePath(slotManager.GetSlotPosition(currentSlot), path);
+
+                                if (path.status == NavMeshPathStatus.PathPartial)
+                                {
+                                    print("Path out of bounds");
+                                    RemoveFromAttackersList();
+                                    return;
+                                }
+                                if (path.status == NavMeshPathStatus.PathInvalid)
+                                {
+                                    print("Path invalid");
+                                    RemoveFromAttackersList();
+                                    return;
+                                }
+                                if (path.status == NavMeshPathStatus.PathComplete)
+                                {
+                                   // print("Path complete");
+                                }
+                                agent.destination = slotManager.GetSlotPosition(currentSlot);
+                            }
+                        }
+                        else if (Vector3.Distance(transform.position, slotManager.GetSlotPosition(currentSlot)) > 3f)
+                        {
+                            currentSlot = slotManager.ReserveSlot(this, currentSlot, false);
+                        }
                     }
-                    break;
+                    break;                
             }
         }
 
@@ -73,8 +81,8 @@ namespace ZaldensGambit
                 case State.Idle:
                     // Maybe regen health after a delay?
                     Patrol();
-                    movingToRetreatPosition = false;
-                    attackMade = false;
+                    withinRangeOfTarget = false;
+                    RemoveFromAttackersList();                    
                     break;
                 case State.Attacking:
                     if (!isInvulnerable && !inAction && Time.time > attackDelay)
@@ -84,12 +92,10 @@ namespace ZaldensGambit
 
                         if (playerInFront)
                         {
-                            attackDelay = Time.time + attacksCooldown;
+                            attackDelay = Time.time + attackCooldown;
                             int animationToPlay = Random.Range(0, attackAnimations.Length);
                             charAnim.CrossFade(attackAnimations[animationToPlay].name, 0.2f);
                             RotateTowardsTarget(player.transform);
-                            attackMade = true;
-                            movingToRetreatPosition = false;
                         }
                         else
                         {
@@ -101,29 +107,15 @@ namespace ZaldensGambit
                         RotateTowardsTarget(player.transform);
                     }
                     break;
-                case State.Pursuing:                    
+                case State.Pursuing:
+                    withinRangeOfTarget = true;
                     if (!isInvulnerable && !inAction)
                     {
                         agent.isStopped = false;
-                        if (!movingToRetreatPosition)
-                        {
-                            CombatBehaviour();
-                        }
+                        CombatBehaviour();
                     }
                     break;
             }
-        }
-
-        protected override State UpdateState()
-        {
-            if (combatPattern == CombatPattern.HitAndRun)
-            {
-                if (attackMade)
-                {
-                    return State.Pursuing;
-                }
-            }
-            return base.UpdateState();
         }
     }
 }
