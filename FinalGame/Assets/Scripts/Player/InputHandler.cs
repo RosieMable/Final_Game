@@ -70,7 +70,7 @@ namespace ZaldensGambit
             horizontal = Input.GetAxis("Horizontal");
             lightAttackInput = Input.GetKeyDown(KeyCode.Mouse0);
             //heavyAttackInput = // Needs new input, probably when controller support added?
-            dodgeRollInput = Input.GetKeyDown(KeyCode.LeftControl);
+            dodgeRollInput = Input.GetKeyDown(KeyCode.Space);
             specialAttackInput = Input.GetKeyDown(KeyCode.Mouse2);
             blockInput = Input.GetKey(KeyCode.Mouse1);
         }

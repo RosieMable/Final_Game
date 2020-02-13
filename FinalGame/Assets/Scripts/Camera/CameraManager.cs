@@ -23,10 +23,14 @@ namespace ZaldensGambit
 
         private float turnSmoothing = 0.1f;
         private float originalMinAngle, originalMaxAngle;
-        public float minAngle = -10; // Minimum rotation on the Y axis
-        public float maxAngle = 50; // Maximum rotation on the Y axis
+        public float minAngle = -20; // Minimum rotation on the Y axis
+        public float maxAngle = 60; // Maximum rotation on the Y axis
         public float lockOnMinAngle = 60;
         public float lockOnMaxAngle = 70;
+        public float defaultZDistance = -4;
+        private float currentZ;
+        public float zSpeed = 5;
+        public float minimumZDistance = -1.5f;
         
         private float smoothX;
         private float smoothY;
@@ -59,6 +63,7 @@ namespace ZaldensGambit
             pivotPoint = cameraTransform.parent;
             originalMaxAngle = maxAngle;
             originalMinAngle = minAngle;
+            currentZ = defaultZDistance;
         }
 
         /// <summary>
@@ -73,6 +78,7 @@ namespace ZaldensGambit
 
             FollowTarget(deltaTime);
             HandleRotation(deltaTime, verticalAxis, horizontalAzis, speed);
+            HandlePivotPosition();
         }
 
         /// <summary>
@@ -131,6 +137,90 @@ namespace ZaldensGambit
             maxAngle = originalMaxAngle;
             lookAngle += smoothX * speed; // Calculate the new X axis
             transform.rotation = Quaternion.Euler(0, lookAngle, 0); // Assign X axis rotation to the camera            
+        }
+
+        private void HandlePivotPosition()
+        {
+            float targetZ = defaultZDistance;
+
+            CameraCollision(defaultZDistance, ref targetZ);
+
+            currentZ = Mathf.Lerp(currentZ, targetZ, Time.deltaTime * zSpeed);
+
+            Vector3 targetPosition = Vector3.zero;
+            targetPosition.z = currentZ;
+            if (targetPosition.z > minimumZDistance)
+            {
+                targetPosition.z = minimumZDistance;
+            }
+            cameraTransform.localPosition = targetPosition;
+        }
+
+        private void CameraCollision(float targetZ, ref float actualZ)
+        {
+            StateManager states = FindObjectOfType<StateManager>();
+            float step = Mathf.Abs(targetZ);
+            int stepCount = 1;
+            float stepIncrement = step / stepCount;
+
+            RaycastHit hit;
+            Vector3 origin = pivotPoint.position;
+            Vector3 direction = -pivotPoint.forward;
+
+            Debug.DrawRay(origin, direction * step, Color.blue);
+
+            if (Physics.Raycast(origin, direction, out hit, step, states.ignoredLayers))
+            {
+                if (!hit.transform.GetComponent<StateManager>() && !hit.transform.GetComponent<Enemy>())
+                {
+                    Debug.Log(hit.transform.root.name);
+                    float distance = Vector3.Distance(hit.point, origin);
+                    actualZ = -(distance / 2);
+                }               
+            }
+            else
+            {
+                for (int s = 0; s < stepCount + 1; s++)
+                {
+                    for (int i = 0; i < 4; i++)
+                    {
+                        Vector3 dir = Vector3.zero;
+                        Vector3 secondOrigin = origin + (direction * s) * stepIncrement;
+
+                        switch (i)
+                        {
+                            case 0:
+                                dir = cameraTransform.right;
+                                break;
+                            case 1:
+                                dir = -cameraTransform.right;
+                                break;
+                            case 2:
+                                dir = cameraTransform.up;
+                                break;
+                            case 3:
+                                dir = -cameraTransform.up;
+                                break;
+                        }
+                        Debug.DrawRay(secondOrigin, dir * 0.5f, Color.red);
+                        if (Physics.Raycast(secondOrigin, dir, out hit, 0.5f, states.ignoredLayers))
+                        {
+                            if (!hit.transform.GetComponent<StateManager>() && !hit.transform.GetComponent<Enemy>())
+                            {
+                                Debug.Log(hit.transform.root.name);
+                                float distance = Vector3.Distance(secondOrigin, origin);
+                                actualZ = -(distance / 2);
+
+                                if (actualZ < 0.2f)
+                                {
+                                    actualZ = 0;
+                                }
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
