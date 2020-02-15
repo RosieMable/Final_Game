@@ -74,9 +74,9 @@ public class SpiritSystem : MonoBehaviour
     {
         if (PlayerCharacter)
         {
-            PlayerCharacter.health = HealthPlayerBase;
-            PlayerCharacter.health = PlayerCharacter.health + _EquippedSpirit.HealthModifier;
-            print(PlayerCharacter.health);
+            PlayerCharacter.currentHealth = HealthPlayerBase;
+            PlayerCharacter.currentHealth = PlayerCharacter.currentHealth + _EquippedSpirit.HealthModifier;
+            print(PlayerCharacter.currentHealth);
         }
         else
         {

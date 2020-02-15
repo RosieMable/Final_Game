@@ -42,6 +42,7 @@ namespace ZaldensGambit
 
         private void Awake()
         {
+            // Initialise Singleton
             if (instance == null)
             {
                 instance = this;
@@ -129,7 +130,6 @@ namespace ZaldensGambit
                 targetRotation.z = 0;
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, deltaTime * 10);
                 lookAngle = transform.eulerAngles.y;
-
                 return;
             }            
 
@@ -139,26 +139,33 @@ namespace ZaldensGambit
             transform.rotation = Quaternion.Euler(0, lookAngle, 0); // Assign X axis rotation to the camera            
         }
 
+        /// <summary>
+        /// Sets the Z axis of the camera between the default and minimum based on the results of any collisions detected between the camera and the target.
+        /// </summary>
         private void HandlePivotPosition()
         {
             float targetZ = defaultZDistance;
 
-            CameraCollision(defaultZDistance, ref targetZ);
+            CameraCollision(defaultZDistance, ref targetZ); // Check for any objects obstructing camera view to the target.
 
-            currentZ = Mathf.Lerp(currentZ, targetZ, Time.deltaTime * zSpeed);
-
+            currentZ = Mathf.Lerp(currentZ, targetZ, Time.deltaTime * zSpeed); // Lerp current Z axis to the new target Z axis
             Vector3 targetPosition = Vector3.zero;
             targetPosition.z = currentZ;
-            if (targetPosition.z > minimumZDistance)
+
+            if (targetPosition.z > minimumZDistance) // If Z value returned is greater than the minimum (-1 is greater than -2 for example as the Z is intended to be negative always)
             {
-                targetPosition.z = minimumZDistance;
+                targetPosition.z = minimumZDistance; // Set Z to minimum
             }
-            cameraTransform.localPosition = targetPosition;
+
+            cameraTransform.localPosition = targetPosition; // Update camera position
         }
 
+        /// <summary>
+        /// Checks for any collisions between the camera and the target, calculating a new Z axis point that will not be obstructed by the cause of the collision.
+        /// </summary>
         private void CameraCollision(float targetZ, ref float actualZ)
         {
-            StateManager states = FindObjectOfType<StateManager>();
+            StateManager states = FindObjectOfType<StateManager>(); // Player reference
             float step = Mathf.Abs(targetZ);
             int stepCount = 1;
             float stepIncrement = step / stepCount;
@@ -169,20 +176,20 @@ namespace ZaldensGambit
 
             Debug.DrawRay(origin, direction * step, Color.blue);
 
-            if (Physics.Raycast(origin, direction, out hit, step, states.ignoredLayers))
+            if (Physics.Raycast(origin, direction, out hit, step, states.ignoredLayers)) // Raycast, ignoring the same layers as the player
             {
-                if (!hit.transform.GetComponent<StateManager>() && !hit.transform.GetComponent<Enemy>())
+                if (!hit.transform.GetComponent<StateManager>() && !hit.transform.GetComponent<Enemy>()) // If the raycast returns an object which is not a player or enemy
                 {
-                    Debug.Log(hit.transform.root.name);
-                    float distance = Vector3.Distance(hit.point, origin);
-                    actualZ = -(distance / 2);
+                    //Debug.Log(hit.transform.root.name);
+                    float distance = Vector3.Distance(hit.point, origin); // Calculate distance from the point hit and the origin
+                    actualZ = -(distance / 2); // Halve the distance and convert to negative value
                 }               
             }
-            else
+            else // If nothing is hit by the raycast...
             {
                 for (int s = 0; s < stepCount + 1; s++)
                 {
-                    for (int i = 0; i < 4; i++)
+                    for (int i = 0; i < 4; i++) // Loop 4 times to raycast out in 4 different directions to check for additional obstacles to the camera
                     {
                         Vector3 dir = Vector3.zero;
                         Vector3 secondOrigin = origin + (direction * s) * stepIncrement;
@@ -202,14 +209,16 @@ namespace ZaldensGambit
                                 dir = -cameraTransform.up;
                                 break;
                         }
+
                         Debug.DrawRay(secondOrigin, dir * 0.5f, Color.red);
-                        if (Physics.Raycast(secondOrigin, dir, out hit, 0.5f, states.ignoredLayers))
+
+                        if (Physics.Raycast(secondOrigin, dir, out hit, 0.5f, states.ignoredLayers)) // Raycast, ignoring the same layers as the player
                         {
-                            if (!hit.transform.GetComponent<StateManager>() && !hit.transform.GetComponent<Enemy>())
+                            if (!hit.transform.GetComponent<StateManager>() && !hit.transform.GetComponent<Enemy>()) // If the raycast returns an object which is not a player or enemy
                             {
-                                Debug.Log(hit.transform.root.name);
-                                float distance = Vector3.Distance(secondOrigin, origin);
-                                actualZ = -(distance / 2);
+                                //Debug.Log(hit.transform.root.name);
+                                float distance = Vector3.Distance(secondOrigin, origin); // Calculate distance from both origins
+                                actualZ = -(distance / 2); // Halve the distance and convert to negative value
 
                                 if (actualZ < 0.2f)
                                 {

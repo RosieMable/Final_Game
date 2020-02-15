@@ -16,7 +16,6 @@ namespace ZaldensGambit
 
         protected override void CombatBehaviour()
         {
-            //slot = -1;
             var slotManager = player.GetComponent<AttackSlotManager>();
             Quaternion targetRotation = Quaternion.LookRotation(player.transform.position - transform.position, Vector3.up); // Calculate the rotation desired
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed);

@@ -8,23 +8,23 @@ namespace ZaldensGambit
     {
         private void OnTriggerEnter(Collider other)
         {
-            Enemy enemyStates = other.transform.GetComponentInParent<Enemy>(); // Finds the parent of the object hit and searches for an 'EnemyStates' reference.
+            Enemy enemyStates = other.transform.GetComponentInParent<Enemy>();
             StateManager states = other.transform.GetComponentInParent<StateManager>();
 
-            if (enemyStates == null && states == null)
+            if (enemyStates == null && states == null) // If target hit is not a damageable character...
             {
                 return;
             }
 
-            if (GetComponentInParent<StateManager>())
+            if (GetComponentInParent<StateManager>()) // If we (the weapon) are held by the player...
             {
-                if (enemyStates != null)
+                if (enemyStates != null) // If we hit an enemy...
                 {
                     enemyStates.TakeDamage(10); // Needs to be changed to a variable instead of hard coded value
                 }
             }
 
-            if (states != null)
+            if (states != null) // If we hit the player...
             {
                 states.TakeDamage(10, GetComponentInParent<Enemy>().gameObject.transform);
             }

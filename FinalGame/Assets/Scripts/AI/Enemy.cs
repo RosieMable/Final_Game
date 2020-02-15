@@ -7,6 +7,9 @@ using TMPro;
 
 namespace ZaldensGambit
 {
+    /// <summary>
+    /// Base class for enemy behaviour, contains information on enemy type, health, animation/UI references, base combat logic, etc.
+    /// </summary>
     public abstract class Enemy : MonoBehaviour
     {
         private enum Type { Famine, War, Death, Pestilence } // Famine = Lifeleech on hit, War = More damage, Death = Delayed explosian on death, Pestilence = DoT effect
@@ -83,7 +86,7 @@ namespace ZaldensGambit
         }
 
         /// <summary>
-        /// Deals damage to the NPCs health and plays hurt animations + applies root motion
+        /// Reduces the AI's health and plays hurt animations + applies root motion.
         /// </summary>
         public void TakeDamage(float damageValue)
         {
@@ -92,11 +95,10 @@ namespace ZaldensGambit
                 return; // Return out of method, take no damage
             }
 
-            attackDelay = Time.time + attackCooldown;
-
-            float previousHealth = health;
-            health -= damageValue;
-            healthSlider.value = health;
+            attackDelay = Time.time + attackCooldown; // Add onto the attack delay as we have been hit
+            
+            health -= damageValue; // Reduce health by damage value
+            healthSlider.value = health; // Update slider to represent new health total
 
             if (damageText.IsActive()) // If already showing damage text...
             {
@@ -109,17 +111,17 @@ namespace ZaldensGambit
 
             damageText.text = damageTextValue.ToString();
 
-            if (healthCoroutine != null)
+            if (healthCoroutine != null) // If the AI health is already visible
             {
-                StopCoroutine(healthCoroutine);
-                healthCoroutine = StartCoroutine(RevealHealthBar(3));
+                StopCoroutine(healthCoroutine); // Stop coroutine, prevents bar from disappearing before intended
+                healthCoroutine = StartCoroutine(RevealHealthBar(3)); // Recall coroutine, ensures bar disappears when intended
             }
             else
             {
-                healthCoroutine = StartCoroutine(RevealHealthBar(3));
+                healthCoroutine = StartCoroutine(RevealHealthBar(3)); // Start health coroutine to display AI health
             }
 
-            if (damageTextCoroutine != null)
+            if (damageTextCoroutine != null) // Same as above but for damage text
             {
                 StopCoroutine(damageTextCoroutine);
                 damageTextCoroutine = StartCoroutine(RevealDamageText(3));
@@ -129,16 +131,15 @@ namespace ZaldensGambit
                 damageTextCoroutine = StartCoroutine(RevealDamageText(3));
             }
 
-            if (!currentAttackers.Contains(this))
+            if (!currentAttackers.Contains(this)) // If the AI is not within the list of attackers...
             {
-                currentAttackers[Random.Range(0, currentAttackers.Count - 1)].GetComponent<Enemy>().RemoveFromAttackersList();
-                currentAttackers.Add(this);
-                movingToAttack = true;
+                currentAttackers[Random.Range(0, currentAttackers.Count - 1)].GetComponent<Enemy>().RemoveFromAttackersList(); // Remove a random AI from the list
+                currentAttackers.Add(this); // Add self to the list
+                movingToAttack = true; // Flag as moving to attack to no longer be bound to the combat circle positions
             }            
 
-            int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length);
-            charAnim.CrossFade(hurtAnimations[hurtAnimationToPlay].name, 0.1f);
-            charAnim.applyRootMotion = true;
+            int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length); // Return random animation from list
+            charAnim.CrossFade(hurtAnimations[hurtAnimationToPlay].name, 0.1f); // Play animation
             charAnim.applyRootMotion = true;
         }
 
@@ -217,6 +218,9 @@ namespace ZaldensGambit
             }
         }
 
+        /// <summary>
+        /// Actions performed by the AI dependent on their current state.
+        /// </summary>
         protected virtual void PerformStateBehaviour()
         {
             switch (currentState)
@@ -230,7 +234,6 @@ namespace ZaldensGambit
                     if (!isInvulnerable && !inAction)
                     {
                         charAnim.CrossFade("attack", 0.1f);
-                        Invoke("RemoveFromAttackersList", 1f);
                         RotateTowardsTarget(player.transform);
                     }
                     else
@@ -248,6 +251,9 @@ namespace ZaldensGambit
             }
         }
 
+        /// <summary>
+        /// Moves the AI towards the players position.
+        /// </summary>
         protected void MoveToTarget()
         {
             if (agent.enabled)
@@ -256,6 +262,9 @@ namespace ZaldensGambit
             }
         }
 
+        /// <summary>
+        /// Loops over list of patrol points in order, moving towards each point before moving along to the next.
+        /// </summary>
         protected void Patrol()
         {
             if (patrolPoints.Length > 0) // If there are any patrol points allocated...
@@ -281,7 +290,7 @@ namespace ZaldensGambit
         }
 
         /// <summary>
-        /// Rotates the character towards another transform smoothly, based on character rotation speed
+        /// Rotates the character towards another position smoothly, based on character rotation speed
         /// </summary>
         protected void RotateTowardsTarget(Transform target)
         {
@@ -289,6 +298,9 @@ namespace ZaldensGambit
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed); // Apply rotation
         }
 
+        /// <summary>
+        /// Rotates the character towards another position smoothly, based on character rotation speed
+        /// </summary>
         protected void RotateTowardsTarget(Vector3 location)
         {
             Quaternion targetRotation = Quaternion.LookRotation(location - transform.position, Vector3.up); // Calculate the rotation desired
@@ -296,7 +308,7 @@ namespace ZaldensGambit
         }
 
         /// <summary>
-        /// The logic behind the characters combat decisions and behaviour, intended to be overridden by derived classes
+        /// The logic behind the AIs combat decisions and behaviour, intended to be overridden by derived classes
         /// </summary>
         protected virtual void CombatBehaviour()
         {
@@ -304,31 +316,26 @@ namespace ZaldensGambit
             rigidBody.velocity = Vector3.zero; // Reset velocity to ensure no gliding behaviour as navmesh agents do not follow ordinary rigidbody physics
             RotateTowardsTarget(player.transform);
 
-            if (movingToAttack)
+            if (movingToAttack) // If the AI is flagged as moving to attack...
             {
                 MoveToTarget();
             }
-            else
+            else // Otherwise if not moving to attack...
             {
-                if (agent.enabled)
+                if (agent.enabled) // If Navmeshagent is active...
                 {
-                    //Vector3 targetPosition = Random.insideUnitSphere;
-                    //targetPosition += player.transform.position;
-                    //targetPosition.y = 0;
-                    //agent.SetDestination(targetPosition);
-
-                    if (currentSlot == -1)
+                    if (currentSlot == -1) // If not assigned a slot...
                     {
                         currentSlot = slotManager.ReserveSlot(this, currentSlot, false);
                     }
 
-                    if (currentSlot == -1)
+                    if (currentSlot == -1) // If still not assigned a slot...
                     {
                         return;
                     }
 
                     NavMeshPath path = new NavMeshPath();
-                    agent.CalculatePath(slotManager.GetSlotPosition(currentSlot), path);
+                    agent.CalculatePath(slotManager.GetSlotPosition(currentSlot), path); // Calculate if the position of the slot is on the NavMesh
 
                     if (path.status == NavMeshPathStatus.PathPartial)
                     {
@@ -353,7 +360,7 @@ namespace ZaldensGambit
         }
 
         /// <summary>
-        /// Determines the state of the character based attack & aggro ranges
+        /// Determines the state of the character based on aggro and attack ranges.
         /// </summary>
         protected virtual State UpdateState()
         {
@@ -388,17 +395,26 @@ namespace ZaldensGambit
             return State.Idle;
         }
 
+        /// <summary>
+        /// Show AI UI when locked on.
+        /// </summary>
         public void ShowLockOnHealth()
         {
             healthSlider.gameObject.SetActive(true);
         }
 
+        /// <summary>
+        /// Hide AI UI when locked onto.
+        /// </summary>
         public void HideLockOnHealth()
         {
             healthSlider.gameObject.SetActive(false);
             damageText.gameObject.SetActive(false);
         }
 
+        /// <summary>
+        /// Show AI UI for the duration specified.
+        /// </summary>
         private IEnumerator RevealHealthBar(float duration)
         {
             healthSlider.gameObject.SetActive(true);
@@ -412,6 +428,9 @@ namespace ZaldensGambit
             }
         }
 
+        /// <summary>
+        /// Show AI UI for the duration specified
+        /// </summary>
         private IEnumerator RevealDamageText(float duration)
         {
             damageText.gameObject.SetActive(true);
@@ -422,6 +441,9 @@ namespace ZaldensGambit
             damageTextCoroutine = null;
         }
 
+        /// <summary>
+        /// Draw the aggro & attack ranges in the scene view.
+        /// </summary>
         private void OnDrawGizmosSelected()
         {
             // Draw a yellow wire sphere into the scene editor viewport to match aggro range
@@ -477,24 +499,28 @@ namespace ZaldensGambit
         protected bool withinRangeOfTarget;
         protected bool movingToAttack;
         [SerializeField] protected static List<Enemy> currentAttackers = new List<Enemy>();
-        protected static int maximumNumberOfAttackers = 1;
+        protected static int maximumNumberOfAttackers = 2;
         protected bool strafing;
         protected int currentSlot = -1; 
 
+        /// <summary>
+        /// Removes the AI from the list of attackers and flags them as no longer moving to attack.
+        /// </summary>
         protected void RemoveFromAttackersList()
         {
             if (currentAttackers.Contains(this))
             {
                 currentAttackers.Remove(this);
             }
+
             movingToAttack = false;
             var slotManager = player.GetComponent<AttackSlotManager>();
-            if (currentSlot != -1)
+
+            if (currentSlot != -1) // If the AI has a valid slot assigned...
             {
-                slotManager.ClearSlot(currentSlot);
-                currentSlot = -1;
+                slotManager.ClearSlot(currentSlot); // Clear slot
+                currentSlot = -1; // Assign invalid slot - will be recalculated when they attempt to reserve another.
             }
-            // print(gameObject.name + " is removed from the attackers list.");
         }
     }        
 }

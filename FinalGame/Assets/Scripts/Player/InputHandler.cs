@@ -100,10 +100,7 @@ namespace ZaldensGambit
 
 
         /// <summary>
-        /// When you press the lock on key, search for the closest valid target - Done
-        /// If we already have a target, skip them in the search - Done
-        /// Otherwise if there are no other targets, reset - ?
-        /// Need another key to get out of lock on mode if there are multiple enemies, for now, Q? - Done
+        /// Searches the nearby area for the closest target that can be locked onto if one is present. Resets locked on target is Q key is pressed, cycles to second closest target if search is attempted whilst already locked on to another target.
         /// </summary>
         private void SearchForLockOnTarget()
         {
@@ -179,15 +176,7 @@ namespace ZaldensGambit
                 {
                     cameraManager.lockOnTarget = states.lockOnTarget.transform;
                     cameraManager.lockedOn = states.lockOn;
-                }                
-
-                //if (states.lockOnTarget == null) // If there is no target to lock onto...
-                //{
-                //    states.lockOn = false; // Toggle lock on state
-                //}
-
-                //cameraManager.lockOnTarget = states.lockOnTarget.transform; // Update CameraManager values to match with the StateManager
-                //cameraManager.lockedOn = states.lockOn;
+                }
             }
         }
     }

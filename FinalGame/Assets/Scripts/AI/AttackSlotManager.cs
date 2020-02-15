@@ -5,6 +5,9 @@ using UnityEngine.AI;
 
 namespace ZaldensGambit
 {
+    /// <summary>
+    /// Ran on the Player Character currently, calculates attack slots around the players position based on number of slots desired (count) and distance from the player, has methods for AIs to calculate slot position and reserve/clear slots.
+    /// </summary>
     public class AttackSlotManager : MonoBehaviour
     {
         [SerializeField] private List<GameObject> slots;
@@ -21,6 +24,9 @@ namespace ZaldensGambit
             }
         }
 
+        /// <summary>
+        /// Retrieve the position of the slot at the desired index.
+        /// </summary>
         public Vector3 GetSlotPosition(int index)
         {
             if (index != -1)
@@ -30,10 +36,12 @@ namespace ZaldensGambit
                 var offset = new Vector3(0, 0, distance); //+ new Vector3(Random.Range(-1,2), 0, Random.Range(-1, 2));       
                 return position + (Quaternion.Euler(new Vector3(0, degreesPerIndex * index, 0)) * offset);
             }
-            print("halp");
             return Vector3.zero;
         }
 
+        /// <summary>
+        /// Reserve the slot returned whilst ignoring a specific slot if already occupying a slot with an option to select a slot at random.
+        /// </summary>
         public int ReserveSlot(Enemy attacker, int slotToIgnore, bool selectAtRandom)
         {
             var bestPosition = attacker.transform.position;
@@ -127,6 +135,10 @@ namespace ZaldensGambit
             return bestSlot;
         }
 
+        /// <summary>
+        /// Clear the contents of a slot.
+        /// </summary>
+        /// <param name="slot"></param>
         public void ClearSlot(int slot)
         {
             if (slot != -1)
@@ -135,6 +147,9 @@ namespace ZaldensGambit
             }
         }
 
+        /// <summary>
+        /// Draws the position of the slots in the scene view for visualisation.
+        /// </summary>
         void OnDrawGizmosSelected()
         {
             for (int index = 0; index < count; ++index)

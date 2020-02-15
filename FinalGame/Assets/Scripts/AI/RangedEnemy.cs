@@ -68,10 +68,15 @@ namespace ZaldensGambit
             }
         }
 
+        /// <summary>
+        /// Calculate a position nearby that is within the NavMesh.
+        /// </summary>
         private void MoveToNewPosition()
         {
+            int loops = 0;
             while (true)
             {
+                loops++;
                 desiredPosition = Random.insideUnitSphere + transform.position;
                 desiredPosition.x += Random.Range(-3, 4);
                 desiredPosition.y = 0;
@@ -92,6 +97,12 @@ namespace ZaldensGambit
                 {
                     print("Valid path found - Moving towards");
                     movingToPosition = true;
+                    break;
+                }
+
+                if (loops == 10)
+                {
+                    print("Failed to calculate a path too many times, breaking out of loop.");
                     break;
                 }
             }

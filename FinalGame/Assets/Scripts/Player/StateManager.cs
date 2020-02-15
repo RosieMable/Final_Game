@@ -20,8 +20,9 @@ namespace ZaldensGambit
         [SerializeField] private float stepSearchOvershoot = 0.01f; // How much to overshoot into the direction a potential step in units when testing. High values prevent player from walking up tiny steps but may cause problems.
         private List<ContactPoint> contactPoints = new List<ContactPoint>();
 
-        public float health = 100;
-        public float stamina = 100;
+        [SerializeField] private float maximumHealth = 100;
+        public float currentHealth = 100;
+        //public float stamina = 100;
         [HideInInspector] public bool isInvulnerable;
         [HideInInspector] public bool grounded;
         [HideInInspector] public bool lightAttack, heavyAttack, dodgeRoll, block, specialAttack;
@@ -107,6 +108,9 @@ namespace ZaldensGambit
             charAnim.applyRootMotion = false;
         }
 
+        /// <summary>
+        /// Deals damage to the player unless invulnerable or the damageSource is directly in front of the player whilst they are blocking.
+        /// </summary>
         public void TakeDamage(float value, Transform damageSource)
         {
             Enemy enemy = damageSource.GetComponent<Enemy>();
@@ -135,7 +139,7 @@ namespace ZaldensGambit
                 }
             }
 
-            health -= value;
+            currentHealth -= value;
             canMove = false;
             int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length);
             charAnim.CrossFade(hurtAnimations[hurtAnimationToPlay].name, 0.1f);
@@ -149,7 +153,7 @@ namespace ZaldensGambit
         {
             delta = deltaTime;
 
-            if (health <= 0)
+            if (currentHealth <= 0)
             {
                 // TBD
             }

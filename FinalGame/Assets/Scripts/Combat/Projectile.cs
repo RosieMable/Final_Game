@@ -21,12 +21,12 @@ namespace ZaldensGambit
 
         private void OnCollisionEnter(Collision collision)
         {
-            Enemy enemyStates = collision.transform.GetComponentInParent<Enemy>(); // Finds the parent of the object hit and searches for an 'EnemyStates' reference.
+            Enemy enemyStates = collision.transform.GetComponentInParent<Enemy>();
             StateManager states = collision.transform.GetComponentInParent<StateManager>();
 
-            if (!hitShield)
+            if (!hitShield) // If we did NOT hit a shield...
             {
-                if (states != null)
+                if (states != null) // If we hit the player...
                 {
                     RaycastHit hitInfo;
                     Physics.Raycast(transform.position, forwardVector, out hitInfo, 0.5f);
@@ -40,11 +40,6 @@ namespace ZaldensGambit
                     }
                 }
             }
-
-            //if (enemyStates != null)
-            //{
-            //    enemyStates.TakeDamage(damageValue);
-            //}
 
             GetComponent<MeshRenderer>().enabled = false;
             GetComponent<Collider>().enabled = false;
