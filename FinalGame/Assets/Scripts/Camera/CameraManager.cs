@@ -174,7 +174,7 @@ namespace ZaldensGambit
             Vector3 origin = pivotPoint.position;
             Vector3 direction = -pivotPoint.forward;
 
-            Debug.DrawRay(origin, direction * step, Color.blue);
+            //Debug.DrawRay(origin, direction * step, Color.blue);
 
             if (Physics.Raycast(origin, direction, out hit, step, states.ignoredLayers)) // Raycast, ignoring the same layers as the player
             {
@@ -210,7 +210,7 @@ namespace ZaldensGambit
                                 break;
                         }
 
-                        Debug.DrawRay(secondOrigin, dir * 0.5f, Color.red);
+                        //Debug.DrawRay(secondOrigin, dir * 0.5f, Color.red);
 
                         if (Physics.Raycast(secondOrigin, dir, out hit, 0.5f, states.ignoredLayers)) // Raycast, ignoring the same layers as the player
                         {
