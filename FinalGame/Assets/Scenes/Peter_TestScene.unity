@@ -2349,6 +2349,7 @@ MonoBehaviour:
   stepSearchOvershoot: 0.001
   maximumHealth: 100
   currentHealth: 100
+  damage: 10
   isInvulnerable: 0
   grounded: 0
   lightAttack: 0
@@ -3353,8 +3354,8 @@ RectTransform:
   m_Father: {fileID: 682231382}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.83, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -4718,8 +4719,8 @@ RectTransform:
   m_Father: {fileID: 1940272985}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.83, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -8284,8 +8285,8 @@ RectTransform:
   m_Father: {fileID: 1394879993}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.83, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -9154,6 +9155,16 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4290027140501332826, guid: 378923ae927ea414abaf99fd73135676,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 116.29999
+      objectReference: {fileID: 0}
+    - target: {fileID: 4290027140501332826, guid: 378923ae927ea414abaf99fd73135676,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 378923ae927ea414abaf99fd73135676, type: 3}
 --- !u!1001 &1261000099
@@ -9744,7 +9755,7 @@ PrefabInstance:
     - target: {fileID: 2075887411006638500, guid: efcabda3a236e1d41b616e4775c6343a,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2075887411006638500, guid: efcabda3a236e1d41b616e4775c6343a,
         type: 3}
@@ -11770,6 +11781,7 @@ MonoBehaviour:
   lockedOnto: 0
   attackDelay: 0
   attackCooldown: 0.5
+  damage: 10
   attackRange: 1.5
   aggroRange: 10
   speed: 4
@@ -13734,7 +13746,7 @@ PrefabInstance:
     - target: {fileID: 2075887411006638500, guid: efcabda3a236e1d41b616e4775c6343a,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2075887411006638500, guid: efcabda3a236e1d41b616e4775c6343a,
         type: 3}
@@ -15045,7 +15057,7 @@ PrefabInstance:
     - target: {fileID: 2075887411006638500, guid: efcabda3a236e1d41b616e4775c6343a,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2075887411006638500, guid: efcabda3a236e1d41b616e4775c6343a,
         type: 3}

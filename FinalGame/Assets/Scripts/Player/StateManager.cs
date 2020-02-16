@@ -20,8 +20,12 @@ namespace ZaldensGambit
         [SerializeField] private float stepSearchOvershoot = 0.01f; // How much to overshoot into the direction a potential step in units when testing. High values prevent player from walking up tiny steps but may cause problems.
         private List<ContactPoint> contactPoints = new List<ContactPoint>();
 
-        [SerializeField] private float maximumHealth = 100;
+        public float maximumHealth = 100;
         public float currentHealth = 100;
+        private int level = 1;
+        private int experience = 0;
+        private int experienceForNextLevel = 1000;
+        public int damage = 10;
         //public float stamina = 100;
         [HideInInspector] public bool isInvulnerable;
         [HideInInspector] public bool grounded;
@@ -139,8 +143,16 @@ namespace ZaldensGambit
                 }
             }
 
+            float previousHealth = currentHealth;
             currentHealth -= value;
             canMove = false;
+
+            if (currentHealth <= 0)
+            {
+                print("Player died!");
+                // Play death animation
+            }
+
             int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length);
             charAnim.CrossFade(hurtAnimations[hurtAnimationToPlay].name, 0.1f);
             charAnim.applyRootMotion = true;
@@ -151,6 +163,7 @@ namespace ZaldensGambit
         /// </summary>
         public void Tick(float deltaTime)
         {
+            CheckHealth();
             delta = deltaTime;
 
             if (currentHealth <= 0)
@@ -277,9 +290,7 @@ namespace ZaldensGambit
             if (grounded)
             {
                 rigidBody.velocity = movementDirection * (moveSpeed * moveAmount); // Apply force in the direction the player is heading
-                //Debug.Log("Before " + rigidBody.velocity);
                 rigidBody.velocity = new Vector3(rigidBody.velocity.x, rigidBody.velocity.y * 200, rigidBody.velocity.z);
-                //Debug.Log("After " + rigidBody.velocity);
             }
 
             Vector3 targetDirection = movementDirection;
@@ -315,6 +326,22 @@ namespace ZaldensGambit
             else
             {
                 HandleLockOnAnimations(movementDirection);
+            }
+        }
+
+        /// <summary>
+        /// Checks the players health and clamps between the maximum and minimum values.
+        /// </summary>
+        private void CheckHealth()
+        {
+            if (currentHealth >= maximumHealth)
+            {
+                currentHealth = maximumHealth;
+            }
+            else if (currentHealth <= 0)
+            {
+                currentHealth = 0;
+                print("???");
             }
         }
 
@@ -625,6 +652,20 @@ namespace ZaldensGambit
            // print("Stepping up");
             stepUpOffset = stepUpPointOffset;
             return true; //We're going to step up!
+        }
+
+        /// <summary>
+        /// Checks if the player has enough experience to levle up, if so increases their level and sets experienced needed for the next level up.
+        /// </summary>
+        public void LevelUp()
+        {
+            if (experience > experienceForNextLevel)
+            {
+                level++;
+                experienceForNextLevel = 1000 * level; // 1000, 2000, 3000, 4000, 5000, etc... Update later to be a curve that becomes steeper over time.
+                damage += 5;
+                maximumHealth += 10;
+            }
         }
 
         private void OnCollisionEnter(Collision collision)

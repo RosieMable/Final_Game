@@ -6,6 +6,20 @@ namespace ZaldensGambit
 {
     public class DamageCollider : MonoBehaviour
     {
+        private int damage = 10;
+
+        private void Awake()
+        {
+            if (GetComponentInParent<StateManager>())
+            {
+                damage = GetComponentInParent<StateManager>().damage;
+            }
+            else if (GetComponentInParent<Enemy>())
+            {
+                damage = GetComponentInParent<Enemy>().damage;
+            }
+        }
+
         private void OnTriggerEnter(Collider other)
         {
             Enemy enemyStates = other.transform.GetComponentInParent<Enemy>();
@@ -20,13 +34,14 @@ namespace ZaldensGambit
             {
                 if (enemyStates != null) // If we hit an enemy...
                 {
-                    enemyStates.TakeDamage(10); // Needs to be changed to a variable instead of hard coded value
+                    enemyStates.TakeDamage(damage); // Needs to be changed to a variable instead of hard coded value
                 }
             }
 
             if (states != null) // If we hit the player...
             {
                 states.TakeDamage(10, GetComponentInParent<Enemy>().gameObject.transform);
+                GetComponentInParent<WeaponHook>().CloseDamageCollider();
             }
         }
     }

@@ -30,6 +30,7 @@ namespace ZaldensGambit
         private Coroutine damageTextCoroutine;
         public float attackDelay;
         public float attackCooldown = 0.5f;
+        public int damage = 10;
         [SerializeField] protected float attackRange = 1.5f;
         [SerializeField] protected float aggroRange = 10;
         [SerializeField] protected float speed = 4;
