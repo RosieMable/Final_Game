@@ -49,7 +49,7 @@ namespace ZaldensGambit
             }
             else if (healthBar.fillAmount != player.currentHealth / player.maximumHealth)
             {
-                healthBar.fillAmount = Mathf.Lerp(healthBar.fillAmount, player.currentHealth / 100, Time.deltaTime * 5);
+                healthBar.fillAmount = Mathf.Lerp(healthBar.fillAmount, player.currentHealth / player.maximumHealth, Time.deltaTime * 5);
                 healthText.text = player.currentHealth.ToString() + " / " + player.maximumHealth.ToString();
             }            
         }
