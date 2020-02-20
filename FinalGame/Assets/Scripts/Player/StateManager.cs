@@ -35,6 +35,9 @@ namespace ZaldensGambit
         [HideInInspector] public bool lockOn;
         [HideInInspector] public bool isBlocking;
         [HideInInspector] public bool listenForCombos;
+        [HideInInspector] public bool shieldBashing;
+        private float shieldBashCooldown = 2;
+        private float shieldBashTimer;
         private bool comboActive;
 
         [SerializeField] private AnimationClip[] lightAttacksChain;
@@ -136,7 +139,7 @@ namespace ZaldensGambit
                         charAnim.CrossFade("BlockShieldHit", 0.1f);
                         if (enemy)
                         {
-                            enemy.attackDelay = Time.time + enemy.attackCooldown * 1.5f;
+                            enemy.attackDelay = Time.time + enemy.attackCooldown * 2f;
                         }
                         return;
                     }
@@ -165,11 +168,6 @@ namespace ZaldensGambit
         {
             CheckHealth();
             delta = deltaTime;
-
-            if (currentHealth <= 0)
-            {
-                // TBD
-            }
 
             if (!canMove) // If the character can't move...
             {
@@ -436,6 +434,17 @@ namespace ZaldensGambit
                 return;
             }
 
+            if (isBlocking && lightAttack && !inAction && shieldBashTimer < Time.time)
+            {
+                shieldBashTimer = Time.time + shieldBashCooldown;
+                animationClipIndex = 0; // Reset array position
+                listenForCombos = false;
+                canMove = false;
+                actionLockoutDuration = 0.3f;
+                charAnim.CrossFade("ParryShield", 0.2f); // Apply animation crossfade.
+                return;
+            }
+
             if (listenForCombos) // If we are listening for a combo input and are not in the middle of a combo...
             {
                 slot = actionManager.GetActionSlot(this); // Return action that matches input
@@ -448,7 +457,7 @@ namespace ZaldensGambit
                 else
                 {
                     listenForCombos = false;
-                    desiredAnimation = slot.desiredAnimation;
+                    desiredAnimation = slot.desiredAnimation;           
                 }
 
                 // Light Attack Combo
@@ -483,7 +492,7 @@ namespace ZaldensGambit
                     charAnim.SetBool("blocking", isBlocking);
                     charAnim.SetBool("canMove", true);
                     canMove = true;
-                    actionLockoutDuration = 0.5f;
+                    actionLockoutDuration = 0.3f;
                     return;
                 }
                 else if (desiredAnimation.name == "DodgeRoll")
@@ -516,7 +525,7 @@ namespace ZaldensGambit
             
             // -----------
 
-            if (!canMove) // If the player can't move (Such as mid roll, staggered from a hit, etc.)
+            if (!canMove || shieldBashing) // If the player can't move (Such as mid roll, staggered from a hit, etc.)
             {
                 return;
             }
@@ -538,7 +547,7 @@ namespace ZaldensGambit
                 charAnim.SetBool("blocking", isBlocking);
                 canMove = true;
                 charAnim.SetBool("canMove", true);
-                actionLockoutDuration = 0.5f;
+                actionLockoutDuration = 0.3f;
                 return;
             }
             else if (desiredAnimation.name == "DodgeRoll")
@@ -690,6 +699,12 @@ namespace ZaldensGambit
                 {
                     TakeDamage(other.GetComponent<Projectile>().damageValue, other.transform);
                 }
+            }
+
+            if (other.GetComponent<Enemy>() && shieldBashing)
+            {
+                other.GetComponent<Enemy>().TakeDamage(5);
+                other.GetComponent<Enemy>().attackDelay = Time.time + other.GetComponent<Enemy>().attackCooldown * 4f;
             }
         }
     }

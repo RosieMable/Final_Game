@@ -10,9 +10,15 @@ namespace ZaldensGambit
         private enum CombatPattern { Charge }
         [SerializeField] private CombatPattern combatPattern;
         private Vector3 retreatPosition;
-        [SerializeField] AnimationClip[] attackAnimations;
         private float slotMovementTimer;
-        private float slotMovementCooldown = 1.5f;    
+        private float slotMovementCooldown = 1.5f;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            weaponHook = GetComponentInChildren<WeaponHook>();
+            weaponHook.CloseDamageCollider();
+        }
 
         protected override void CombatBehaviour()
         {

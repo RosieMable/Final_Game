@@ -46,13 +46,14 @@ namespace ZaldensGambit
         [SerializeField] protected LayerMask playerLayer;
         private CameraManager cameraManager;
         [SerializeField] protected AnimationClip[] hurtAnimations;
+        [SerializeField] protected AnimationClip[] attackAnimations;
 
         protected enum State { Idle, Pursuing, Attacking }
         protected State currentState;
 
         public bool isDead;
 
-        private void Awake()
+        protected virtual void Awake()
         {
             player = FindObjectOfType<StateManager>().gameObject;
             rigidBody = GetComponent<Rigidbody>();
@@ -64,8 +65,6 @@ namespace ZaldensGambit
             agent = GetComponent<NavMeshAgent>();
             agent.speed = speed;
             agent.stoppingDistance = attackRange;
-            weaponHook = GetComponentInChildren<WeaponHook>();
-            weaponHook.CloseDamageCollider();
             healthSlider = GetComponentInChildren<Slider>();
             healthSlider.maxValue = health;
             healthSlider.value = health;

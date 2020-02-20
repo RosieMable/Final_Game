@@ -230,6 +230,22 @@ namespace ZaldensGambit
             states.isInvulnerable = false;
             states.actionLockoutDuration = 0.3f;
         }
+
+        public void ToggleShieldBashOn()
+        {
+            if (states != null)
+            {
+                states.shieldBashing = true;
+            }
+        }
+
+        public void ToggleShieldBashOff()
+        {
+            if (states != null)
+            {
+                states.shieldBashing = false;
+            }
+        }
     }
 }
 
