@@ -43,7 +43,7 @@ namespace ZaldensGambit
                         if (attackDelay < Time.time && agent.isStopped && !inAction & !isInvulnerable)
                         {
                             int animationToPlay = Random.Range(0, attackAnimations.Length);
-                            charAnim.CrossFade(attackAnimations[animationToPlay].name, 0.2f);
+                            //charAnim.CrossFade(attackAnimations[animationToPlay].name, 0.2f);
                             GameObject _projectile = Instantiate(projectile, transform.position + transform.forward + new Vector3(0, 1, 0), Quaternion.identity, null);
                             _projectile.GetComponent<Projectile>().forwardVector = transform.forward;
                             attackDelay = Time.time + attackCooldown - 0.5f + Random.Range(0, 1f);
@@ -55,7 +55,7 @@ namespace ZaldensGambit
                         RotateTowardsTarget(player.transform);
                     }
 
-                    if (movingToPosition)
+                    if (movingToPosition && agent.isActiveAndEnabled)
                     {
                         agent.isStopped = false;
                         RotateTowardsTarget(desiredPosition);                        
@@ -75,37 +75,40 @@ namespace ZaldensGambit
         /// </summary>
         private void MoveToNewPosition()
         {
-            int loops = 0;
-            while (true)
+            if (agent.isActiveAndEnabled)
             {
-                loops++;
-                desiredPosition = Random.insideUnitSphere + transform.position;
-                desiredPosition.x += Random.Range(-3, 4);
-                desiredPosition.y = 0;
-                desiredPosition.z += Random.Range(-3, 4);
+                int loops = 0;
+                while (true)
+                {
+                    loops++;
+                    desiredPosition = Random.insideUnitSphere + transform.position;
+                    desiredPosition.x += Random.Range(-3, 4);
+                    desiredPosition.y = 0;
+                    desiredPosition.z += Random.Range(-3, 4);
 
-                NavMeshPath path = new NavMeshPath();
-                agent.CalculatePath(desiredPosition, path);
+                    NavMeshPath path = new NavMeshPath();
+                    agent.CalculatePath(desiredPosition, path);
 
-                if (path.status == NavMeshPathStatus.PathPartial)
-                {
-                    print("Path out of bounds - Recalculating");
-                }
-                if (path.status == NavMeshPathStatus.PathInvalid)
-                {
-                    print("Path invalid - Recalculating");
-                }
-                if (path.status == NavMeshPathStatus.PathComplete)
-                {
-                    print("Valid path found - Moving towards");
-                    movingToPosition = true;
-                    break;
-                }
+                    if (path.status == NavMeshPathStatus.PathPartial)
+                    {
+                        print("Path out of bounds - Recalculating");
+                    }
+                    if (path.status == NavMeshPathStatus.PathInvalid)
+                    {
+                        print("Path invalid - Recalculating");
+                    }
+                    if (path.status == NavMeshPathStatus.PathComplete)
+                    {
+                        print("Valid path found - Moving towards");
+                        movingToPosition = true;
+                        break;
+                    }
 
-                if (loops == 10)
-                {
-                    print("Failed to calculate a path too many times, breaking out of loop.");
-                    break;
+                    if (loops == 10)
+                    {
+                        print("Failed to calculate a path too many times, breaking out of loop.");
+                        break;
+                    }
                 }
             }
         }
