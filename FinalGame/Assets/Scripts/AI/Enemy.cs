@@ -200,7 +200,6 @@ namespace ZaldensGambit
 
                 if (inAction) // If an animation is playing...
                 {
-                    print("In Animation");
                     agent.enabled = false;
                     charAnim.applyRootMotion = true;
                     actionDelay += delta;
