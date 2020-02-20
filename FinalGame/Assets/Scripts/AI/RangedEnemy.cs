@@ -42,7 +42,8 @@ namespace ZaldensGambit
                     {
                         if (attackDelay < Time.time && agent.isStopped && !inAction & !isInvulnerable)
                         {
-
+                            int animationToPlay = Random.Range(0, attackAnimations.Length);
+                            charAnim.CrossFade(attackAnimations[animationToPlay].name, 0.2f);
                             GameObject _projectile = Instantiate(projectile, transform.position + transform.forward + new Vector3(0, 1, 0), Quaternion.identity, null);
                             _projectile.GetComponent<Projectile>().forwardVector = transform.forward;
                             attackDelay = Time.time + attackCooldown - 0.5f + Random.Range(0, 1f);
