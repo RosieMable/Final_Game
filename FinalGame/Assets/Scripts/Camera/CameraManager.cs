@@ -17,6 +17,7 @@ namespace ZaldensGambit
         // [SerializeField] private float controllerSpeed = 2;
         [SerializeField] private Transform target;
         public Transform lockOnTarget;
+        public GameObject lockOnPrefab;
 
         public Transform pivotPoint; // Point in world space that the camera rotates from
         public Transform cameraTransform;
@@ -65,6 +66,10 @@ namespace ZaldensGambit
             originalMaxAngle = maxAngle;
             originalMinAngle = minAngle;
             currentZ = defaultZDistance;
+            lockOnPrefab.transform.SetParent(this.transform);
+            lockOnPrefab.transform.position = Vector3.zero;
+            lockOnPrefab.SetActive(false);
+
         }
 
         /// <summary>
@@ -112,11 +117,22 @@ namespace ZaldensGambit
             tiltAngle = Mathf.Clamp(tiltAngle, minAngle, maxAngle); // Clamp the Y axis between the minimum and maximum values
             pivotPoint.localRotation = Quaternion.Euler(tiltAngle, 0, 0); // Assign Y axis rotation to the camera
 
+            if(!lockedOn || lockOnTarget == null)
+            {
+                lockOnPrefab.transform.SetParent(this.transform);
+                lockOnPrefab.transform.position = Vector3.zero;
+                lockOnPrefab.SetActive(false);
+            }
+
             if (lockedOn && lockOnTarget != null)
             {
                 minAngle = lockOnMinAngle;
                 maxAngle = lockOnMaxAngle;
                 Vector3 targetDirection = lockOnTarget.position - transform.position;
+                lockOnPrefab.transform.SetParent(lockOnTarget);
+                lockOnPrefab.transform.position = new Vector3(lockOnTarget.position.x, lockOnTarget.position.y + 2.5f, lockOnTarget.position.z);
+                lockOnPrefab.transform.LookAt(new Vector3(transform.position.x, lockOnPrefab.transform.position.y, transform.position.z), Vector3.up);
+                lockOnPrefab.SetActive(true);
                 targetDirection.Normalize();
 
                 if (targetDirection == Vector3.zero)
