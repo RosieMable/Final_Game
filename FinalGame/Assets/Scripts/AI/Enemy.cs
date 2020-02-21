@@ -95,8 +95,7 @@ namespace ZaldensGambit
                 return; // Return out of method, take no damage
             }
 
-            attackDelay = Time.time + attackCooldown; // Add onto the attack delay as we have been hit
-            
+            attackDelay = Time.time + attackCooldown * 2; // Add onto the attack delay as we have been hit            
             health -= damageValue; // Reduce health by damage value
             healthSlider.value = health; // Update slider to represent new health total
 

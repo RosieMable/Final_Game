@@ -6,7 +6,7 @@ namespace ZaldensGambit
 {
     public class DamageCollider : MonoBehaviour
     {
-        private int damage = 10;
+        public int damage = 10;
 
         private void Awake()
         {
@@ -40,7 +40,7 @@ namespace ZaldensGambit
 
             if (states != null) // If we hit the player...
             {
-                states.TakeDamage(10, GetComponentInParent<Enemy>().gameObject.transform);
+                states.TakeDamage(damage, GetComponentInParent<Enemy>().gameObject.transform);
                 GetComponentInParent<WeaponHook>().CloseDamageCollider();
             }
         }

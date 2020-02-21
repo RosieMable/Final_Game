@@ -36,9 +36,8 @@ namespace ZaldensGambit
         [HideInInspector] public bool isBlocking;
         [HideInInspector] public bool listenForCombos;
         [HideInInspector] public bool shieldBashing;
-        private float shieldBashCooldown = 1.5f;
+        private float shieldBashCooldown = 2.5f;
         private float shieldBashTimer;
-        private bool comboActive;
 
         [SerializeField] private AnimationClip[] lightAttacksChain;
         [SerializeField] private AnimationClip[] heavyAttacksChain;
@@ -128,7 +127,7 @@ namespace ZaldensGambit
                 return;
             }
 
-            if (isBlocking)
+            if (isBlocking && !shieldBashing)
             {
                 RaycastHit[] hits = Physics.BoxCastAll(transform.position + transform.forward, transform.localScale / 2, transform.forward, transform.rotation, 5, ignoredLayers);
 
@@ -211,6 +210,7 @@ namespace ZaldensGambit
                 {
                     inAction = false; // Flag animation no longer playing
                     actionDelay = 0; // Reset
+                    print("No longer in action");
                 }
                 else
                 {
@@ -434,13 +434,11 @@ namespace ZaldensGambit
                 return;
             }
 
-            if (isBlocking && lightAttack && !inAction && shieldBashTimer < Time.time)
+            if (block && lightAttack && !inAction && shieldBashTimer < Time.time)
             {
                 shieldBashTimer = Time.time + shieldBashCooldown;
                 animationClipIndex = 0; // Reset array position
                 listenForCombos = false;
-                canMove = false;
-                actionLockoutDuration = 0.3f;
                 charAnim.CrossFade("ParryShield", 0.2f); // Apply animation crossfade.
                 return;
             }
@@ -448,7 +446,6 @@ namespace ZaldensGambit
             if (listenForCombos) // If we are listening for a combo input and are not in the middle of a combo...
             {
                 slot = actionManager.GetActionSlot(this); // Return action that matches input
-                comboActive = true; // Flag that a combo is now active
 
                 if (slot == null) // If there is nothing to return...
                 {
@@ -492,12 +489,13 @@ namespace ZaldensGambit
                     charAnim.SetBool("blocking", isBlocking);
                     charAnim.SetBool("canMove", true);
                     canMove = true;
-                    actionLockoutDuration = 0.3f;
+                    //actionLockoutDuration = 0.3f;
                     return;
                 }
                 else if (desiredAnimation.name == "DodgeRoll")
                 {
                     HandleDodgeRoll();
+                    animationClipIndex = 0;
                     return;
                 }
 
@@ -506,26 +504,22 @@ namespace ZaldensGambit
                     print("No animation of " + desiredAnimation + " found, is this the correct animation to search for?");
                     return;
                 }
-
-                if (!listenForCombos) // If we aren't listening for combos...
-                {
-                    //return;
-                }
                 
                 canMove = false;
                 inAction = true;
-                comboActive = false;
+
                 if (lockOn)
                 {
                     RotateTowardsTarget(lockOnTarget.transform);
                 }
+
                 charAnim.CrossFade(desiredAnimation.name, 0.2f); // Crossfade from current animation to the desired animation.
                 return;
             }
             
             // -----------
 
-            if (!canMove || shieldBashing) // If the player can't move (Such as mid roll, staggered from a hit, etc.)
+            if (!canMove) // If the player can't move (Such as mid roll, staggered from a hit, etc.)
             {
                 return;
             }
@@ -547,12 +541,13 @@ namespace ZaldensGambit
                 charAnim.SetBool("blocking", isBlocking);
                 canMove = true;
                 charAnim.SetBool("canMove", true);
-                actionLockoutDuration = 0.3f;
+                //actionLockoutDuration = 0.3f;
                 return;
             }
             else if (desiredAnimation.name == "DodgeRoll")
             {
                 HandleDodgeRoll();
+                animationClipIndex = 0;
                 return;
             }
 
@@ -561,15 +556,20 @@ namespace ZaldensGambit
                 print("No animation of " + desiredAnimation + " found, is this the correct animation to search for?");
                 return;
             }
+            
+            //canMove = false;
+            //inAction = true;            
 
-            comboActive = false;
-            canMove = false;
-            inAction = true;
-            if (lockOn)
+            if (!inAction)
             {
-                RotateTowardsTarget(lockOnTarget.transform);
+                if (lockOn)
+                {
+                    RotateTowardsTarget(lockOnTarget.transform);
+                }
+
+                charAnim.CrossFade(desiredAnimation.name, 0.2f); // Apply animation crossfade.
             }
-            charAnim.CrossFade(desiredAnimation.name, 0.2f); // Apply animation crossfade.
+            
         }
 
         private bool FindGround(out ContactPoint groundCP, List<ContactPoint> allCPs)
@@ -691,7 +691,7 @@ namespace ZaldensGambit
         {
             if (other.GetComponent<Projectile>())
             {
-                if (isBlocking)
+                if (isBlocking && !shieldBashing)
                 {
                     charAnim.CrossFade("BlockShieldHit", 0.1f);
                 }

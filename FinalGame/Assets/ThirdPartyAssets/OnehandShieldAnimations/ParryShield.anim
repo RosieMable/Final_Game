@@ -46714,7 +46714,7 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0
+  - time: 0.53333336
     functionName: ToggleShieldBashOn
     data: 
     objectReferenceParameter: {fileID: 0}
@@ -46723,13 +46723,6 @@ AnimationClip:
     messageOptions: 0
   - time: 0.9
     functionName: ToggleShieldBashOff
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 1.6666666
-    functionName: ListenForInputs
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

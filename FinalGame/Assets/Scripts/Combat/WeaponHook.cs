@@ -6,14 +6,14 @@ namespace ZaldensGambit
 {
     public class WeaponHook : MonoBehaviour
     {
-        public GameObject damageCollider;
-        
+        public DamageCollider damageCollider;
+
         /// <summary>
         /// Enable damage attached collider.
         /// </summary>
         public void OpenDamageCollider()
         {
-            damageCollider.SetActive(true);
+            damageCollider.gameObject.SetActive(true);
         }
 
         /// <summary>
@@ -21,7 +21,7 @@ namespace ZaldensGambit
         /// </summary>
         public void CloseDamageCollider()
         {
-            damageCollider.SetActive(false);
+            damageCollider.gameObject.SetActive(false);
         }
     }
 }

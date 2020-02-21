@@ -93,7 +93,7 @@ namespace ZaldensGambit
         /// <summary>
         /// Enables damage colliders
         /// </summary>
-        public void OpenDamageCollider()
+        public void OpenDamageCollider(int damageValue)
         {
             if (states == null)
             {
@@ -104,11 +104,32 @@ namespace ZaldensGambit
                 else
                 {
                     enemyStates.weaponHook.OpenDamageCollider();
+
+                    if (enemyStates.weaponHook.damageCollider != null)
+                    {
+                        if (damageValue == 0)
+                        {
+                            enemyStates.weaponHook.damageCollider.damage = enemyStates.damage;
+                        }
+                    }
                 }
                 return;
             }
 
             states.weaponHook.OpenDamageCollider();
+            states.weaponHook.damageCollider.damage = states.damage;
+
+            if (states.weaponHook.damageCollider != null)
+            {
+                if (damageValue == 0)
+                {
+                    states.weaponHook.damageCollider.damage = states.damage;
+                }
+                else
+                {
+                    states.weaponHook.damageCollider.damage += damageValue;
+                }
+            }
         }
 
         /// <summary>
@@ -164,13 +185,13 @@ namespace ZaldensGambit
                 else
                 {
                     enemyStates.inAction = true;
-                    enemyStates.actionLockoutDuration += 2;
+                    enemyStates.actionLockoutDuration = 2;
                 }
                 return;
             }
 
             states.inAction = true;
-            states.actionLockoutDuration += 2;
+            states.actionLockoutDuration = 5;
         }
 
         public void ListenForInputs()
@@ -236,7 +257,7 @@ namespace ZaldensGambit
             if (states != null)
             {
                 states.shieldBashing = true;
-                states.actionLockoutDuration = 2f;
+                states.actionLockoutDuration = 5f;
             }
         }
 
@@ -245,7 +266,7 @@ namespace ZaldensGambit
             if (states != null)
             {
                 states.shieldBashing = false;
-                states.actionLockoutDuration = 2f;
+                states.actionLockoutDuration = 1f;
             }
         }
     }
