@@ -36,7 +36,7 @@ namespace ZaldensGambit
         [HideInInspector] public bool isBlocking;
         [HideInInspector] public bool listenForCombos;
         [HideInInspector] public bool shieldBashing;
-        private float shieldBashCooldown = 2;
+        private float shieldBashCooldown = 1.5f;
         private float shieldBashTimer;
         private bool comboActive;
 

@@ -13,6 +13,8 @@ namespace ZaldensGambit
         private Image healthBar;
         private TextMeshProUGUI healthText;
         private StateManager player;
+        private TextMeshProUGUI dialogueText;
+        private GameObject dialoguePanel;
 
         #region "Spirit UI Variables"
 
@@ -27,17 +29,38 @@ namespace ZaldensGambit
             base.Awake();
             healthBar = GameObject.Find("HealthBar").GetComponent<Image>();
             healthText = GameObject.Find("HealthText").GetComponent<TextMeshProUGUI>();
+            dialoguePanel = GameObject.Find("DialoguePanel");
+            dialogueText = GameObject.Find("DialogueText").GetComponent<TextMeshProUGUI>();
             player = FindObjectOfType<StateManager>();
         }
 
         private void Start()
         {
             UpdateHealthUI();
+            HideDialogue();
         }
 
         private void Update()
         {
             UpdateHealthUI();
+        }
+
+        public void DisplayDialogue(Dialogue dialogueToShow)
+        {
+            dialogueText.text = dialogueToShow.dialogue;
+            dialoguePanel.SetActive(true);
+        }
+
+        public void DisplayDialogue(string dialogueToShow)
+        {
+            dialogueText.text = dialogueToShow;
+            dialoguePanel.SetActive(true);
+        }
+
+        public void HideDialogue()
+        {
+            dialoguePanel.SetActive(false);
+            dialogueText.text = string.Empty;
         }
 
         public void UpdateHealthUI()

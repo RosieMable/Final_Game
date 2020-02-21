@@ -236,6 +236,7 @@ namespace ZaldensGambit
             if (states != null)
             {
                 states.shieldBashing = true;
+                states.actionLockoutDuration = 2f;
             }
         }
 
@@ -244,6 +245,7 @@ namespace ZaldensGambit
             if (states != null)
             {
                 states.shieldBashing = false;
+                states.actionLockoutDuration = 2f;
             }
         }
     }
