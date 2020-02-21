@@ -266,7 +266,7 @@ namespace ZaldensGambit
             if (states != null)
             {
                 states.shieldBashing = false;
-                states.actionLockoutDuration = 1f;
+                states.actionLockoutDuration = 2f;                
             }
         }
     }

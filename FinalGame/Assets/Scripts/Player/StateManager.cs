@@ -36,7 +36,7 @@ namespace ZaldensGambit
         [HideInInspector] public bool isBlocking;
         [HideInInspector] public bool listenForCombos;
         [HideInInspector] public bool shieldBashing;
-        private float shieldBashCooldown = 2.5f;
+        private float shieldBashCooldown = 1.5f;
         private float shieldBashTimer;
 
         [SerializeField] private AnimationClip[] lightAttacksChain;
@@ -74,7 +74,7 @@ namespace ZaldensGambit
 
             if (animHook == false)
             {
-                print("Added AnimatorHook.cs to " + gameObject.name);
+                //print("Added AnimatorHook.cs to " + gameObject.name);
                 animHook = activeModel.AddComponent<AnimatorHook>();
             }
 
@@ -210,7 +210,6 @@ namespace ZaldensGambit
                 {
                     inAction = false; // Flag animation no longer playing
                     actionDelay = 0; // Reset
-                    print("No longer in action");
                 }
                 else
                 {
@@ -299,7 +298,6 @@ namespace ZaldensGambit
                 targetDirection = transform.forward; // Target direction is equivalent to the current forward vector of the character
             }
 
-
             if (!lockOn) // If not locking onto an enemy...
             {
                 Quaternion targetRotation = Quaternion.LookRotation(targetDirection); // Calculate the rotation desired
@@ -339,7 +337,6 @@ namespace ZaldensGambit
             else if (currentHealth <= 0)
             {
                 currentHealth = 0;
-                print("???");
             }
         }
 
@@ -426,6 +423,12 @@ namespace ZaldensGambit
         /// </summary>
         public void DetectAction()
         {
+            // We are checking for action inputs
+            // If we are attacking and blocking, shieldbash
+            // If we are not blocking, but are attacking - attack
+            // 
+            // 
+
             AnimationClip desiredAnimation = null;
             Action slot = null;
 
