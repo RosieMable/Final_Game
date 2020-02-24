@@ -47,7 +47,9 @@ namespace ZaldensGambit
 
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                SceneManager.LoadScene("TitleScreenScene");
+                SceneManager.LoadScene("Title Screen");
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
             }
         }
 
