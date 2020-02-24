@@ -147,6 +147,8 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
 
     public void CreateDungeon()
     {
+        GameObject.Find("TempObject").SetActive(false); // Remove after alpha submission
+
         //Based on drawn cards, spawn the corrisponding dungeon prefab
         if (_drawnCards.Count != 0 && _spawnLocation != null)
         {
