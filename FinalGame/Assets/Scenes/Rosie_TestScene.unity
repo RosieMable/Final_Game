@@ -333,7 +333,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &58079660
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -351,12 +351,16 @@ MonoBehaviour:
   mouseSpeed: 10
   target: {fileID: 1300280466}
   lockOnTarget: {fileID: 0}
+  lockOnPrefab: {fileID: 0}
   pivotPoint: {fileID: 1675273014}
   cameraTransform: {fileID: 426089612}
   minAngle: 0
   maxAngle: 30
   lockOnMinAngle: 20
   lockOnMaxAngle: 40
+  defaultZDistance: -4
+  zSpeed: 5
+  minimumZDistance: -1.5
 --- !u!4 &58079661
 Transform:
   m_ObjectHideFlags: 0
@@ -1795,6 +1799,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2922dc55b9db0f0418afbdc26981c1c7, type: 2}
   - {fileID: 11400000, guid: 2e21c12db7b1a65418a23e6f62e98d88, type: 2}
   _possibleDungeonCardsReward: []
+  GlobalAmountCD: 0
   ownedSpirits:
   - {fileID: 11400000, guid: 3f53607d5f41b0f4fa4c903677fe7014, type: 2}
   allSpirits:
@@ -1807,8 +1812,11 @@ MonoBehaviour:
   _spawnLocation: {fileID: 226072240}
   ThreeRoomsDungeonPrefab:
   - {fileID: 524216371159460029, guid: 49b13cf58a0727845a4247a0634f6748, type: 3}
-  SixRoomsDungeonPrefab: []
-  NineRoomsDungeonPrefab: []
+  SixRoomsDungeonPrefab:
+  - {fileID: 524216371159460029, guid: 0e30ff67d56fb034cb796bcf63647638, type: 3}
+  NineRoomsDungeonPrefab:
+  - {fileID: 524216371159460029, guid: a6e7d0eb53b3e804a8f1f657c791d7e6, type: 3}
+  isDebug: 1
   debugCardsDrawn: {fileID: 90319670}
   debugCardRewards: {fileID: 227288528}
   debugCardOwned: {fileID: 248440494}
@@ -2655,6 +2663,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 565bb566558e73947a341a04b79f115d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damage: 10
 --- !u!65 &668017636
 BoxCollider:
   m_ObjectHideFlags: 0

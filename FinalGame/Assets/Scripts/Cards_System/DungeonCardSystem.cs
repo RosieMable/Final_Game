@@ -181,7 +181,7 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
                     Debug.Log(item.CardName);
                     temp += item.CardName + "\n";
                 }
-               // debugCardRewards.text = "Cards Reward: \n\n" + temp;
+                debugCardRewards.text = "Cards Reward: \n\n" + temp;
             }
             else if (_drawnCards.Count == 6)
             {
@@ -193,7 +193,7 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
                     Debug.Log(item.CardName);
                     temp += item.CardName + "\n";
                 }
-             //   debugCardRewards.text = "Cards Reward: \n\n" + temp;
+                debugCardRewards.text = "Cards Reward: \n\n" + temp;
             }
             else if (_drawnCards.Count == 9)
             {
@@ -205,7 +205,7 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
                     Debug.Log(item.CardName);
                     temp += item.CardName + "\n";
                 }
-               // debugCardRewards.text = "Cards Reward: \n\n" + temp;
+                debugCardRewards.text = "Cards Reward: \n\n" + temp;
             }
         }
     }

@@ -156,6 +156,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dungeonCard: {fileID: 0}
+  SpawnRadius: 3
   enemySuit: 0
   numEnemiesToSpawn: 0
   FamineEnemies:
@@ -270,6 +271,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dungeonCard: {fileID: 0}
+  SpawnRadius: 3
   enemySuit: 0
   numEnemiesToSpawn: 0
   FamineEnemies:
@@ -477,6 +479,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dungeonCard: {fileID: 0}
+  SpawnRadius: 3
   enemySuit: 0
   numEnemiesToSpawn: 0
   FamineEnemies:

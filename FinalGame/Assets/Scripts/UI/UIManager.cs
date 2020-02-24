@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 namespace ZaldensGambit
 {
@@ -43,6 +44,11 @@ namespace ZaldensGambit
         private void Update()
         {
             UpdateHealthUI();
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                SceneManager.LoadScene("TitleScreenScene");
+            }
         }
 
         public void DisplayDialogue(Dialogue dialogueToShow)
@@ -65,16 +71,19 @@ namespace ZaldensGambit
 
         public void UpdateHealthUI()
         {
-            if (player.currentHealth <= 0)
+            if (player != null)
             {
-                healthBar.fillAmount = 0;
-                healthText.text = player.currentHealth.ToString() + " / " + player.maximumHealth.ToString();
-            }
-            else if (healthBar.fillAmount != player.currentHealth / player.maximumHealth)
-            {
-                healthBar.fillAmount = Mathf.Lerp(healthBar.fillAmount, player.currentHealth / player.maximumHealth, Time.deltaTime * 5);
-                healthText.text = player.currentHealth.ToString() + " / " + player.maximumHealth.ToString();
-            }            
+                if (player.currentHealth <= 0)
+                {
+                    healthBar.fillAmount = 0;
+                    healthText.text = player.currentHealth.ToString() + " / " + player.maximumHealth.ToString();
+                }
+                else if (healthBar.fillAmount != player.currentHealth / player.maximumHealth)
+                {
+                    healthBar.fillAmount = Mathf.Lerp(healthBar.fillAmount, player.currentHealth / player.maximumHealth, Time.deltaTime * 5);
+                    healthText.text = player.currentHealth.ToString() + " / " + player.maximumHealth.ToString();
+                }
+            }                     
         }
 
         public void ManageSpiritUI(Spirit_ScriptableObj _spiritToDisplay)
