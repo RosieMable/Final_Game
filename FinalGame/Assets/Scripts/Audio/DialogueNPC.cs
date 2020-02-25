@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ZaldensGambit
 {
-    public class FriendlyNPC : MonoBehaviour
+    public class DialogueNPC : MonoBehaviour
     {
         // Proximity Dialogue - What is said when the player walks nearby the NPC
         [SerializeField] private Dialogue[] proximityDialogue;
@@ -12,7 +12,9 @@ namespace ZaldensGambit
         [SerializeField] private float proximityDialogueTriggerDistance = 5f;
         private float timeUntilNextProximityDialogue = 0f;
         private float proximityDialogueCooldown = 10f;
-        private bool enteredRange;
+        private static bool isSomeoneInRange;
+        private static bool isDialoguePlaying;
+        private static DialogueNPC[] NPCs;
 
         // Main Dialogue - What is said when the NPC is interacted with
         [SerializeField] private Dialogue[] mainDialogue;
@@ -28,30 +30,63 @@ namespace ZaldensGambit
             UIManager = UIManager.Instance;
             player = FindObjectOfType<StateManager>();
             audioSource = GetComponent<AudioSource>();
+            NPCs = FindObjectsOfType<DialogueNPC>();
         }
+
+        // If the player is outside of our range, do nothing
+        // If the player enters our range, speak - Done
+        // If the player leaves our range, stop speaking
 
         private void Update()
         {
             float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
 
-            // If the player is within range and enough time has passed for another random dialogue    
+            // Flag when the player is within range, if enough time has passed, play proximity dialogue
             if (distanceToPlayer < proximityDialogueTriggerDistance)
             {
+                isSomeoneInRange = true;
+
                 if (timeUntilNextProximityDialogue < Time.time && !audioSource.isPlaying)
                 {
-                    if (!enteredRange)
-                    {
-                        enteredRange = true;
-                        PlayProximityDialogue();
-                    }
+                    PlayProximityDialogue();
                 }
             }
-            else
+            else // Check if any other NPC is in range
             {
-                enteredRange = false;
+                bool inRange = false;
+                foreach (DialogueNPC npc in NPCs)
+                {
+                    if (Vector3.Distance(npc.transform.position, player.transform.position) < proximityDialogueTriggerDistance)
+                    {
+                        inRange = true;
+                        break; // Exit loop
+                    }
+                    else
+                    {
+                        inRange = false;
+                    }
+                }
+                isSomeoneInRange = inRange; // Assign result from loop
             }
+            
+            // Check if any other NPC is playing their dialogue
+            bool dialoguePlaying = false;
+            foreach (DialogueNPC npc in NPCs)
+            {
+                if (npc.audioSource.isPlaying)
+                {
+                    dialoguePlaying = true;
+                    break; // Exit loop
+                }
+                else
+                {
+                    dialoguePlaying = false;
+                }
+            }
+            isDialoguePlaying = dialoguePlaying; // Assign result from loop        
 
-            if (!audioSource.isPlaying)
+            // If no NPCs dialogue is playing, remove dialogue box from UI
+            if (!isDialoguePlaying)
             {
                 UIManager.HideDialogue();
             }
