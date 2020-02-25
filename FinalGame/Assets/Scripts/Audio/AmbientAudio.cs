@@ -31,11 +31,11 @@ namespace ZaldensGambit
                 audioSource.clip = audioClips[clipToPlay];
                 audioSource.Play();
             }
-            else if (distanceToPlayer > audioSource.maxDistance) // Otherwise...
+            else if (distanceToPlayer > audioSource.maxDistance * 2) // Otherwise...
             {
                 // Stop playing
                 inRange = false;
-                audioSource.Stop();
+                audioSource.Pause();
             }
 
             if (!audioSource.isPlaying && inRange) // If the audioSource is NOT playing whilst the player is in range...
