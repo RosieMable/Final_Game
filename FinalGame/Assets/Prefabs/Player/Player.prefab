@@ -57,6 +57,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 565bb566558e73947a341a04b79f115d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damage: 10
 --- !u!1 &5925844740738560709
 GameObject:
   m_ObjectHideFlags: 0
@@ -174,6 +175,7 @@ MonoBehaviour:
   lockOn: 0
   isBlocking: 0
   listenForCombos: 0
+  shieldBashing: 0
   lightAttacksChain:
   - {fileID: 7400000, guid: ed214573cc2156e4b96dcdda121f6308, type: 2}
   - {fileID: 7400000, guid: 340b2810b55032246af03b98bdc43e30, type: 2}
@@ -347,7 +349,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7291157561ae5d4ba042b429dcde410, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageCollider: {fileID: 5925844740618632560}
+  damageCollider: {fileID: 5925844740618632574}
 --- !u!1001 &4718571005551380934
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -363,17 +365,17 @@ PrefabInstance:
     - target: {fileID: 8285686109457014306, guid: 97e5d12ab59e863469bbf70d83d24cdf,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.077305
+      value: -0.11
       objectReference: {fileID: 0}
     - target: {fileID: 8285686109457014306, guid: 97e5d12ab59e863469bbf70d83d24cdf,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.7496032
+      value: -1.36
       objectReference: {fileID: 0}
     - target: {fileID: 8285686109457014306, guid: 97e5d12ab59e863469bbf70d83d24cdf,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.08529114
+      value: -0.45
       objectReference: {fileID: 0}
     - target: {fileID: 8285686109457014306, guid: 97e5d12ab59e863469bbf70d83d24cdf,
         type: 3}
@@ -415,21 +417,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8285686109457014306, guid: 97e5d12ab59e863469bbf70d83d24cdf,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0.8333334
-      objectReference: {fileID: 0}
-    - target: {fileID: 8285686109457014306, guid: 97e5d12ab59e863469bbf70d83d24cdf,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.8333332
-      objectReference: {fileID: 0}
-    - target: {fileID: 8285686109457014306, guid: 97e5d12ab59e863469bbf70d83d24cdf,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0.83333325
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 97e5d12ab59e863469bbf70d83d24cdf, type: 3}
 --- !u!1001 &5925844740987644180
@@ -444,11 +431,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: ZaldensGambitFinalCharacter_2
       objectReference: {fileID: 0}
-    - target: {fileID: -6057140222963153312, guid: d8f71d9d6ba438b43a90630ef5c02c41,
-        type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: 63fbce70105df7b4da553a784f7c3ad8, type: 2}
     - target: {fileID: -4216859302048453862, guid: d8f71d9d6ba438b43a90630ef5c02c41,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -504,6 +486,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6057140222963153312, guid: d8f71d9d6ba438b43a90630ef5c02c41,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 63fbce70105df7b4da553a784f7c3ad8, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d8f71d9d6ba438b43a90630ef5c02c41, type: 3}
 --- !u!4 &1677134201972245006 stripped

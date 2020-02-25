@@ -83,6 +83,8 @@ namespace ZaldensGambit
         {
             animHook.Initialise(null, this);
             cameraManager = CameraManager.instance;
+
+            currentAttackers.Clear();
         }
 
         /// <summary>
