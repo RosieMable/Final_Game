@@ -11,6 +11,9 @@ namespace ZaldensGambit
         private StateManager player;
         [SerializeField] private AudioClip[] audioClips;
         private bool inRange;
+        private float timer;
+        private float cooldown = 2f;
+        private float distanceToPlayer;
 
         private void Start()
         {
@@ -21,7 +24,11 @@ namespace ZaldensGambit
 
         private void Update()
         {
-            float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position); // Record distance from the player
+            if (timer < Time.time)
+            {
+                timer = Time.time + cooldown;
+                distanceToPlayer = Vector3.Distance(transform.position, player.transform.position); // Record distance from the player
+            }            
 
             if (distanceToPlayer < audioSource.maxDistance && !inRange) // If the player is within range of the audioSource...
             {
@@ -31,7 +38,7 @@ namespace ZaldensGambit
                 audioSource.clip = audioClips[clipToPlay];
                 audioSource.Play();
             }
-            else if (distanceToPlayer > audioSource.maxDistance * 2) // Otherwise...
+            else if (distanceToPlayer > audioSource.maxDistance + 5) // Otherwise...
             {
                 // Stop playing
                 inRange = false;
