@@ -21,6 +21,8 @@ namespace ZaldensGambit
 
         void Start()
         {
+            QualitySettings.vSyncCount = 0;
+            Application.targetFrameRate = 60;
             states = GetComponent<StateManager>();
             states.Initialise();
             cameraManager = CameraManager.instance;
