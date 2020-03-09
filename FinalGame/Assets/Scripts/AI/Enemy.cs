@@ -322,7 +322,7 @@ namespace ZaldensGambit
             rigidBody.velocity = Vector3.zero; // Reset velocity to ensure no gliding behaviour as navmesh agents do not follow ordinary rigidbody physics
             RotateTowardsTarget(player.transform);
 
-            if (movingToAttack) // If the AI is flagged as moving to attack...
+            if (movingToAttack && !inAction) // If the AI is flagged as moving to attack...
             {
                 MoveToTarget();
             }
@@ -524,7 +524,6 @@ namespace ZaldensGambit
          * 6) If the player moves away from us, attempt to follow - Done
         */
 
-        private float avoidRadius = 3;
         protected bool withinRangeOfTarget;
         protected bool movingToAttack;
         [SerializeField] protected static List<Enemy> currentAttackers = new List<Enemy>();

@@ -185,7 +185,7 @@ namespace ZaldensGambit
                 else
                 {
                     enemyStates.inAction = true;
-                    enemyStates.actionLockoutDuration = 2;
+                    enemyStates.actionLockoutDuration = 5;
                 }
                 return;
             }
