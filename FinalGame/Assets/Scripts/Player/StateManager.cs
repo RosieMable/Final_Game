@@ -707,7 +707,8 @@ namespace ZaldensGambit
             if (other.GetComponent<Enemy>() && shieldBashing)
             {
                 other.GetComponent<Enemy>().TakeDamage(5);
-                other.GetComponent<Enemy>().attackDelay = Time.time + other.GetComponent<Enemy>().attackCooldown * 4f;
+                //other.GetComponent<Enemy>().attackDelay = Time.time + other.GetComponent<Enemy>().attackCooldown * 4f;
+                other.GetComponent<Enemy>().ApplyStun(2.5f);
             }
         }
     }

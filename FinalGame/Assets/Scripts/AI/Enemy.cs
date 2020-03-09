@@ -14,7 +14,7 @@ namespace ZaldensGambit
     {
         private enum Type { Famine, War, Death, Pestilence } // Famine = Lifeleech on hit, War = More damage, Death = Delayed explosian on death, Pestilence = DoT effect
         [SerializeField] private Type enemyType;
-        [SerializeField] protected float health = 100;
+        [SerializeField] protected float health = 50;
         [HideInInspector] public bool isInvulnerable;
         [HideInInspector] public Animator charAnim;
         private AnimatorHook animHook;
@@ -35,6 +35,8 @@ namespace ZaldensGambit
         [SerializeField] protected float aggroRange = 10;
         [SerializeField] protected float speed = 4;
         [SerializeField] protected float rotationSpeed = 2;
+        protected bool stunned;
+        private Coroutine stunnedCoroutine;
         protected GameObject player;
         [SerializeField] protected bool isTrainingDummy;
         [HideInInspector] public WeaponHook weaponHook;
@@ -146,31 +148,34 @@ namespace ZaldensGambit
 
         protected virtual void Update()
         {
-            Tick(Time.deltaTime);
-            canMove = charAnim.GetBool("canMove");            
+            if (!stunned)
+            {
+                Tick(Time.deltaTime);
+                canMove = charAnim.GetBool("canMove");
 
-            if (health <= 0)
-            {
-                if (!isDead)
+                if (health <= 0)
                 {
-                    isDead = true;
-                    RemoveFromAttackersList();
-                    healthSlider.gameObject.SetActive(false);
-                    damageText.gameObject.SetActive(false);
-                    GetComponent<Collider>().enabled = false;
-                    rigidBody.isKinematic = true;
-                    print(gameObject.name + " died!");
-                    charAnim.Play("death");
-                    agent.enabled = false;
-                    Destroy(gameObject, 5);
+                    if (!isDead)
+                    {
+                        isDead = true;
+                        RemoveFromAttackersList();
+                        healthSlider.gameObject.SetActive(false);
+                        damageText.gameObject.SetActive(false);
+                        GetComponent<Collider>().enabled = false;
+                        rigidBody.isKinematic = true;
+                        print(gameObject.name + " died!");
+                        charAnim.Play("death");
+                        agent.enabled = false;
+                        Destroy(gameObject, 5);
+                    }
                 }
-            }
-            else
-            {
-                healthSlider.transform.LookAt(new Vector3(cameraManager.transform.position.x, healthSlider.transform.position.y, cameraManager.transform.position.z), Vector3.up);
-                //damageText.transform.LookAt(new Vector3(cameraManager.transform.position.x, damageText.transform.position.y, cameraManager.transform.position.z), Vector3.up);
-                Quaternion rotationToFace = Quaternion.LookRotation(damageText.transform.position - cameraManager.transform.position);
-                damageText.transform.rotation = new Quaternion(transform.rotation.x, rotationToFace.y, transform.rotation.z, rotationToFace.w); 
+                else
+                {
+                    healthSlider.transform.LookAt(new Vector3(cameraManager.transform.position.x, healthSlider.transform.position.y, cameraManager.transform.position.z), Vector3.up);
+                    //damageText.transform.LookAt(new Vector3(cameraManager.transform.position.x, damageText.transform.position.y, cameraManager.transform.position.z), Vector3.up);
+                    Quaternion rotationToFace = Quaternion.LookRotation(damageText.transform.position - cameraManager.transform.position);
+                    damageText.transform.rotation = new Quaternion(transform.rotation.x, rotationToFace.y, transform.rotation.z, rotationToFace.w);
+                }
             }
 
             //if (!canMove) // If the character can't move...
@@ -413,6 +418,19 @@ namespace ZaldensGambit
             damageText.gameObject.SetActive(false);
         }
 
+        public void ApplyStun(float duration)
+        {
+            if (stunnedCoroutine != null)
+            {
+                StopCoroutine(stunnedCoroutine);
+                stunnedCoroutine = StartCoroutine(StunEffect(duration));
+            }
+            else
+            {
+                stunnedCoroutine = StartCoroutine(StunEffect(duration));
+            }
+        }
+
         /// <summary>
         /// Show AI UI for the duration specified.
         /// </summary>
@@ -440,6 +458,16 @@ namespace ZaldensGambit
 
             damageText.gameObject.SetActive(false);
             damageTextCoroutine = null;
+        }
+
+        private IEnumerator StunEffect(float duration)
+        {
+            stunned = true;
+
+            yield return new WaitForSeconds(duration);
+
+            stunned = false;
+            stunnedCoroutine = null;
         }
 
         /// <summary>
