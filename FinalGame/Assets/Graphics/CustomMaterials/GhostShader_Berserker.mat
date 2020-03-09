@@ -48,7 +48,7 @@ Material:
     - _FadeAmount: -10
     - _FadeLevel: 0
     - _FadeOffset: -10
-    - _GlowBrightness: 0.7
+    - _GlowBrightness: 0.8
     - _HARD: 0
     - _INVERT: 1
     - _NORMALS: 1
@@ -61,5 +61,5 @@ Material:
     - _SrcFactor: 1
     m_Colors:
     - _Color: {r: 1, g: 0, b: 0, a: 1}
-    - _RimColor: {r: 0, g: 0.10561621, b: 0.6509434, a: 0}
+    - _RimColor: {r: 1, g: 0, b: 0.29685736, a: 0}
     - _RimColorMask: {r: 0.4008212, g: 0.26486292, b: 0.6037736, a: 0}
