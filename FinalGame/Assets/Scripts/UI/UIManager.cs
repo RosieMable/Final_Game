@@ -45,12 +45,12 @@ namespace ZaldensGambit
         {
             UpdateHealthUI();
 
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                SceneManager.LoadScene("Title Screen");
-                Cursor.visible = true;
-                Cursor.lockState = CursorLockMode.None;
-            }
+            //if (Input.GetKeyDown(KeyCode.Escape))
+            //{
+            //    SceneManager.LoadScene("Title Screen");
+            //    Cursor.visible = true;
+            //    Cursor.lockState = CursorLockMode.None;
+            //}
         }
 
         public void DisplayDialogue(Dialogue dialogueToShow)
