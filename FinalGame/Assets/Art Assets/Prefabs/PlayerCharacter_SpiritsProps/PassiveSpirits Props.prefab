@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 8285686109457014309}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -1.7823291, z: -0.019964341}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.8333334, y: 0.8333332, z: 0.83333325}
   m_Children:
   - {fileID: 8285686109076499841}
   - {fileID: 4256962398199755766}
@@ -310,11 +310,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8285686109457014306}
     m_Modifications:
-    - target: {fileID: 8812544896622379923, guid: ef2088d5b819d0b408366e6aa4b2ed6a,
-        type: 3}
-      propertyPath: m_Name
-      value: Mage
-      objectReference: {fileID: 0}
     - target: {fileID: 8812544896622379922, guid: ef2088d5b819d0b408366e6aa4b2ed6a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -370,6 +365,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8812544896622379923, guid: ef2088d5b819d0b408366e6aa4b2ed6a,
+        type: 3}
+      propertyPath: m_Name
+      value: Mage
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ef2088d5b819d0b408366e6aa4b2ed6a, type: 3}
 --- !u!1 &4256962398199755767 stripped
@@ -391,11 +391,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8285686109457014306}
     m_Modifications:
-    - target: {fileID: 4933667000485713580, guid: f35ca53e642e877499436599629c2978,
-        type: 3}
-      propertyPath: m_Name
-      value: Paladin
-      objectReference: {fileID: 0}
     - target: {fileID: 4933667000485713581, guid: f35ca53e642e877499436599629c2978,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -451,6 +446,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4933667000485713580, guid: f35ca53e642e877499436599629c2978,
+        type: 3}
+      propertyPath: m_Name
+      value: Paladin
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f35ca53e642e877499436599629c2978, type: 3}
 --- !u!1 &3676521357143891407 stripped
@@ -472,11 +472,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8285686109457014306}
     m_Modifications:
-    - target: {fileID: 9053285803970896576, guid: 46678732f73141a40a56578a9c18ed49,
-        type: 3}
-      propertyPath: m_Name
-      value: Ranger
-      objectReference: {fileID: 0}
     - target: {fileID: 9053285803970896577, guid: 46678732f73141a40a56578a9c18ed49,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -531,6 +526,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9053285803970896576, guid: 46678732f73141a40a56578a9c18ed49,
+        type: 3}
+      propertyPath: m_Name
+      value: Ranger
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 46678732f73141a40a56578a9c18ed49, type: 3}

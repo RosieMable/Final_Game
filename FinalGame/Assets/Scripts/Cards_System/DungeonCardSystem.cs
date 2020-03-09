@@ -22,6 +22,9 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
 
     public List<Card_ScriptableObj> DrawnCards { get { return _drawnCards; } private set { DrawnCards = _drawnCards; } }
 
+    public int GlobalAmountCD;
+
+    int nClick = 0;
 
     [Header("Spirit Cards Section")]
     public List<Spirit_ScriptableObj> ownedSpirits; //reference to the spirits that the player owns (inventory system ref)
@@ -49,6 +52,9 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
 
     [Header("Temp Debug")]
     #region Temp for debug
+
+    public bool isDebug;
+
     public Text debugCardsDrawn;
 
     public Text debugCardRewards;
@@ -68,8 +74,8 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
             Debug.Log(item.CardName);
             temp += item.CardName + "\n";
         }
-
-        debugCardOwned.text = "Dungeon Cards Owned: \n\n" + temp;
+        if (isDebug)
+            debugCardOwned.text = "Dungeon Cards Owned: \n\n" + temp;
 
         string temp02 = "";
 
@@ -79,7 +85,46 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
             temp02 += item.CardName + "\n";
         }
 
-        debugAllCards.text = "All Dungeon Cards : \n\n" + temp02;
+        if (isDebug)
+            debugAllCards.text = "All Dungeon Cards : \n\n" + temp02;
+
+    }
+
+    public void SetGlobalAmount(Text text)
+    {
+
+
+        nClick++;
+
+        print(nClick);
+
+        
+        if (nClick >= 0)
+        {
+            GlobalAmountCD = 3;
+            DrawCards(3);
+            text.text = "x3";
+        }
+        if (nClick > 3)
+        {
+            nClick = 1;
+            GlobalAmountCD = 3;
+            DrawCards(3);
+            text.text = "x3";
+        }
+        if (nClick == 2)
+        {
+            GlobalAmountCD = 6;
+            DrawCards(6);
+            text.text = "x6";
+        }
+        if (nClick == 3)
+        {
+            GlobalAmountCD = 9;
+            DrawCards(9);
+            text.text = "x9";
+        }
+
 
     }
 
@@ -96,12 +141,14 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
             Debug.Log(item.CardName);
             temp += item.CardName + "\n";
         }
-
+        if(isDebug)
         debugCardsDrawn.text = "Cards drawn: \n\n" + temp;
     }
 
     public void CreateDungeon()
     {
+        GameObject.Find("TempObject").SetActive(false); // Remove after alpha submission
+
         //Based on drawn cards, spawn the corrisponding dungeon prefab
         if (_drawnCards.Count != 0 && _spawnLocation != null)
         {

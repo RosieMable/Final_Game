@@ -8,6 +8,8 @@ namespace ZaldensGambit
     public class StateManager : MonoBehaviour
     {
         #region Variables
+        [HideInInspector] public bool interacting;
+
         [HideInInspector] public float moveAmount;
         [HideInInspector] public Vector3 movementDirection;
 
@@ -18,8 +20,13 @@ namespace ZaldensGambit
         [SerializeField] private float stepSearchOvershoot = 0.01f; // How much to overshoot into the direction a potential step in units when testing. High values prevent player from walking up tiny steps but may cause problems.
         private List<ContactPoint> contactPoints = new List<ContactPoint>();
 
-        public float health = 100;
-        public float stamina = 100;
+        public float maximumHealth = 100;
+        public float currentHealth = 100;
+        private int level = 1;
+        private int experience = 0;
+        private int experienceForNextLevel = 1000;
+        public int damage = 10;
+        //public float stamina = 100;
         [HideInInspector] public bool isInvulnerable;
         [HideInInspector] public bool grounded;
         [HideInInspector] public bool lightAttack, heavyAttack, dodgeRoll, block, specialAttack;
@@ -28,7 +35,9 @@ namespace ZaldensGambit
         [HideInInspector] public bool lockOn;
         [HideInInspector] public bool isBlocking;
         [HideInInspector] public bool listenForCombos;
-        private bool comboActive;
+        [HideInInspector] public bool shieldBashing;
+        private float shieldBashCooldown = 1.5f;
+        private float shieldBashTimer;
 
         [SerializeField] private AnimationClip[] lightAttacksChain;
         [SerializeField] private AnimationClip[] heavyAttacksChain;
@@ -65,7 +74,7 @@ namespace ZaldensGambit
 
             if (animHook == false)
             {
-                print("Added AnimatorHook.cs to " + gameObject.name);
+                //print("Added AnimatorHook.cs to " + gameObject.name);
                 animHook = activeModel.AddComponent<AnimatorHook>();
             }
 
@@ -75,7 +84,7 @@ namespace ZaldensGambit
             weaponHook = GetComponentInChildren<WeaponHook>();
             weaponHook.CloseDamageCollider();
             gameObject.layer = 9; // Set to player layer
-            ignoredLayers = ~(1 << 9); // Ignore layers 1 to 9
+            ignoredLayers = ~(1 << 10); // Ignore layers 1 to 10
         }
 
         /// <summary>
@@ -105,33 +114,49 @@ namespace ZaldensGambit
             charAnim.applyRootMotion = false;
         }
 
-        public void TakeDamage(float value, Transform location)
+        /// <summary>
+        /// Deals damage to the player unless invulnerable or the damageSource is directly in front of the player whilst they are blocking.
+        /// </summary>
+        public void TakeDamage(float value, Transform damageSource)
         {
+            Enemy enemy = damageSource.GetComponent<Enemy>();
+
             if (isInvulnerable)
             {
                 print("Cannot take damage whilst invulnerable!");
                 return;
             }
 
-            if (isBlocking)
+            if (isBlocking && !shieldBashing)
             {
                 RaycastHit[] hits = Physics.BoxCastAll(transform.position + transform.forward, transform.localScale / 2, transform.forward, transform.rotation, 5, ignoredLayers);
 
                 foreach (RaycastHit hit in hits)
                 {
-                    print(hit.collider.gameObject.name);
-                    if (hit.transform == location)
+                    if (hit.transform == damageSource)
                     {
-                        charAnim.Play("BlockShieldHit");
+                        charAnim.CrossFade("BlockShieldHit", 0.1f);
+                        if (enemy)
+                        {
+                            enemy.attackDelay = Time.time + enemy.attackCooldown * 2f;
+                        }
                         return;
                     }
                 }
             }
 
-            health -= value;
+            float previousHealth = currentHealth;
+            currentHealth -= value;
             canMove = false;
+
+            if (currentHealth <= 0)
+            {
+                print("Player died!");
+                // Play death animation
+            }
+
             int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length);
-            charAnim.Play(hurtAnimations[hurtAnimationToPlay].name);
+            charAnim.CrossFade(hurtAnimations[hurtAnimationToPlay].name, 0.1f);
             charAnim.applyRootMotion = true;
         }
 
@@ -140,12 +165,8 @@ namespace ZaldensGambit
         /// </summary>
         public void Tick(float deltaTime)
         {
+            CheckHealth();
             delta = deltaTime;
-
-            if (health <= 0)
-            {
-                // TBD
-            }
 
             if (!canMove) // If the character can't move...
             {
@@ -172,7 +193,10 @@ namespace ZaldensGambit
 
             if (grounded && !isInvulnerable)
             {
-                DetectAction(); // Listen for player inputs
+                if (!interacting)
+                {
+                    DetectAction(); // Listen for player inputs
+                }
             }
 
             if (inAction) // If an animation is playing...
@@ -263,9 +287,7 @@ namespace ZaldensGambit
             if (grounded)
             {
                 rigidBody.velocity = movementDirection * (moveSpeed * moveAmount); // Apply force in the direction the player is heading
-                //Debug.Log("Before " + rigidBody.velocity);
                 rigidBody.velocity = new Vector3(rigidBody.velocity.x, rigidBody.velocity.y * 200, rigidBody.velocity.z);
-                //Debug.Log("After " + rigidBody.velocity);
             }
 
             Vector3 targetDirection = movementDirection;
@@ -275,7 +297,6 @@ namespace ZaldensGambit
             {
                 targetDirection = transform.forward; // Target direction is equivalent to the current forward vector of the character
             }
-
 
             if (!lockOn) // If not locking onto an enemy...
             {
@@ -301,6 +322,21 @@ namespace ZaldensGambit
             else
             {
                 HandleLockOnAnimations(movementDirection);
+            }
+        }
+
+        /// <summary>
+        /// Checks the players health and clamps between the maximum and minimum values.
+        /// </summary>
+        private void CheckHealth()
+        {
+            if (currentHealth >= maximumHealth)
+            {
+                currentHealth = maximumHealth;
+            }
+            else if (currentHealth <= 0)
+            {
+                currentHealth = 0;
             }
         }
 
@@ -387,6 +423,12 @@ namespace ZaldensGambit
         /// </summary>
         public void DetectAction()
         {
+            // We are checking for action inputs
+            // If we are attacking and blocking, shieldbash
+            // If we are not blocking, but are attacking - attack
+            // 
+            // 
+
             AnimationClip desiredAnimation = null;
             Action slot = null;
 
@@ -395,10 +437,18 @@ namespace ZaldensGambit
                 return;
             }
 
+            if (block && lightAttack && !inAction && shieldBashTimer < Time.time)
+            {
+                shieldBashTimer = Time.time + shieldBashCooldown;
+                animationClipIndex = 0; // Reset array position
+                listenForCombos = false;
+                charAnim.CrossFade("ParryShield", 0.2f); // Apply animation crossfade.
+                return;
+            }
+
             if (listenForCombos) // If we are listening for a combo input and are not in the middle of a combo...
             {
                 slot = actionManager.GetActionSlot(this); // Return action that matches input
-                comboActive = true; // Flag that a combo is now active
 
                 if (slot == null) // If there is nothing to return...
                 {
@@ -407,7 +457,7 @@ namespace ZaldensGambit
                 else
                 {
                     listenForCombos = false;
-                    desiredAnimation = slot.desiredAnimation;
+                    desiredAnimation = slot.desiredAnimation;           
                 }
 
                 // Light Attack Combo
@@ -442,12 +492,13 @@ namespace ZaldensGambit
                     charAnim.SetBool("blocking", isBlocking);
                     charAnim.SetBool("canMove", true);
                     canMove = true;
-                    actionLockoutDuration = 0.5f;
+                    //actionLockoutDuration = 0.3f;
                     return;
                 }
                 else if (desiredAnimation.name == "DodgeRoll")
                 {
                     HandleDodgeRoll();
+                    animationClipIndex = 0;
                     return;
                 }
 
@@ -456,19 +507,15 @@ namespace ZaldensGambit
                     print("No animation of " + desiredAnimation + " found, is this the correct animation to search for?");
                     return;
                 }
-
-                if (!listenForCombos) // If we aren't listening for combos...
-                {
-                    //return;
-                }
                 
                 canMove = false;
                 inAction = true;
-                comboActive = false;
+
                 if (lockOn)
                 {
                     RotateTowardsTarget(lockOnTarget.transform);
                 }
+
                 charAnim.CrossFade(desiredAnimation.name, 0.2f); // Crossfade from current animation to the desired animation.
                 return;
             }
@@ -497,12 +544,13 @@ namespace ZaldensGambit
                 charAnim.SetBool("blocking", isBlocking);
                 canMove = true;
                 charAnim.SetBool("canMove", true);
-                actionLockoutDuration = 0.5f;
+                //actionLockoutDuration = 0.3f;
                 return;
             }
             else if (desiredAnimation.name == "DodgeRoll")
             {
                 HandleDodgeRoll();
+                animationClipIndex = 0;
                 return;
             }
 
@@ -511,15 +559,20 @@ namespace ZaldensGambit
                 print("No animation of " + desiredAnimation + " found, is this the correct animation to search for?");
                 return;
             }
+            
+            //canMove = false;
+            //inAction = true;            
 
-            comboActive = false;
-            canMove = false;
-            inAction = true;
-            if (lockOn)
+            if (!inAction)
             {
-                RotateTowardsTarget(lockOnTarget.transform);
+                if (lockOn)
+                {
+                    RotateTowardsTarget(lockOnTarget.transform);
+                }
+
+                charAnim.CrossFade(desiredAnimation.name, 0.2f); // Apply animation crossfade.
             }
-            charAnim.CrossFade(desiredAnimation.name, 0.2f); // Apply animation crossfade.
+            
         }
 
         private bool FindGround(out ContactPoint groundCP, List<ContactPoint> allCPs)
@@ -613,6 +666,20 @@ namespace ZaldensGambit
             return true; //We're going to step up!
         }
 
+        /// <summary>
+        /// Checks if the player has enough experience to levle up, if so increases their level and sets experienced needed for the next level up.
+        /// </summary>
+        public void LevelUp()
+        {
+            if (experience > experienceForNextLevel)
+            {
+                level++;
+                experienceForNextLevel = 1000 * level; // 1000, 2000, 3000, 4000, 5000, etc... Update later to be a curve that becomes steeper over time.
+                damage += 5;
+                maximumHealth += 10;
+            }
+        }
+
         private void OnCollisionEnter(Collision collision)
         {
             contactPoints.AddRange(collision.contacts);
@@ -627,14 +694,20 @@ namespace ZaldensGambit
         {
             if (other.GetComponent<Projectile>())
             {
-                if (isBlocking)
+                if (isBlocking && !shieldBashing)
                 {
-                    charAnim.Play("BlockShieldHit");
+                    charAnim.CrossFade("BlockShieldHit", 0.1f);
                 }
                 else
                 {
                     TakeDamage(other.GetComponent<Projectile>().damageValue, other.transform);
                 }
+            }
+
+            if (other.GetComponent<Enemy>() && shieldBashing)
+            {
+                other.GetComponent<Enemy>().TakeDamage(5);
+                other.GetComponent<Enemy>().attackDelay = Time.time + other.GetComponent<Enemy>().attackCooldown * 4f;
             }
         }
     }
