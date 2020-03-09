@@ -111,17 +111,17 @@ PrefabInstance:
         type: 3}
       propertyPath: attackAnimations.Array.data[0]
       value: 
-      objectReference: {fileID: 7400000, guid: e9a74de8409c6c9428c3127ee1a3cafc, type: 2}
+      objectReference: {fileID: 7400000, guid: 0ef29d4b92196144f9eb5b14b624d54c, type: 2}
     - target: {fileID: 2075887411006638496, guid: efcabda3a236e1d41b616e4775c6343a,
         type: 3}
       propertyPath: attackAnimations.Array.data[1]
       value: 
-      objectReference: {fileID: 7400000, guid: 6986ba3bd718bbb41bfaf53e8bb9aade, type: 2}
+      objectReference: {fileID: 7400000, guid: 3917f56a74a050c48a1343c796f004d3, type: 2}
     - target: {fileID: 2075887411006638496, guid: efcabda3a236e1d41b616e4775c6343a,
         type: 3}
       propertyPath: attackAnimations.Array.data[2]
       value: 
-      objectReference: {fileID: 7400000, guid: 6809350702b39644abbf85a01edcc759, type: 2}
+      objectReference: {fileID: 7400000, guid: 9b77fded88744fd4fa84c130da779b70, type: 2}
     - target: {fileID: 4007506166499469086, guid: efcabda3a236e1d41b616e4775c6343a,
         type: 3}
       propertyPath: m_LocalRotation.y
