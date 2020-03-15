@@ -414,7 +414,7 @@ namespace ZaldensGambit
         /// </summary>
         protected void RotateTowardsTarget(Transform target)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(target.position - transform.position, Vector3.up); // Calculate the rotation desired
+            Quaternion targetRotation = Quaternion.LookRotation(new Vector3(target.position.x, transform.position.y, target.position.z) - transform.position, Vector3.up); // Calculate the rotation desired
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotateSpeed); // Apply rotation
         }
 
