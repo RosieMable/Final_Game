@@ -27,6 +27,8 @@ namespace ZaldensGambit
         private int experienceForNextLevel = 1000;
         public int damage = 10;
         //public float stamina = 100;
+        private bool isDead = false;
+        private Collider collider;
         [HideInInspector] public bool isInvulnerable;
         [HideInInspector] public bool grounded;
         [HideInInspector] public bool lightAttack, heavyAttack, dodgeRoll, block, specialAttack;
@@ -42,7 +44,6 @@ namespace ZaldensGambit
         [SerializeField] private AnimationClip[] lightAttacksChain;
         [SerializeField] private AnimationClip[] heavyAttacksChain;
         private int animationClipIndex = 0;
-
         [SerializeField] private AnimationClip[] hurtAnimations;
 
         public Enemy lockOnTarget;
@@ -71,6 +72,7 @@ namespace ZaldensGambit
             rigidBody.drag = 4;
             rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             animHook = GetComponentInChildren<AnimatorHook>();
+            collider = GetComponent<Collider>();
 
             if (animHook == false)
             {
@@ -121,9 +123,9 @@ namespace ZaldensGambit
         {
             Enemy enemy = damageSource.GetComponent<Enemy>();
 
-            if (isInvulnerable)
+            if (isInvulnerable || isDead)
             {
-                print("Cannot take damage whilst invulnerable!");
+                print("Cannot take damage whilst invulnerable, or dead!");
                 return;
             }
 
@@ -149,10 +151,14 @@ namespace ZaldensGambit
             currentHealth -= value;
             canMove = false;
 
-            if (currentHealth <= 0)
+            if (currentHealth <= 0 && !isDead)
             {
+                isDead = true;
+                charAnim.SetBool("isDead", isDead);
                 print("Player died!");
-                // Play death animation
+                collider.enabled = false;
+                rigidBody.isKinematic = true;
+                charAnim.CrossFade("Death", 0.2f);
             }
 
             int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length);
@@ -165,6 +171,11 @@ namespace ZaldensGambit
         /// </summary>
         public void Tick(float deltaTime)
         {
+            if (isDead)
+            {
+                return;
+            }
+
             CheckHealth();
             delta = deltaTime;
 
@@ -423,12 +434,6 @@ namespace ZaldensGambit
         /// </summary>
         public void DetectAction()
         {
-            // We are checking for action inputs
-            // If we are attacking and blocking, shieldbash
-            // If we are not blocking, but are attacking - attack
-            // 
-            // 
-
             AnimationClip desiredAnimation = null;
             Action slot = null;
 

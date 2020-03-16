@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CardInventory : MonoBehaviour
 {
-    public CardInventory instance;
+    public static CardInventory instance;
     [SerializeField] private int dungeonCardLimit = 50;
     [SerializeField] private int spiritCardLimit = 20;
 
@@ -32,12 +32,12 @@ public class CardInventory : MonoBehaviour
     {
         foreach (Spirit_ScriptableObj spirit in spiritCards)
         {
-            print("Spirit in inventory: " + spirit.name);
+            //print("Spirit in inventory: " + spirit.name);
         }
 
         foreach (Card_ScriptableObj dungeonCard in dungeonCards)
         {
-            print("Dungeon card in inventory: " + dungeonCard.name);
+            //print("Dungeon card in inventory: " + dungeonCard.name);
         }
     }
 

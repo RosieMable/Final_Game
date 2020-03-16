@@ -463,9 +463,12 @@ namespace ZaldensGambit
         private IEnumerator StunEffect(float duration)
         {
             stunned = true;
+            charAnim.SetBool("stunned", true);
+            charAnim.CrossFade("Stunned", 0.2f);
 
             yield return new WaitForSeconds(duration);
 
+            charAnim.SetBool("stunned", false);
             stunned = false;
             stunnedCoroutine = null;
         }
