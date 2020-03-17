@@ -27,15 +27,15 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
     int nClick = 0;
 
     [Header("Spirit Cards Section")]
-    public List<Spirit_ScriptableObj> ownedSpirits; //reference to the spirits that the player owns (inventory system ref)
+    public List<BaseSpirit> ownedSpirits; //reference to the spirits that the player owns (inventory system ref)
 
-    public List<Spirit_ScriptableObj> allSpirits; //Reference to all spirits within the game
+    public List<BaseSpirit> allSpirits; //Reference to all spirits within the game
 
     [SerializeField]
-    private List<Spirit_ScriptableObj> _possibleSpiritRewards; //reference to the difference between all the cards within the game and the player's owned one, from there the reward is calculated
+    private List<BaseSpirit> _possibleSpiritRewards; //reference to the difference between all the cards within the game and the player's owned one, from there the reward is calculated
 
-    private List<Spirit_ScriptableObj> _spiritReward;
-    public List<Spirit_ScriptableObj> SpiritCardsReward { get { return _spiritReward; } private set { SpiritCardsReward = _spiritReward; } }
+    private List<BaseSpirit> _spiritReward;
+    public List<BaseSpirit> SpiritCardsReward { get { return _spiritReward; } private set { SpiritCardsReward = _spiritReward; } }
 
     [Header("Dungeon Prefabs Section")]
     [SerializeField]

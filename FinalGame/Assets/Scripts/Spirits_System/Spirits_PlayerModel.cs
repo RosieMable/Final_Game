@@ -8,13 +8,13 @@ public class Spirits_PlayerModel : Singleton<Spirits_PlayerModel>
     [SerializeField]
     private GameObject BerserkerProps, ClericProps, PaladinProps, MageProps, RangerProps, SellswordProps;
 
-    public void SetCorrectProps(Spirit_ScriptableObj _EquippedSpirit)
+    public void SetCorrectProps(BaseSpirit _EquippedSpirit)
     {
         if (_EquippedSpirit!=null)
         {
             switch (_EquippedSpirit.spiritClass)
             {
-                case Spirit_ScriptableObj.SpiritClass.Cleric:
+                case BaseSpirit.SpiritClass.Cleric:
                     BerserkerProps.SetActive(false);
                     ClericProps.SetActive(true);
                     PaladinProps.SetActive(false);
@@ -23,7 +23,7 @@ public class Spirits_PlayerModel : Singleton<Spirits_PlayerModel>
                     SellswordProps.SetActive(false);
                     print("My class is " + _EquippedSpirit.spiritClass);
                     break;
-                case Spirit_ScriptableObj.SpiritClass.Paladin:
+                case BaseSpirit.SpiritClass.Paladin:
                     BerserkerProps.SetActive(false);
                     ClericProps.SetActive(false);
                     PaladinProps.SetActive(true);
@@ -32,7 +32,7 @@ public class Spirits_PlayerModel : Singleton<Spirits_PlayerModel>
                     SellswordProps.SetActive(false);
                     print("My class is " + _EquippedSpirit.spiritClass);
                     break;
-                case Spirit_ScriptableObj.SpiritClass.Ranger:
+                case BaseSpirit.SpiritClass.Ranger:
                     BerserkerProps.SetActive(false);
                     ClericProps.SetActive(false);
                     PaladinProps.SetActive(false);
@@ -41,7 +41,7 @@ public class Spirits_PlayerModel : Singleton<Spirits_PlayerModel>
                     SellswordProps.SetActive(false);
                     print("My class is " + _EquippedSpirit.spiritClass);
                     break;
-                case Spirit_ScriptableObj.SpiritClass.Berserker:
+                case BaseSpirit.SpiritClass.Berserker:
                     BerserkerProps.SetActive(true);
                     ClericProps.SetActive(false);
                     PaladinProps.SetActive(false);
@@ -50,7 +50,7 @@ public class Spirits_PlayerModel : Singleton<Spirits_PlayerModel>
                     SellswordProps.SetActive(false);
                     print("My class is " + _EquippedSpirit.spiritClass);
                     break;
-                case Spirit_ScriptableObj.SpiritClass.Sellsword:
+                case BaseSpirit.SpiritClass.Sellsword:
                     BerserkerProps.SetActive(false);
                     ClericProps.SetActive(false);
                     PaladinProps.SetActive(false);
@@ -59,7 +59,7 @@ public class Spirits_PlayerModel : Singleton<Spirits_PlayerModel>
                     SellswordProps.SetActive(true);
                     print("My class is " + _EquippedSpirit.spiritClass);
                     break;
-                case Spirit_ScriptableObj.SpiritClass.Mage:
+                case BaseSpirit.SpiritClass.Mage:
                     BerserkerProps.SetActive(false);
                     ClericProps.SetActive(false);
                     PaladinProps.SetActive(false);
@@ -78,7 +78,7 @@ public class Spirits_PlayerModel : Singleton<Spirits_PlayerModel>
             MageProps.SetActive(false);
             RangerProps.SetActive(false);
             SellswordProps.SetActive(false);
-            print("My class is nothin");
+            print("My class is husk");
         }
     }
 }

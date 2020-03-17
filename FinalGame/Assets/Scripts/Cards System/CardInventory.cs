@@ -8,9 +8,9 @@ public class CardInventory : MonoBehaviour
     [SerializeField] private int dungeonCardLimit = 50;
     [SerializeField] private int spiritCardLimit = 20;
 
-    public List<Spirit_ScriptableObj> spiritCards;
+    public List<BaseSpirit> spiritCards;
     public List<Card_ScriptableObj> dungeonCards;
-    public delegate void SpiritDeckUpdated(Spirit_ScriptableObj spirit);
+    public delegate void SpiritDeckUpdated(BaseSpirit spirit);
     public SpiritDeckUpdated spiritDeckCallback;
     public delegate void DungeonDeckUpdated(Card_ScriptableObj dungeonCard);
     public DungeonDeckUpdated dungeonDeckCallback;
@@ -30,7 +30,7 @@ public class CardInventory : MonoBehaviour
 
     private void Start()
     {
-        foreach (Spirit_ScriptableObj spirit in spiritCards)
+        foreach (BaseSpirit spirit in spiritCards)
         {
             //print("Spirit in inventory: " + spirit.name);
         }
@@ -53,7 +53,7 @@ public class CardInventory : MonoBehaviour
     /// <summary>
     /// Attempts to add a spirit to the list of spirits stored.
     /// </summary>
-    public bool AddSpiritCardToInventory(Spirit_ScriptableObj spirit)
+    public bool AddSpiritCardToInventory(BaseSpirit spirit)
     {
         if (spiritCards.Count + 1 <= spiritCardLimit)
         {
@@ -85,7 +85,7 @@ public class CardInventory : MonoBehaviour
     /// <summary>
     /// Remove the chosen spirit from the inventory.
     /// </summary>
-    public void RemoveSpiritCardFromInventory(Spirit_ScriptableObj spirit)
+    public void RemoveSpiritCardFromInventory(BaseSpirit spirit)
     {
         spiritCards.Remove(spirit);
         print(spirit.name + " removed from inventory");

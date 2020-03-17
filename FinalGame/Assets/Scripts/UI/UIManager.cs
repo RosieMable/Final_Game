@@ -88,7 +88,7 @@ namespace ZaldensGambit
             }                     
         }
 
-        public void ManageSpiritUI(Spirit_ScriptableObj _spiritToDisplay)
+        public void ManageSpiritUI(BaseSpirit _spiritToDisplay)
         {
             if (_spiritToDisplay != null)
             {

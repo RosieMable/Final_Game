@@ -1,0 +1,53 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[CreateAssetMenu(fileName = "Spirit", menuName = "SpiritCreation")] 
+public class BaseSpirit : ScriptableObject
+{
+    [SerializeField]
+    protected string _spiritName;
+
+    public string SpiritName {  get { return _spiritName; } private set { SpiritName = _spiritName; } }
+
+    [TextArea(3, 10)] [SerializeField]
+    protected string _spiritDescription;
+
+    public string SpiritDescription { get { return _spiritDescription; } private set { SpiritDescription = _spiritDescription; } }
+
+    public enum SpiritClass
+    {
+        Cleric,
+        Paladin,
+        Ranger,
+        Berserker,
+        Sellsword,
+        Mage
+    }
+
+    public enum SpiritTier
+    {
+        Tier1,
+        Tier2,
+        Tier3
+    }
+
+    public SpiritTier spiritTier;
+
+    public SpiritClass spiritClass;
+
+
+    public Sprite _spiritSprite;
+
+    public Sprite SpiritSprite { get { return _spiritSprite; } }
+
+    /// <summary>
+    /// Active ability cooldown expressed in seconds.
+    /// </summary>
+    [SerializeField]
+    private float _activeAbilityCooldown;
+
+    public float ActiveAbilityCooldown { get { return _activeAbilityCooldown; } private set { ActiveAbilityCooldown = _activeAbilityCooldown; } }
+
+    
+}

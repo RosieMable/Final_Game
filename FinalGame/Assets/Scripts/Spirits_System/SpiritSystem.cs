@@ -8,17 +8,23 @@ namespace ZaldensGambit
     public class SpiritSystem : MonoBehaviour
     {
         [SerializeField]
-        private Spirit_ScriptableObj spirit;
+        private BaseSpirit spirit;
+
+        [SerializeField]
+        private BaseSpirit spiritEquipped;
 
         [SerializeField]
         float HealthPlayerBase;
 
+        [SerializeField]
+        bool canUseAbility;
+
         private StateManager PlayerCharacter;
 
-        delegate void OnSpiritChanged(Spirit_ScriptableObj _spirit);
+        delegate void OnSpiritChanged(BaseSpirit _spirit);
         OnSpiritChanged onSpiritChanged;
 
-        public Spirit_ScriptableObj[] DemoSpirits;
+        public BaseSpirit[] DemoSpirits;
         private void OnEnable()
         {
             onSpiritChanged += UIManager.Instance.ManageSpiritUI;
@@ -36,63 +42,71 @@ namespace ZaldensGambit
         {
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                OnEquipSpirit(DemoSpirits[0]);
+                spiritEquipped = DemoSpirits[0];
+                OnEquipSpirit(spiritEquipped);
             }
             else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
-                OnEquipSpirit(DemoSpirits[1]);
+                spiritEquipped = DemoSpirits[1];
+                OnEquipSpirit(spiritEquipped);
             }
             else if (Input.GetKeyDown(KeyCode.Alpha3))
             {
-                OnEquipSpirit(DemoSpirits[2]);
+                spiritEquipped = DemoSpirits[2];
+                OnEquipSpirit(spiritEquipped);
             }
             else if (Input.GetKeyDown(KeyCode.Alpha4))
             {
-                OnEquipSpirit(DemoSpirits[3]);
+                spiritEquipped = DemoSpirits[3];
+                OnEquipSpirit(spiritEquipped);
             }
             else if (Input.GetKeyDown(KeyCode.Alpha5))
             {
-                OnEquipSpirit(DemoSpirits[4]);
+                spiritEquipped = DemoSpirits[4];
+                OnEquipSpirit(spiritEquipped);
             }
             else if (Input.GetKeyDown(KeyCode.Alpha0))
             {
                 OnEquipSpirit(spirit);
             }
+
+
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                ActiveAbility(spiritEquipped);
+            }
         }
 
-        protected void ActiveAbility()
+        protected void ActiveAbility(BaseSpirit _CurrentSpirit)
         {
-            //Active Ability logic
-            AnimationLogic();
+            if (canUseAbility)
+            {
+                //Active Ability logic
+                AnimationLogic(_CurrentSpirit);
+                AbilityCooldown(_CurrentSpirit);
+            }
+
         }
 
-        protected void AnimationLogic()
+        protected void AnimationLogic(BaseSpirit _EquippedSpirit)
         {
             //AnimationLogic for the active ability
         }
 
-        protected void PassiveAbility(Spirit_ScriptableObj _EquippedSpirit)
+        void AbilityCooldown(BaseSpirit _EquippedSpirit)
         {
-            if (PlayerCharacter)
-            {
-                PlayerCharacter.currentHealth = HealthPlayerBase;
-                PlayerCharacter.currentHealth = PlayerCharacter.currentHealth + _EquippedSpirit.HealthModifier;
-                print(PlayerCharacter.currentHealth);
-            }
-            else
-            {
-                throw new System.Exception("No PlayerCharacter found!");
-            }
+            canUseAbility = false;
+            StartCoroutine(DoAfter(_EquippedSpirit.ActiveAbilityCooldown, () => canUseAbility = true));
         }
 
-        void OnEquipSpirit(Spirit_ScriptableObj _SpiritToEquip)
+
+
+        void OnEquipSpirit(BaseSpirit _SpiritToEquip)
         {
             PlayerCharacter = gameObject.GetComponent<StateManager>();
 
             if (_SpiritToEquip != null)
             {
-                PassiveAbility(_SpiritToEquip);
-
                 //Update UI
                 onSpiritChanged?.Invoke(_SpiritToEquip);
 
@@ -104,6 +118,12 @@ namespace ZaldensGambit
             }
 
 
+        }
+
+        IEnumerator DoAfter(float _delayTime, System.Action _actionToDo)
+        {
+            yield return new WaitForSecondsRealtime(_delayTime);
+            _actionToDo();
         }
 
         private void OnDisable()
