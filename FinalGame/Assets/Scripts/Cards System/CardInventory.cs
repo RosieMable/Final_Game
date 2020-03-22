@@ -1,13 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class CardInventory : MonoBehaviour
 {
     public static CardInventory instance;
+
     [SerializeField] private int dungeonCardLimit = 50;
     [SerializeField] private int spiritCardLimit = 20;
 
+    public bool inventoryOpen;
+
+    [SerializeField] private Transform[] cardPositions;
+    [SerializeField] private Transform cardSelected;
+    private TextMeshProUGUI cardInfo;
+    private Camera camera;
+    private GameObject inventoryPanel;
     public List<BaseSpirit> spiritCards;
     public List<Card_ScriptableObj> dungeonCards;
     public delegate void SpiritDeckUpdated(BaseSpirit spirit);
@@ -26,6 +36,10 @@ public class CardInventory : MonoBehaviour
         {
             Destroy(this);
         }
+
+        inventoryPanel = GameObject.Find("InventoryPanel");
+        camera = FindObjectOfType<Camera>();
+        cardInfo = GameObject.Find("CardInfo").GetComponent<TextMeshProUGUI>();
     }
 
     private void Start()
@@ -39,15 +53,119 @@ public class CardInventory : MonoBehaviour
         {
             //print("Dungeon card in inventory: " + dungeonCard.name);
         }
+
+        ToggleInventory();
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F1))
+        if (Input.GetKeyDown(KeyCode.I))
         {
-            RemoveSpiritCardFromInventory(spiritCards[0]);
-            RemoveDungeonCardFromInventory(dungeonCards[0]);
+            ToggleInventory();
+
+            inventoryOpen = !inventoryOpen;
+
+            if (Cursor.lockState == CursorLockMode.Locked)
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+            else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
         }
+    }
+
+    private void ToggleInventory()
+    {
+        inventoryPanel.SetActive(!inventoryPanel.activeSelf);
+
+        for (int i = 0; i < cardPositions.Length; i++)
+        {
+            if (spiritCards[i] != null)
+            {
+                cardPositions[i].GetComponent<Image>().sprite = spiritCards[i]._spiritSprite;
+                cardPositions[i].GetComponent<InventoryCardUI>().spirit = spiritCards[i];
+            }
+        }
+    }
+
+    public void SelectCard(Transform selectedCardPosition)
+    {
+        InventoryCardUI cardSelectedsInfo = cardSelected.GetComponent<InventoryCardUI>();
+
+        for (int i = 0; i < cardPositions.Length; i++)
+        {
+            if (selectedCardPosition == cardPositions[i])
+            {
+                cardSelectedsInfo.spirit = cardPositions[i].GetComponent<InventoryCardUI>().spirit;
+                cardSelected.GetComponent<Image>().sprite = cardSelectedsInfo.spirit._spiritSprite;
+
+                cardInfo.text = "Name: " + cardSelectedsInfo.spirit.SpiritName
+                    + "\n Class: " + cardSelectedsInfo.spirit.spiritClass
+                    + "\n \n Bio: " + cardSelectedsInfo.spirit.SpiritDescription;
+                return;
+            }
+        }
+    }
+
+    private int minimum = 0;
+
+    public void SortLeft()
+    {
+        Debug.Log("Minimum beforehand: " + minimum);
+
+        if (minimum > 0)
+        {
+            minimum--;
+        }
+
+        Debug.Log("Minimum after: " + minimum);
+
+        int _cardToDisplay = minimum;
+
+        for (int i = 0; i < cardPositions.Length; i++)
+        {
+            if (_cardToDisplay <= spiritCards.Count - 1 && spiritCards[_cardToDisplay] != null)
+            {
+                cardPositions[i].GetComponent<Image>().sprite = spiritCards[_cardToDisplay]._spiritSprite;
+                cardPositions[i].GetComponent<InventoryCardUI>().spirit = spiritCards[_cardToDisplay];
+                Debug.Log("Display card: " + _cardToDisplay);
+                _cardToDisplay++;
+                Debug.Log("Increment to value: " + _cardToDisplay);
+            }
+        }
+    }
+
+    public void SortRight()
+    {
+        // Check if there is a spiritcard in inventory that is not currently displayed that is greater than the value of the current set
+        // If so, readjust display
+        Debug.Log("Minimum beforehand: " + minimum);
+
+        if (minimum >= 0 && minimum <= spiritCards.Count - 5)
+        {
+            minimum++;
+        }
+
+        Debug.Log("Minimum after: " + minimum);
+
+        int _cardToDisplay = minimum;
+
+        for (int i = 0; i < cardPositions.Length; i++)
+        {
+            if (_cardToDisplay <= spiritCards.Count - 1 && spiritCards[_cardToDisplay] != null)
+            {
+                cardPositions[i].GetComponent<Image>().sprite = spiritCards[_cardToDisplay]._spiritSprite;
+                cardPositions[i].GetComponent<InventoryCardUI>().spirit = spiritCards[_cardToDisplay];
+                Debug.Log("Display card: " + _cardToDisplay);
+                _cardToDisplay++;
+                Debug.Log("Increment to value: " + _cardToDisplay);
+            }
+        }
+
     }
 
     /// <summary>

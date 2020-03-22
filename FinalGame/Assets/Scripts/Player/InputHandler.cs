@@ -31,6 +31,11 @@ namespace ZaldensGambit
 
         private void Update()
         {
+            if (CardInventory.instance.inventoryOpen)
+            {
+                return;
+            }
+
             if (!states.interacting)
             {
                 GetInput();

@@ -77,6 +77,11 @@ namespace ZaldensGambit
         /// </summary>
         public void Tick(float deltaTime)
         {
+            if (CardInventory.instance.inventoryOpen)
+            {
+                return;
+            }
+
             // All of the below may change if a controller speed is introduced
             float horizontalAzis = Input.GetAxis("Mouse X");
             float verticalAxis = Input.GetAxis("Mouse Y");
