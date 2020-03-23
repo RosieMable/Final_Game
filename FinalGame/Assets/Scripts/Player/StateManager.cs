@@ -151,6 +151,8 @@ namespace ZaldensGambit
             currentHealth -= value;
             canMove = false;
 
+            GameManager.instance.PlayDamageEffect();
+
             if (currentHealth <= 0 && !isDead)
             {
                 isDead = true;
@@ -158,7 +160,7 @@ namespace ZaldensGambit
                 print("Player died!");
                 collider.enabled = false;
                 rigidBody.isKinematic = true;
-                charAnim.CrossFade("Death", 0.2f);
+                charAnim.CrossFade("Death", 0.2f);                
             }
 
             int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length);
