@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -26,6 +27,11 @@ public class GameManager : MonoBehaviour
         damageEffect.enabled = false;
     }
 
+    public void GameOver()
+    {
+        StartCoroutine(GameOverAfterDelay(3));
+    }    
+
     public void PlayDamageEffect()
     {
         int effectToPlay = (int)Random.Range(0f, damageEffects.Length);
@@ -41,6 +47,12 @@ public class GameManager : MonoBehaviour
             damageEffect.color = new Color(damageEffect.color.r, damageEffect.color.g, damageEffect.color.b, 1);
             damageCoroutine = StartCoroutine(DamageEffect(1f));
         }
+    }
+
+    private IEnumerator GameOverAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     private IEnumerator DamageEffect(float duration)

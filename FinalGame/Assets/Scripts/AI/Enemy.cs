@@ -37,6 +37,7 @@ namespace ZaldensGambit
         [SerializeField] protected float rotationSpeed = 2;
         protected bool stunned;
         private Coroutine stunnedCoroutine;
+
         protected GameObject player;
         [SerializeField] protected bool isTrainingDummy;
         [HideInInspector] public WeaponHook weaponHook;
@@ -47,8 +48,20 @@ namespace ZaldensGambit
         private int currentPatrolPoint;
         [SerializeField] protected LayerMask playerLayer;
         private CameraManager cameraManager;
+
         [SerializeField] protected AnimationClip[] hurtAnimations;
         [SerializeField] protected AnimationClip[] attackAnimations;
+
+        protected AudioSource characterAudioSource;
+        [SerializeField] protected AudioClip[] deathAudioClips;
+        [SerializeField] protected AudioClip[] hurtAudioClips;
+
+        protected bool withinRangeOfTarget;
+        protected bool movingToAttack;
+        [SerializeField] protected static List<Enemy> currentAttackers = new List<Enemy>();
+        protected static int maximumNumberOfAttackers = 2;
+        protected bool strafing;
+        protected int currentSlot = -1;
 
         protected enum State { Idle, Pursuing, Attacking }
         protected State currentState;
@@ -73,6 +86,7 @@ namespace ZaldensGambit
             healthSlider.gameObject.SetActive(false);
             damageText = GetComponentInChildren<TextMeshProUGUI>();
             damageText.gameObject.SetActive(false);
+            characterAudioSource = GetComponent<AudioSource>();
 
             //if (animHook == false)
             //{
@@ -85,7 +99,6 @@ namespace ZaldensGambit
         {
             animHook.Initialise(null, this);
             cameraManager = CameraManager.instance;
-
             currentAttackers.Clear();
         }
 
@@ -144,6 +157,10 @@ namespace ZaldensGambit
             int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length); // Return random animation from list
             charAnim.CrossFade(hurtAnimations[hurtAnimationToPlay].name, 0.1f); // Play animation
             charAnim.applyRootMotion = true;
+
+            int clipToPlay = Random.Range(0, hurtAudioClips.Length);
+            characterAudioSource.clip = hurtAudioClips[clipToPlay];
+            characterAudioSource.Play();
         }
 
         protected virtual void Update()
@@ -167,6 +184,13 @@ namespace ZaldensGambit
                         charAnim.Play("death");
                         agent.enabled = false;
                         Destroy(gameObject, 5);
+                        int clipToPlay = Random.Range(0, deathAudioClips.Length);
+                        characterAudioSource.clip = deathAudioClips[clipToPlay];
+                        characterAudioSource.Play();
+                    }
+                    else
+                    {
+                        transform.Translate(new Vector3(0, -0.1f, 0) * Time.fixedDeltaTime); // Sink into the ground whilst dead, should allow the model to submerge before being deleted.
                     }
                 }
                 else
@@ -486,53 +510,6 @@ namespace ZaldensGambit
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position + Vector3.up, attackRange);
         }
-
-        // Experimental 'Combat Circle' logic attempt below
-        //https://www.trickyfast.com/2017/10/09/building-an-attack-slot-system-in-unity/
-        //https://gamedevelopment.tutsplus.com/tutorials/battle-circle-ai-let-your-player-feel-like-theyre-fighting-lots-of-enemies--gamedev-13535
-        /* Logic:
-         * 1) Move towards the player when within aggro range. - Done
-         * 2) When within a reasonable range, avoid other AIs unless moving to attack. - Done
-         * 3) Move towards the player whilst avoiding other AIs unless moving to attack. - Done
-         * 4) When the player is within attack range, check if I'm allowed to attack. - Done
-         * 
-         * Notes on permission given for attacks:
-         * - Cannot attack if there is already a maximum number of allowed attackers - Done
-         * - When denied, continue to move around the player and repeat
-         * - If the player moves out of attack range, remove from attackers list - Done
-         * - If killed, remove from attackers list - Done
-         * 
-         * Variables Needed:
-         * Aggro range - Done
-         * Attack range - Done
-         * In-range boolean - Done
-         * Moving-to-attack boolean - Done
-         * Avoid radius - Done
-         * List of attackers - Done
-         * Maximum number of allowed attackers- Done
-         * 
-         * Possible States:
-         * - Idle - Done
-         * - Pursuing - Done
-         * - LookingToAttack - 
-         * - Attacking - Done
-         * 
-         * 
-         * Additional Logic:
-         * 1) When the player is in range, check if we are able to attack. - Done
-         * 2) If we are able to attack, attack. If we are not, move to a attack slot position. - Done
-         * 3) If we are not able to attack and are at our attack slot position, move slightly around the position. - Done
-         * 4) If the target enters our attack range, no matter what we are to attack them. - Done
-         * 5) If the target attacks us, forcefully enter the list of attackers. - Done
-         * 6) If the player moves away from us, attempt to follow - Done
-        */
-
-        protected bool withinRangeOfTarget;
-        protected bool movingToAttack;
-        [SerializeField] protected static List<Enemy> currentAttackers = new List<Enemy>();
-        protected static int maximumNumberOfAttackers = 2;
-        protected bool strafing;
-        protected int currentSlot = -1; 
 
         /// <summary>
         /// Removes the AI from the list of attackers and flags them as no longer moving to attack.

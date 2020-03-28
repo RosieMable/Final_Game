@@ -26,7 +26,6 @@ namespace ZaldensGambit
         private int experience = 0;
         private int experienceForNextLevel = 1000;
         public int damage = 10;
-        //public float stamina = 100;
         private bool isDead = false;
         private Collider collider;
         [HideInInspector] public bool isInvulnerable;
@@ -46,8 +45,7 @@ namespace ZaldensGambit
         private int animationClipIndex = 0;
         [SerializeField] private AnimationClip[] hurtAnimations;
 
-        public Enemy lockOnTarget;
-
+        [HideInInspector] public Enemy lockOnTarget;
         [HideInInspector] public GameObject activeModel;
         [HideInInspector] public Animator charAnim;
         [HideInInspector] public Rigidbody rigidBody;
@@ -56,6 +54,11 @@ namespace ZaldensGambit
         [HideInInspector] public AnimatorHook animHook;
         [HideInInspector] public ActionManager actionManager;
         [HideInInspector] public WeaponHook weaponHook;
+        private AudioSource characterAudioSource;
+        private AudioSource weaponAudioSource;
+        private AudioSource shieldAudioSource;
+        [SerializeField] private AudioClip[] hurtAudioClips;
+        [SerializeField] private AudioClip[] attackBlockedAudioClips;
 
         private float actionDelay;
         [HideInInspector] public float actionLockoutDuration = 1f;
@@ -73,6 +76,9 @@ namespace ZaldensGambit
             rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             animHook = GetComponentInChildren<AnimatorHook>();
             collider = GetComponent<Collider>();
+            characterAudioSource = GetComponent<AudioSource>();
+            shieldAudioSource = GameObject.Find("Shield").GetComponent<AudioSource>();
+
 
             if (animHook == false)
             {
@@ -138,6 +144,10 @@ namespace ZaldensGambit
                     if (hit.transform == damageSource)
                     {
                         charAnim.CrossFade("BlockShieldHit", 0.1f);
+                        int audioToPlay = Random.Range(0, attackBlockedAudioClips.Length);
+                        shieldAudioSource.clip = attackBlockedAudioClips[audioToPlay];
+                        shieldAudioSource.Play();
+
                         if (enemy)
                         {
                             enemy.attackDelay = Time.time + enemy.attackCooldown * 2f;
@@ -160,8 +170,13 @@ namespace ZaldensGambit
                 print("Player died!");
                 collider.enabled = false;
                 rigidBody.isKinematic = true;
-                charAnim.CrossFade("Death", 0.2f);                
+                charAnim.Play("Death");
+                GameManager.instance.GameOver();
             }
+
+            int audioClipToPlay = Random.Range(0, hurtAudioClips.Length);
+            characterAudioSource.clip = hurtAudioClips[audioClipToPlay];
+            characterAudioSource.Play();
 
             int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length);
             charAnim.CrossFade(hurtAnimations[hurtAnimationToPlay].name, 0.1f);
@@ -718,7 +733,13 @@ namespace ZaldensGambit
                 other.GetComponent<Enemy>().ApplyStun(2.5f);
             }
         }
-    }
+
+        IEnumerator PlayAudioAfterDelay(AudioSource source, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            source.Play();
+        }
+    }    
 }
 
 
