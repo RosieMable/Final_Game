@@ -10,14 +10,18 @@ namespace ZaldensGambit
         [SerializeField]
         private BaseSpirit spirit;
 
-        [SerializeField]
-        private BaseSpirit spiritEquipped;
+        public BaseSpirit spiritEquipped;
 
         [SerializeField]
         float HealthPlayerBase;
 
         [SerializeField]
+        Transform AbilitySpawnPoint;
+
+        [SerializeField]
         bool canUseAbility;
+
+        ActionManager actionManager;
 
         private StateManager PlayerCharacter;
 
@@ -25,10 +29,17 @@ namespace ZaldensGambit
         OnSpiritChanged onSpiritChanged;
 
         public BaseSpirit[] DemoSpirits;
+
+        RFX4_EffectEvent _EffectEvent;
         private void OnEnable()
         {
             onSpiritChanged += UIManager.Instance.ManageSpiritUI;
             onSpiritChanged += Spirits_PlayerModel.Instance.SetCorrectProps;
+        }
+        private void Awake()
+        {
+            actionManager = GetComponent<ActionManager>();
+            _EffectEvent = GetComponentInChildren<RFX4_EffectEvent>();
         }
 
         //for now it is going to be in update, but once the inventory system is on, this should happen when "equipping" the spirit
@@ -69,28 +80,24 @@ namespace ZaldensGambit
             {
                 OnEquipSpirit(spirit);
             }
-
-
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                ActiveAbility(spiritEquipped);
-            }
         }
 
-        protected void ActiveAbility(BaseSpirit _CurrentSpirit)
+        public void ActiveAbility(BaseSpirit _CurrentSpirit)
         {
             if (canUseAbility)
             {
                 //Active Ability logic
-                AnimationLogic(_CurrentSpirit);
+                UpdateVFXScript(_CurrentSpirit);
                 AbilityCooldown(_CurrentSpirit);
             }
 
         }
 
-        protected void AnimationLogic(BaseSpirit _EquippedSpirit)
+        protected void UpdateVFXScript(BaseSpirit _EquippedSpirit)
         {
             //AnimationLogic for the active ability
+            //hook up with RFX4 effect event 
+            _EffectEvent.MainEffect = _EquippedSpirit.VFXPrefab;
         }
 
         void AbilityCooldown(BaseSpirit _EquippedSpirit)
@@ -99,7 +106,10 @@ namespace ZaldensGambit
             StartCoroutine(DoAfter(_EquippedSpirit.ActiveAbilityCooldown, () => canUseAbility = true));
         }
 
-
+        public bool CheckAbilityCooldown()
+        {
+            return canUseAbility;
+        }
 
         void OnEquipSpirit(BaseSpirit _SpiritToEquip)
         {
@@ -110,13 +120,28 @@ namespace ZaldensGambit
                 //Update UI
                 onSpiritChanged?.Invoke(_SpiritToEquip);
 
+                if (actionManager != null)
+                {
+                    actionManager.actionSlots[3].desiredAnimation = _SpiritToEquip.activeAbilityAnimation;
+                }
+
+                canUseAbility = true;
+
             }
             else
             {
                 //Update UI
                 onSpiritChanged?.Invoke(_SpiritToEquip);
             }
+        }
 
+        public void DoDamageToEnemy(GameObject enemy)
+        {
+            enemy.gameObject.GetComponent<Enemy>();
+        }
+
+        void PopulateCardStats(BaseSpirit spirit)
+        {
 
         }
 

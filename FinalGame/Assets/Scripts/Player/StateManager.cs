@@ -454,7 +454,7 @@ namespace ZaldensGambit
             AnimationClip desiredAnimation = null;
             Action slot = null;
 
-            if (!lightAttack && !heavyAttack && !dodgeRoll && !block) // If there are no actions detected...
+            if (!lightAttack && !heavyAttack && !dodgeRoll && !block && !specialAttack) // If there are no actions detected...
             {
                 return;
             }
@@ -480,6 +480,17 @@ namespace ZaldensGambit
                 {
                     listenForCombos = false;
                     desiredAnimation = slot.desiredAnimation;           
+                }
+
+                if (specialAttack)
+                {
+                    listenForCombos = false;
+                    SpiritSystem spiritSystem = GetComponent<SpiritSystem>();
+                    if (!spiritSystem.CheckAbilityCooldown())
+                    {
+                        return;
+                    }
+                    spiritSystem.ActiveAbility(spiritSystem.spiritEquipped);
                 }
 
                 // Light Attack Combo
@@ -560,6 +571,16 @@ namespace ZaldensGambit
                 desiredAnimation = slot.desiredAnimation;
             }
 
+            if (specialAttack)
+            {
+                SpiritSystem spiritSystem = GetComponent<SpiritSystem>();
+                if (!spiritSystem.CheckAbilityCooldown())
+                {
+                    return;
+                }
+                spiritSystem.ActiveAbility(spiritSystem.spiritEquipped);
+            }
+
             if (desiredAnimation.name == "block")
             {
                 isBlocking = true;
@@ -592,6 +613,7 @@ namespace ZaldensGambit
                     RotateTowardsTarget(lockOnTarget.transform);
                 }
 
+                print(desiredAnimation.name);
                 charAnim.CrossFade(desiredAnimation.name, 0.2f); // Apply animation crossfade.
             }
             

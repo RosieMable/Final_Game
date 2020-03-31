@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations;
 
 [CreateAssetMenu(fileName = "Spirit", menuName = "SpiritCreation")] 
 public class BaseSpirit : ScriptableObject
@@ -48,6 +49,10 @@ public class BaseSpirit : ScriptableObject
     private float _activeAbilityCooldown;
 
     public float ActiveAbilityCooldown { get { return _activeAbilityCooldown; } private set { ActiveAbilityCooldown = _activeAbilityCooldown; } }
+
+    public GameObject VFXPrefab;
+
+    public AnimationClip activeAbilityAnimation;
 
     
 }

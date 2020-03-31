@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using ZaldensGambit;
 
 public class RFX4_PhysicsMotion : MonoBehaviour
 {
@@ -41,6 +42,11 @@ public class RFX4_PhysicsMotion : MonoBehaviour
     bool isInitializedForce;
     float currentSpeedOffset;
     private RFX4_EffectSettings effectSettings;
+
+    //Zaldan Gambit Variables
+    public bool dealDamageOnHit;
+    public delegate void OnDamageHit();
+    public OnDamageHit OnDamageHitCallback;
 
     void OnEnable ()
     {
@@ -85,12 +91,19 @@ public class RFX4_PhysicsMotion : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
+        print(collision.gameObject.name);
+        if (dealDamageOnHit)
+        {
+
+        }
+
         if (isCollided && !effectSettings.UseCollisionDetection) return;
         foreach (ContactPoint contact in collision.contacts)
         {
             if (!isCollided)
             {
                 isCollided = true;
+
                 //offsetColliderPoint = contact.otherCollider.transform.position - contact.point;
                 // lastCollider = contact.otherCollider;
                 // lastContactPoint = contact;
@@ -109,7 +122,9 @@ public class RFX4_PhysicsMotion : MonoBehaviour
             }
             var handler = CollisionEnter;
             if (handler != null)
-                handler(this, new RFX4_CollisionInfo { HitPoint = contact.point, HitCollider = contact.otherCollider, HitGameObject = contact.otherCollider.gameObject});
+            {
+                handler(this, new RFX4_CollisionInfo { HitPoint = contact.point, HitCollider = contact.otherCollider, HitGameObject = contact.otherCollider.gameObject });
+            }
 
             if (EffectOnCollision != null)
             {
