@@ -31,6 +31,10 @@ namespace ZaldensGambit
         public BaseSpirit[] DemoSpirits;
 
         RFX4_EffectEvent _EffectEvent;
+
+        UpdateShieldMesh shieldMesh;
+
+        UpdateSwordMesh swordMesh;
         private void OnEnable()
         {
             onSpiritChanged += UIManager.Instance.ManageSpiritUI;
@@ -40,6 +44,9 @@ namespace ZaldensGambit
         {
             actionManager = GetComponent<ActionManager>();
             _EffectEvent = GetComponentInChildren<RFX4_EffectEvent>();
+
+            swordMesh = GetComponentInChildren<UpdateSwordMesh>();
+            shieldMesh = GetComponentInChildren<UpdateShieldMesh>();
         }
 
         //for now it is going to be in update, but once the inventory system is on, this should happen when "equipping" the spirit
@@ -76,6 +83,11 @@ namespace ZaldensGambit
                 spiritEquipped = DemoSpirits[4];
                 OnEquipSpirit(spiritEquipped);
             }
+            else if (Input.GetKeyDown(KeyCode.Alpha6))
+            {
+                spiritEquipped = DemoSpirits[5];
+                OnEquipSpirit(spiritEquipped);
+            }
             else if (Input.GetKeyDown(KeyCode.Alpha0))
             {
                 OnEquipSpirit(spirit);
@@ -96,8 +108,45 @@ namespace ZaldensGambit
         protected void UpdateVFXScript(BaseSpirit _EquippedSpirit)
         {
             //AnimationLogic for the active ability
-            //hook up with RFX4 effect event 
-            _EffectEvent.MainEffect = _EquippedSpirit.VFXPrefab;
+
+            switch (_EquippedSpirit.spiritClass)
+            {
+                case BaseSpirit.SpiritClass.Cleric:
+                    //hook up with RFX4 effect event 
+                    swordMesh.RevertToOriginalMat();
+                    shieldMesh.RevertToOriginalMat();
+                    _EffectEvent.MainEffect = _EquippedSpirit.VFXPrefab;
+                    break;
+                case BaseSpirit.SpiritClass.Paladin:
+                    swordMesh.RevertToOriginalMat();
+                    shieldMesh.RevertToOriginalMat();
+                    shieldMesh.VFXPrefab = _EquippedSpirit.VFXPrefab;
+                    shieldMesh.UpdateMeshEffect();
+                    break;
+                case BaseSpirit.SpiritClass.Ranger:
+                    _EffectEvent.MainEffect = _EquippedSpirit.VFXPrefab;
+                    break;
+                case BaseSpirit.SpiritClass.Berserker:
+                    swordMesh.RevertToOriginalMat();
+                    shieldMesh.RevertToOriginalMat();
+                    swordMesh.VFXPrefab = _EquippedSpirit.VFXPrefab;
+                    _EffectEvent.MainEffect = null;
+                   swordMesh.UpdateMeshEffect();
+                    break;
+                case BaseSpirit.SpiritClass.Sellsword:
+                    swordMesh.RevertToOriginalMat();
+                    shieldMesh.RevertToOriginalMat();
+                    swordMesh.VFXPrefab = _EquippedSpirit.VFXPrefab;
+                    swordMesh.UpdateMeshEffect();
+                    break;
+                case BaseSpirit.SpiritClass.Mage:
+                    //hook up with RFX4 effect event 
+                    swordMesh.RevertToOriginalMat();
+                    shieldMesh.RevertToOriginalMat();
+                    _EffectEvent.MainEffect = _EquippedSpirit.VFXPrefab;
+                    break;
+            }
+
         }
 
         void AbilityCooldown(BaseSpirit _EquippedSpirit)
