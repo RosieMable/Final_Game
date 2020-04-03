@@ -37,6 +37,8 @@ public class CardInventory : MonoBehaviour
             Destroy(this);
         }
 
+        DontDestroyOnLoad(this.gameObject);
+
         inventoryPanel = GameObject.Find("InventoryPanel");
         camera = FindObjectOfType<Camera>();
         cardInfo = GameObject.Find("CardInfo").GetComponent<TextMeshProUGUI>();

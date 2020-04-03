@@ -54,7 +54,7 @@ public class CardUISystem : MonoBehaviour
             dungeonCard = FindObjectOfType<DungeonCardSystem>();
 
         howManyAdded = 0.0f;
-        currentDeck = dungeonCard.ownedDungeonCards;
+        currentDeck = CardInventory.instance.dungeonCards;
         HandDeckPos = HandDeck;
 
         foreach (var card in CardsSelected)

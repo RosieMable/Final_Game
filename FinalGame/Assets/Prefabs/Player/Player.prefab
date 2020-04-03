@@ -42,7 +42,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -335,11 +335,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: fd79e60e866c9df46a4359fc2b47c473, type: 3}
   - {fileID: 8300000, guid: 9e59046627e4c7f44b8b073ed1bf023c, type: 3}
   - {fileID: 8300000, guid: e57234db68d63034e9be9fb1665fc85f, type: 3}
-  attackAudioClips:
-  - {fileID: 8300000, guid: 263bbcd360d894a45949b3a77af566e2, type: 3}
-  - {fileID: 8300000, guid: 26bea46b637a8754a840cfa7271f062c, type: 3}
-  - {fileID: 8300000, guid: 8c0ff1e28ebecec45aabfe3ece977436, type: 3}
-  - {fileID: 8300000, guid: 3faa1ce02e10f394d85e439fd7677b8f, type: 3}
   actionLockoutDuration: 1
 --- !u!114 &5925844740738560706
 MonoBehaviour:
@@ -392,6 +387,7 @@ MonoBehaviour:
   spirit: {fileID: 0}
   spiritEquipped: {fileID: 0}
   HealthPlayerBase: 100
+  AbilitySpawnPoint: {fileID: 0}
   canUseAbility: 0
   DemoSpirits:
   - {fileID: 11400000, guid: 1b3f88a16635f86458a2d1f83512b24e, type: 2}
@@ -589,6 +585,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageCollider: {fileID: 5925844740618632574}
+  attackClips:
+  - {fileID: 8300000, guid: 3faa1ce02e10f394d85e439fd7677b8f, type: 3}
+  - {fileID: 8300000, guid: 8c0ff1e28ebecec45aabfe3ece977436, type: 3}
+  - {fileID: 8300000, guid: 26bea46b637a8754a840cfa7271f062c, type: 3}
+  - {fileID: 8300000, guid: 263bbcd360d894a45949b3a77af566e2, type: 3}
 --- !u!82 &5081230924930793828
 AudioSource:
   m_ObjectHideFlags: 0
@@ -601,7 +602,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.1
   m_Pitch: 1
   Loop: 0
   Mute: 0

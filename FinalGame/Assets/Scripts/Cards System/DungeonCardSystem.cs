@@ -8,7 +8,9 @@ using ZaldensGambit;
 public class DungeonCardSystem : Singleton<DungeonCardSystem>
 {
     [Header("Dungeon Cards Section")]
-    public List<Card_ScriptableObj> ownedDungeonCards; //reference to the dungeoncards that the player owns (inventory system ref)
+    //public List<Card_ScriptableObj> ownedDungeonCards; //reference to the dungeoncards that the player owns (inventory system ref)
+
+    private CardInventory cardInventory;
 
     public List<Card_ScriptableObj> allDungeonCards; //Reference to all the cards within the game
 
@@ -64,12 +66,20 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
     public Text debugAllCards;
     #endregion
 
+    protected override void Awake()
+    {
+        base.Awake();
+        DontDestroyOnLoad(this.gameObject);
+    }
+
     private void Start()
     {
+        cardInventory = CardInventory.instance;
+
         string temp = "";
 
 
-        foreach (var item in ownedDungeonCards)
+        foreach (var item in cardInventory.dungeonCards)
         {
             Debug.Log(item.CardName);
             temp += item.CardName + "\n";
@@ -134,7 +144,7 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
         //add them to the drawn cards
         string temp = "";
 
-        _drawnCards = GetRandomItemsFromList<Card_ScriptableObj>(ownedDungeonCards, amount);
+        _drawnCards = GetRandomItemsFromList<Card_ScriptableObj>(cardInventory.dungeonCards, amount);
 
         foreach (var item in _drawnCards)
         {
@@ -214,7 +224,7 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
 
     private void GetDungeonCardsReward(int rewardAmount)
     {
-        _possibleDungeonCardsReward = GetDifferenceFromTwoLists(allDungeonCards, ownedDungeonCards);
+        _possibleDungeonCardsReward = GetDifferenceFromTwoLists(allDungeonCards, cardInventory.dungeonCards);
 
         if (_possibleDungeonCardsReward.Count < rewardAmount) //if there are less possible rewards then the amount asked...
         {

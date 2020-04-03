@@ -17,13 +17,14 @@ namespace ZaldensGambit
         private static DialogueNPC[] NPCs;
 
         // Main Dialogue - What is said when the NPC is interacted with
-        [SerializeField] private Dialogue[] mainDialogue;
-        [SerializeField] private float interactionRange = 2f;
-        private int dialogueIndex = -1;
+        [SerializeField] protected Dialogue[] mainDialogue;
+        [SerializeField] protected float interactionRange = 2f;
+        protected int dialogueIndex = -1;
 
-        private StateManager player;
-        private AudioSource audioSource;
-        private UIManager UIManager;
+        private float distanceToPlayer;
+        protected StateManager player;
+        protected AudioSource audioSource;
+        protected UIManager UIManager;
 
         private void Start()
         {
@@ -31,16 +32,79 @@ namespace ZaldensGambit
             player = FindObjectOfType<StateManager>();
             audioSource = GetComponent<AudioSource>();
             NPCs = FindObjectsOfType<DialogueNPC>();
-        }
-
-        // If the player is outside of our range, do nothing
-        // If the player enters our range, speak - Done
-        // If the player leaves our range, stop speaking
+        }       
 
         private void Update()
         {
-            float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
+            distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
 
+            CheckProximityDialogue();            
+            
+            // Check if any other NPC is playing their dialogue
+            bool dialoguePlaying = false;
+            foreach (DialogueNPC npc in NPCs)
+            {
+                if (npc.audioSource.isPlaying)
+                {
+                    dialoguePlaying = true;
+                    break; // Exit loop
+                }
+                else
+                {
+                    dialoguePlaying = false;
+                }
+            }
+            isDialoguePlaying = dialoguePlaying; // Assign result from loop        
+
+            // If no NPCs dialogue is playing, remove dialogue box from UI
+            if (!isDialoguePlaying)
+            {
+                UIManager.HideDialogue();
+            }            
+
+            if (distanceToPlayer < interactionRange)
+            {
+                // Visual indicator needed to be displayed to the player that they can interact, perhaps a '!' or message on screen.
+
+                if (!audioSource.isPlaying)
+                {
+                    UIManager.DisplayDialogue("E to interact.");
+                }
+
+                CheckMainDialogue();                
+            }
+
+            if (audioSource.isPlaying && dialogueIndex != -1)
+            {
+                print(mainDialogue[dialogueIndex].dialogue + " should be on screen!");
+            }
+        }
+
+        protected virtual void CheckMainDialogue()
+        {
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                player.interacting = true;
+                dialogueIndex++;
+
+                // If there is dialogue to play...
+                if (dialogueIndex <= mainDialogue.Length - 1)
+                {
+                    audioSource.Stop();
+                    PlayMainDialogue();
+                }
+                else // End interaction, reset dialogue index for if the player wants to start conversation again.
+                {
+                    print("End of main dialogue, looping back to start!");
+                    player.interacting = false;
+                    CameraManager.instance.ToggleCursorVisibleState(false);
+                    dialogueIndex = -1;
+                }
+            }
+        }
+
+        private void CheckProximityDialogue()
+        {
             // Flag when the player is within range, if enough time has passed, play proximity dialogue
             if (distanceToPlayer < proximityDialogueTriggerDistance)
             {
@@ -68,63 +132,6 @@ namespace ZaldensGambit
                 }
                 isSomeoneInRange = inRange; // Assign result from loop
             }
-            
-            // Check if any other NPC is playing their dialogue
-            bool dialoguePlaying = false;
-            foreach (DialogueNPC npc in NPCs)
-            {
-                if (npc.audioSource.isPlaying)
-                {
-                    dialoguePlaying = true;
-                    break; // Exit loop
-                }
-                else
-                {
-                    dialoguePlaying = false;
-                }
-            }
-            isDialoguePlaying = dialoguePlaying; // Assign result from loop        
-
-            // If no NPCs dialogue is playing, remove dialogue box from UI
-            if (!isDialoguePlaying)
-            {
-                UIManager.HideDialogue();
-            }
-
-            if (distanceToPlayer < interactionRange)
-            {
-                // Visual indicator needed to be displayed to the player that they can interact, perhaps a '!' or message on screen.
-
-                if (!audioSource.isPlaying)
-                {
-                    UIManager.DisplayDialogue("E to interact.");
-                }
-
-                if (Input.GetKeyDown(KeyCode.E))
-                {
-                    player.interacting = true;
-                    dialogueIndex++;
-
-                    // If there is dialogue to play...
-                    if (dialogueIndex <= mainDialogue.Length - 1)
-                    {
-                        audioSource.Stop();
-                        PlayMainDialogue();
-                    }
-                    else // End interaction, reset dialogue index for if the player wants to start conversation again.
-                    {
-                        print("End of main dialogue, looping back to start!");
-                        player.interacting = false;
-                        CameraManager.instance.ToggleCursorVisibleState(false);
-                        dialogueIndex = -1;
-                    }
-                }
-            }
-
-            if (audioSource.isPlaying && dialogueIndex != -1)
-            {
-                print(mainDialogue[dialogueIndex].dialogue + " should be on screen!");
-            }
         }
 
         private void PlayProximityDialogue()
@@ -142,7 +149,7 @@ namespace ZaldensGambit
             audioSource.Play();
         }
 
-        private void PlayMainDialogue()
+        protected void PlayMainDialogue()
         {
             timeUntilNextProximityDialogue = Time.time + (proximityDialogueCooldown * 3);
             UIManager.DisplayDialogue(mainDialogue[dialogueIndex]);
