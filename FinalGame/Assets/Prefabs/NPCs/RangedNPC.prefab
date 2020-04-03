@@ -334,6 +334,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageCollider: {fileID: 0}
+  attackClips: []
 --- !u!1 &8216772090888922425
 GameObject:
   m_ObjectHideFlags: 0
@@ -633,6 +634,13 @@ MonoBehaviour:
     m_Bits: 0
   hurtAnimations: []
   attackAnimations: []
+  deathAudioClips:
+  - {fileID: 8300000, guid: 124dd35532d4d0f46ba5cf6326592140, type: 3}
+  - {fileID: 8300000, guid: d910c6baf2ffccf4195f65122a7621a8, type: 3}
+  hurtAudioClips:
+  - {fileID: 8300000, guid: 5c50cef9a3494674ab64291e0e785e75, type: 3}
+  - {fileID: 8300000, guid: 1f74de3eff4a35049b87456ae53a7205, type: 3}
+  - {fileID: 8300000, guid: b6b53eec3a3c1a94da10b2524749a241, type: 3}
   isDead: 0
   projectile: {fileID: 7030251347130756501, guid: 57172cd4c2e683d4cb28d9031391bc35,
     type: 3}
