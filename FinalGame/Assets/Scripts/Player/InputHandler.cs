@@ -31,8 +31,12 @@ namespace ZaldensGambit
 
         private void Update()
         {
+            states.Tick(delta);
+
             if (CardInventory.instance.inventoryOpen)
             {
+                vertical = 0;
+                horizontal = 0;
                 return;
             }
 
@@ -47,7 +51,6 @@ namespace ZaldensGambit
             }
             SearchForLockOnTarget();
             delta = Time.deltaTime;
-            states.Tick(delta);
 
             if (states.lockOnTarget != null)
             {

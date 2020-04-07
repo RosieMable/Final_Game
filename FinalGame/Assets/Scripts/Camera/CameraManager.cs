@@ -77,10 +77,6 @@ namespace ZaldensGambit
         /// </summary>
         public void Tick(float deltaTime)
         {
-            if (CardInventory.instance.inventoryOpen)
-            {
-                return;
-            }
 
             // All of the below may change if a controller speed is introduced
             float horizontalAzis = Input.GetAxis("Mouse X");
@@ -88,6 +84,12 @@ namespace ZaldensGambit
             float speed = mouseSpeed; // Will definitely need to change if controller speed is introduced
 
             FollowTarget(deltaTime);
+
+            if (CardInventory.instance.inventoryOpen)
+            {
+                return;
+            }
+
             HandleRotation(deltaTime, verticalAxis, horizontalAzis, speed);
             HandlePivotPosition();
         }
