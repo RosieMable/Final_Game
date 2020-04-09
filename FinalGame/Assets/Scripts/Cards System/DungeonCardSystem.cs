@@ -29,7 +29,7 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
     int nClick = 0;
 
     [Header("Spirit Cards Section")]
-    public List<BaseSpirit> ownedSpirits; //reference to the spirits that the player owns (inventory system ref)
+   // public List<BaseSpirit> ownedSpirits; //reference to the spirits that the player owns (inventory system ref)
 
     public List<BaseSpirit> allSpirits; //Reference to all spirits within the game
 

@@ -43,16 +43,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 644c3f97f4a759e4ab0d79047b9eda68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ownedDungeonCards:
-  - {fileID: 11400000, guid: 0c430a293e574bd4ab4691430f0a680d, type: 2}
-  - {fileID: 11400000, guid: 7d7554133b12ca246b48057424ed02e1, type: 2}
-  - {fileID: 11400000, guid: 7d2dcdf5987abc947ad1f87ff16ea282, type: 2}
-  - {fileID: 11400000, guid: 772f36d2111a2304ba87898555c7e6a3, type: 2}
-  - {fileID: 11400000, guid: 15f91563620e6eb4a848ed44a424d459, type: 2}
-  - {fileID: 11400000, guid: d059782902d048a418bc6517066b686f, type: 2}
-  - {fileID: 11400000, guid: cc7ae495c156ab8459f92e940cb95a4c, type: 2}
-  - {fileID: 11400000, guid: c50be4a3a085bb541862585ce53015df, type: 2}
-  - {fileID: 11400000, guid: be6ddbae0f0806b4792cd5a1123d9075, type: 2}
   allDungeonCards:
   - {fileID: 11400000, guid: 24d784b38c74b7e4ea9fc1ab2a36c88f, type: 2}
   - {fileID: 11400000, guid: 772f36d2111a2304ba87898555c7e6a3, type: 2}
@@ -110,7 +100,7 @@ MonoBehaviour:
   - {fileID: 524216371159460029, guid: 49b13cf58a0727845a4247a0634f6748, type: 3}
   SixRoomsDungeonPrefab: []
   NineRoomsDungeonPrefab: []
-  isDebug: 1
+  isDebug: 0
   debugCardsDrawn: {fileID: 0}
   debugCardRewards: {fileID: 0}
   debugCardOwned: {fileID: 0}

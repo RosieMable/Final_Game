@@ -3,82 +3,92 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CardUISystem : MonoBehaviour
+namespace ZaldensGambit
 {
-    [SerializeField]
-    private DungeonCardSystem dungeonCard;
-
-    [SerializeField]
-    List<Card_ScriptableObj> currentDeck;
-
-    [SerializeField]
-    List<Card_ScriptableObj> drawnCards;
-
-    public List<CardUI> CardsSelected;
-
-    [SerializeField]
-    List<GameObject> CardsDealt;
-
-    public int cardsClickedOn = 0;
-
-    public Transform start;  //Location where to start adding my cards
-    public Transform HandDeck; //The hand panel reference
-    public float howManyAdded; // How many cards I added so far
-    public float gapFromOneItemToTheNextOne; //the gap I need between each card
-
-    public Transform CenterPoint;
-
-    [SerializeField]
-    int numberOfCards;
-
-    public float totalTwist;
-
-    [SerializeField]
-    private Transform HandDeckPos;
-
-    [SerializeField]
-    GameObject prefabCard;
-
-    private void OnEnable()
+    public class CardUISystem : MonoBehaviour
     {
-        CardUI.buttonClickDelegate += CheckCardsSelected;
-    }
-    void Start()
-    {
-        Init();
-    }
+        [SerializeField]
+        private DungeonCardSystem dungeonCard;
 
-    void Init()
-    {
-        if (dungeonCard == null)
-            dungeonCard = FindObjectOfType<DungeonCardSystem>();
+        [SerializeField]
+        List<Card_ScriptableObj> currentDeck;
 
-        howManyAdded = 0.0f;
-        currentDeck = CardInventory.instance.dungeonCards;
-        HandDeckPos = HandDeck;
+        [SerializeField]
+        List<Card_ScriptableObj> drawnCards;
 
-        foreach (var card in CardsSelected)
+        public List<CardUI> CardsSelected;
+
+        [SerializeField]
+        List<GameObject> CardsDealt;
+
+        public int cardsClickedOn = 0;
+
+        public Transform start;  //Location where to start adding my cards
+        public Transform HandDeck; //The hand panel reference
+        public float howManyAdded; // How many cards I added so far
+        public float gapFromOneItemToTheNextOne; //the gap I need between each card
+
+        public Transform CenterPoint;
+
+        [SerializeField]
+        int numberOfCards;
+
+        public float totalTwist;
+
+        [SerializeField]
+        private Transform HandDeckPos;
+
+        [SerializeField]
+        GameObject prefabCard;
+
+        [Header("Dungeon Cards UI Elements")]
+        [SerializeField]
+        GameObject DungeonCardssUIElements;
+
+        private int cardsRevealed;
+       
+        private void OnEnable()
         {
-            card.selected = false;
+            //CardUI.selectCardDelegate += CheckCardsSelected;
         }
-        CardsSelected.Clear();
-        CardUI.buttonClickDelegate += CheckCardsSelected;
-    }
+        void Start()
+        {
+            Init();
+        }
+
+        void Init()
+        {
+            if (dungeonCard == null)
+                dungeonCard = FindObjectOfType<DungeonCardSystem>();
+
+            howManyAdded = 0.0f;
+            currentDeck = CardInventory.instance.dungeonCards;
+            HandDeckPos = HandDeck;
+
+            foreach (var card in CardsSelected)
+            {
+                card.selected = false;
+            }
+            CardsSelected.Clear();
+            cardsRevealed = -1;
+            CardUI.selectCardDelegate += CheckCardsSelected;
+            CardUI.revealCardDelegate += AddToRevealedCards;
+        }
 
 
-    public void NewDeal()
-    {
-        Init();
-        FitCards();
-    }
+        public void NewDeal()
+        {
+            Init();
+            FitCards();
+        }
 
 
-    public void CheckCardsSelected()
-    {
-        cardsClickedOn = 0;
-        CenterPoint.position = GetCentreForCards(dungeonCard.DrawnCards.Count);
+        public void CheckCardsSelected()
+        {
+            cardsClickedOn = 0;
+            CenterPoint.position = GetCentreForCards(dungeonCard.DrawnCards.Count);
 
-        foreach (var card in CardsSelected)
+            foreach (var card in CardsSelected)
             {
                 card.chosenCard = drawnCards[cardsClickedOn++];
                 Vector3 parentPos = CenterPoint.position;
@@ -92,145 +102,199 @@ public class CardUISystem : MonoBehaviour
 
             }
 
-            if (CardsSelected.Count == dungeonCard.GlobalAmountCD)
+            if (CardsSelected.Count == dungeonCard.GlobalAmountCD) //if we drawn the needed cards
             {
                 iTween.MoveTo(HandDeck.gameObject, new Vector3(HandDeck.gameObject.transform.position.x, -300, HandDeck.gameObject.transform.position.z), 1f); //Moves the hand out of the way
-                CardUI.buttonClickDelegate -= CheckCardsSelected;
-                 cardsClickedOn = 0;
+                CardUI.selectCardDelegate -= CheckCardsSelected;
+                cardsClickedOn = 0;
+
+
+
             }
 
-    }
+        }
 
-    private void FitCards()
-    {
-
-        if (currentDeck.Count == 0) //if list is null, stop function
-            return;
-
-
-       StartCoroutine(AnimateCardFanning(.25f, currentDeck));
-    }
-
-
-    IEnumerator AnimateCardFanning(float _animSpeed, List<Card_ScriptableObj> _cards)
-    {
-        drawnCards = dungeonCard.DrawnCards;
-
-        numberOfCards = _cards.Count;
-        float twistPerCard = totalTwist / numberOfCards;
-        gapFromOneItemToTheNextOne = 450f/numberOfCards;
-        float startTwist = -1f * (totalTwist / 2f);
-        
-        if(CardsDealt.Count == 0) //if cards have never been dealth before
+        private void AddToRevealedCards()
         {
-            for (int y = 0; y < _cards.Count; y++)
+           cardsRevealed += 1;
+
+            print(cardsRevealed);
+
+            if(cardsRevealed >= dungeonCard.GlobalAmountCD)
             {
-                GameObject cardGO = Instantiate(prefabCard, HandDeck);
-                cardGO.transform.SetParent(HandDeck);
-                cardGO.transform.position = start.position; //relocating my card to the Start Position
-                float twistForThisCard = startTwist + (howManyAdded * twistPerCard);
-                float scalingFactor = 1.75f;
-                float nudgeThisCard = Mathf.Abs(twistForThisCard);
-                nudgeThisCard *= scalingFactor;
-
-                cardGO.transform.Rotate(0f, 0f, twistForThisCard);
-                cardGO.transform.position += new Vector3((howManyAdded * gapFromOneItemToTheNextOne), -nudgeThisCard, 0); // Moving my card 1f to the right
-                cardGO.transform.Translate(0f, -nudgeThisCard, 0f);
-                CardsDealt.Add(cardGO);
-                howManyAdded++;
-
-                yield return new WaitForSeconds(_animSpeed);
-
+                //close ui system
+                //open spirit selection ui
+                //saves all selected options to be carried over
+                //SpiritSelection();
+                 AfterSelection();
             }
         }
-        else //If cards have been dealt before
+
+        private void SpiritSelection()
         {
-            howManyAdded = 0;
-            foreach (var cardGO in CardsDealt)
+            if (CardInventory.instance.spiritCards.Count != 0) //if we have spirit cards
             {
-                cardGO.transform.position = start.position; //relocating my card to the Start Position
-                cardGO.transform.SetParent(HandDeck);
-                float twistForThisCard = startTwist + (howManyAdded * twistPerCard);
-                float scalingFactor = 1.75f;
-                float nudgeThisCard = Mathf.Abs(twistForThisCard);
-                nudgeThisCard *= scalingFactor;
-
-                cardGO.transform.Rotate(0f, 0f, twistForThisCard);
-                cardGO.transform.position += new Vector3((howManyAdded * gapFromOneItemToTheNextOne), -nudgeThisCard, 0); // Moving my card 1f to the right
-                cardGO.transform.Translate(0f, -nudgeThisCard, 0f);
-                howManyAdded++;
-                yield return new WaitForSeconds(_animSpeed);
-
+                //show spirit choice UI
             }
+            else //we don't have any spirit cards
+                return;
         }
 
-    }
-
-    Vector3 GetCentreForCards(float numberOfCards)
-    {
-        Vector3 val = Vector3.zero;
-
-        if (numberOfCards!= 0)
+        private void AfterSelection()
         {
-            float x = Screen.width / numberOfCards;
-            float y = Screen.height / 2;
+            //after selction actions
+            //ui closes
+            //input player system active again
+            //portal active
 
-            val = new Vector3(x, y, -1);
+            //close UI
+            DungeonCardssUIElements.SetActive(false);
+            foreach (var cardSelected in CardsSelected)
+            {
+                Destroy(cardSelected);
+            }
+
+            //reset interaction system
+            FateWeaver fateWeaver = FindObjectOfType<FateWeaver>();
+            fateWeaver.ResetInteraction();
+
+            cardsRevealed = 0;
+
+            //activate portal
         }
 
-
-        return val;
-    }
-
-    Vector3 ScaleBasedNumberOfCards(float numberOfCards)
-    {
-        Vector3 val = Vector3.zero;
-
-        //if (numberOfCards != 0)
-        //{
-        //    float height = Camera.main.orthographicSize * 2.0f;
-        //    float width = height * Screen.height / Screen.width;
-        //    val = Vector3.one * width / numberOfCards;
-
-        //}
-
-        if (numberOfCards == 3)
+        private void FitCards()
         {
-            val = Vector3.one * 2;
-        }
-        if (numberOfCards == 6)
-        {
-            val = Vector3.one * 1.75f;
-        }
-        if (numberOfCards == 9)
-        {
-            val = Vector3.one * 1.5f;
+
+            if (currentDeck.Count == 0) //if list is null, stop function
+                return;
+
+
+            StartCoroutine(AnimateCardFanning(.25f, currentDeck));
         }
 
-        return val;
-    }
 
-    float GapBasedOnCardsamount(float numberOfCards)
-    {
-        float val = 0;
+        IEnumerator AnimateCardFanning(float _animSpeed, List<Card_ScriptableObj> _cards)
+        {
+            drawnCards = dungeonCard.DrawnCards;
 
-        if (numberOfCards == 3)
-        {
-            val = 200f;
-        }
-        if (numberOfCards == 6)
-        {
-            val = 175f;
-        }
-        if (numberOfCards == 9)
-        {
-            val = 150f;
-        }
-        return val;
-    }
+            numberOfCards = _cards.Count;
+            float twistPerCard = totalTwist / numberOfCards;
+            gapFromOneItemToTheNextOne = 450f / numberOfCards;
+            float startTwist = -1f * (totalTwist / 2f);
 
-    private void OnDisable()
-    {
-        CardUI.buttonClickDelegate -= CheckCardsSelected;
+            if (CardsDealt.Count == 0) //if cards have never been dealt before
+            {
+                for (int y = 0; y < _cards.Count; y++)
+                {
+                    GameObject cardGO = Instantiate(prefabCard, HandDeck);
+                    cardGO.transform.SetParent(HandDeck);
+                    cardGO.transform.position = start.position; //relocating my card to the Start Position
+                    float twistForThisCard = startTwist + (howManyAdded * twistPerCard);
+                    float scalingFactor = 1.75f;
+                    float nudgeThisCard = Mathf.Abs(twistForThisCard);
+                    nudgeThisCard *= scalingFactor;
+
+                    cardGO.transform.Rotate(0f, 0f, twistForThisCard);
+                    cardGO.transform.position += new Vector3((howManyAdded * gapFromOneItemToTheNextOne), -nudgeThisCard, 0); // Moving my card 1f to the right
+                    cardGO.transform.Translate(0f, -nudgeThisCard, 0f);
+                    CardsDealt.Add(cardGO);
+                    howManyAdded++;
+
+                    yield return new WaitForSeconds(_animSpeed);
+
+                }
+            }
+            else //If cards have been dealt before
+            {
+                howManyAdded = 0;
+                foreach (var cardGO in CardsDealt)
+                {
+                    cardGO.transform.position = start.position; //relocating my card to the Start Position
+                    cardGO.transform.SetParent(HandDeck);
+                    float twistForThisCard = startTwist + (howManyAdded * twistPerCard);
+                    float scalingFactor = 1.75f;
+                    float nudgeThisCard = Mathf.Abs(twistForThisCard);
+                    nudgeThisCard *= scalingFactor;
+
+                    cardGO.transform.Rotate(0f, 0f, twistForThisCard);
+                    cardGO.transform.position += new Vector3((howManyAdded * gapFromOneItemToTheNextOne), -nudgeThisCard, 0); // Moving my card 1f to the right
+                    cardGO.transform.Translate(0f, -nudgeThisCard, 0f);
+                    howManyAdded++;
+                    yield return new WaitForSeconds(_animSpeed);
+
+                }
+            }
+
+        }
+
+        Vector3 GetCentreForCards(float numberOfCards)
+        {
+            Vector3 val = Vector3.zero;
+
+            if (numberOfCards != 0)
+            {
+                float x = Screen.width / numberOfCards;
+                float y = Screen.height / 2;
+
+                val = new Vector3(x, y, -1);
+            }
+
+
+            return val;
+        }
+
+        Vector3 ScaleBasedNumberOfCards(float numberOfCards)
+        {
+            Vector3 val = Vector3.zero;
+
+            //if (numberOfCards != 0)
+            //{
+            //    float height = Camera.main.orthographicSize * 2.0f;
+            //    float width = height * Screen.height / Screen.width;
+            //    val = Vector3.one * width / numberOfCards;
+
+            //}
+
+            if (numberOfCards == 3)
+            {
+                val = Vector3.one * 2;
+            }
+            if (numberOfCards == 6)
+            {
+                val = Vector3.one * 1.75f;
+            }
+            if (numberOfCards == 9)
+            {
+                val = Vector3.one * 1.5f;
+            }
+
+            return val;
+        }
+
+        float GapBasedOnCardsamount(float numberOfCards)
+        {
+            float val = 0;
+
+            if (numberOfCards == 3)
+            {
+                val = 200f;
+            }
+            if (numberOfCards == 6)
+            {
+                val = 175f;
+            }
+            if (numberOfCards == 9)
+            {
+                val = 150f;
+            }
+            return val;
+        }
+
+        private void OnDisable()
+        {
+            CardUI.selectCardDelegate -= CheckCardsSelected;
+            CardUI.revealCardDelegate -= AddToRevealedCards;
+        }
     }
 }
