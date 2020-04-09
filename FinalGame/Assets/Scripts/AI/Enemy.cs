@@ -12,9 +12,10 @@ namespace ZaldensGambit
     /// </summary>
     public abstract class Enemy : MonoBehaviour
     {
-        private enum Type { Famine, War, Death, Pestilence } // Famine = Lifeleech on hit, War = More damage, Death = Delayed explosian on death, Pestilence = DoT effect
-        [SerializeField] private Type enemyType;
-        [SerializeField] protected float health = 50;
+        public enum Type { Famine, War, Death, Pestilence } // Famine = Lifeleech on hit, War = More damage, Death = Delayed explosian on death, Pestilence = DoT effect
+        public Type enemyType;
+        [SerializeField] public float currentHealth = 50;
+        private float maximumHealth;
         [HideInInspector] public bool isInvulnerable;
         [HideInInspector] public Animator charAnim;
         private AnimatorHook animHook;
@@ -81,12 +82,13 @@ namespace ZaldensGambit
             agent.speed = speed;
             agent.stoppingDistance = attackRange;
             healthSlider = GetComponentInChildren<Slider>();
-            healthSlider.maxValue = health;
-            healthSlider.value = health;
+            healthSlider.maxValue = currentHealth;
+            healthSlider.value = currentHealth;
             healthSlider.gameObject.SetActive(false);
             damageText = GetComponentInChildren<TextMeshProUGUI>();
             damageText.gameObject.SetActive(false);
             characterAudioSource = GetComponent<AudioSource>();
+            maximumHealth = currentHealth;
 
             //if (animHook == false)
             //{
@@ -113,8 +115,8 @@ namespace ZaldensGambit
             }
 
             attackDelay = Time.time + attackCooldown; // Add onto the attack delay as we have been hit            
-            health -= damageValue; // Reduce health by damage value
-            healthSlider.value = health; // Update slider to represent new health total
+            currentHealth = Mathf.Lerp(currentHealth, currentHealth - damageValue, 1f); // Reduce health by damage value
+            healthSlider.value = currentHealth; // Update slider to represent new health total
 
             if (damageText.IsActive()) // If already showing damage text...
             {
@@ -163,14 +165,36 @@ namespace ZaldensGambit
             characterAudioSource.Play();
         }
 
+        private void CheckHealth()
+        {
+            if (currentHealth >= maximumHealth)
+            {
+                currentHealth = maximumHealth;
+                healthSlider.value = currentHealth; // Update slider to represent new health total
+            }
+            else if (currentHealth <= 0)
+            {
+                currentHealth = 0;
+                healthSlider.value = currentHealth; // Update slider to represent new health total
+            }
+        }
+
+        public void RestoreHealth(float amountToRestore)
+        {
+            currentHealth = Mathf.Lerp(currentHealth, currentHealth + amountToRestore, 1f);
+            healthSlider.value = currentHealth; // Update slider to represent new health total
+        }
+
         protected virtual void Update()
         {
+            CheckHealth();
+
             if (!stunned)
             {
                 Tick(Time.deltaTime);
                 canMove = charAnim.GetBool("canMove");
 
-                if (health <= 0)
+                if (currentHealth <= 0)
                 {
                     if (!isDead)
                     {

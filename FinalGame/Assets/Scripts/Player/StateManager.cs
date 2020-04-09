@@ -59,6 +59,7 @@ namespace ZaldensGambit
         private AudioSource shieldAudioSource;
         [SerializeField] private AudioClip[] hurtAudioClips;
         [SerializeField] private AudioClip[] attackBlockedAudioClips;
+        private Coroutine DoTcoroutine;
 
         private float actionDelay;
         [HideInInspector] public float actionLockoutDuration = 1f;
@@ -125,7 +126,7 @@ namespace ZaldensGambit
         /// <summary>
         /// Deals damage to the player unless invulnerable or the damageSource is directly in front of the player whilst they are blocking.
         /// </summary>
-        public void TakeDamage(float value, Transform damageSource)
+        public void TakeDamage(float damageValue, Transform damageSource)
         {
             Enemy enemy = damageSource.GetComponent<Enemy>();
 
@@ -157,10 +158,47 @@ namespace ZaldensGambit
                 }
             }
 
-            float previousHealth = currentHealth;
-            currentHealth -= value;
-            canMove = false;
+            if (enemy)
+            {
+                switch (enemy.enemyType)
+                {
+                    case Enemy.Type.Famine:
+                        // Life leech quarter of damage dealt and add to hp
+                        currentHealth = Mathf.Lerp(currentHealth, currentHealth - damageValue, 1f);
+                        float healthStolen = damageValue / 4;
+                        enemy.RestoreHealth(healthStolen);
+                        break;
+                    case Enemy.Type.War:
+                        // Deal increased damage
+                        currentHealth = Mathf.Lerp(currentHealth, currentHealth - damageValue, 1f);
+                        break;
+                    case Enemy.Type.Death:
+                        // Deal normal damage
+                        currentHealth = Mathf.Lerp(currentHealth, currentHealth - damageValue, 1f);
+                        break;
+                    case Enemy.Type.Pestilence:
+                        // Apply a DoT effect
+                        // Show poisoned damage indicator
+                        // Use coroutine with pauses inbetween to deal poison over time period
+                        currentHealth = Mathf.Lerp(currentHealth, currentHealth - damageValue, 1f);
+                        if (DoTcoroutine == null)
+                        {
+                            DoTcoroutine = StartCoroutine(DamageOverTimeEffect(10, 25));
+                        }
+                        else
+                        {
+                            StopCoroutine(DoTcoroutine);
+                            DoTcoroutine = StartCoroutine(DamageOverTimeEffect(10, 25));
+                        }
+                        break;
+                }
+            }
+            else
+            {
+                currentHealth = Mathf.Lerp(currentHealth, currentHealth - damageValue, 1f);                
+            }
 
+            canMove = false;
             GameManager.instance.PlayDamageEffect();
 
             if (currentHealth <= 0 && !isDead)
@@ -181,6 +219,11 @@ namespace ZaldensGambit
             int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length);
             charAnim.CrossFade(hurtAnimations[hurtAnimationToPlay].name, 0.1f);
             charAnim.applyRootMotion = true;
+        }
+
+        public void RestoreHealth(float amountToRestore)
+        {
+            currentHealth = Mathf.Lerp(currentHealth, currentHealth + amountToRestore, 1f);
         }
 
         /// <summary>
@@ -365,6 +408,17 @@ namespace ZaldensGambit
             else if (currentHealth <= 0)
             {
                 currentHealth = 0;
+            }
+
+            if (currentHealth <= 0 && !isDead)
+            {
+                isDead = true;
+                charAnim.SetBool("isDead", isDead);
+                print("Player died!");
+                collider.enabled = false;
+                rigidBody.isKinematic = true;
+                charAnim.Play("Death");
+                GameManager.instance.GameOver();
             }
         }
 
@@ -613,7 +667,6 @@ namespace ZaldensGambit
                     RotateTowardsTarget(lockOnTarget.transform);
                 }
 
-                print(desiredAnimation.name);
                 charAnim.CrossFade(desiredAnimation.name, 0.2f); // Apply animation crossfade.
             }
             
@@ -756,11 +809,27 @@ namespace ZaldensGambit
             }
         }
 
-        IEnumerator PlayAudioAfterDelay(AudioSource source, float delay)
+        private IEnumerator PlayAudioAfterDelay(AudioSource source, float delay)
         {
             yield return new WaitForSeconds(delay);
             source.Play();
         }
+
+        private IEnumerator DamageOverTimeEffect(float duration, float damageDealt)
+        {
+            float damageCooldown = duration / 5;
+            float damageToDeal = damageDealt / 5;
+
+            for (int i = 0; i < 5; i++)
+            {
+                yield return new WaitForSeconds(damageCooldown);
+                currentHealth = Mathf.Lerp(currentHealth, currentHealth - damageToDeal, 1f);
+                print("DoT " + i);
+            }
+
+            DoTcoroutine = null;
+        }
+
     }    
 }
 

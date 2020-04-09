@@ -39,11 +39,7 @@ namespace ZaldensGambit
                 else // When dialogue is exhausted...
                 {
                     DungeonChoiceUI.SetActive(true);
-
                     //print("End of main dialogue, looping back to start!");
-                    //player.interacting = false;
-                    //CameraManager.instance.ToggleCursorVisibleState(false);
-                    dialogueIndex = -1;
                 }
             }
         }
@@ -58,8 +54,14 @@ namespace ZaldensGambit
         {
             // Reveal the UI elements needed for selecting what spirit card you want to bring with you.
             // For the beta, I recommend giving the players every spirit to choose from so we can test them all easily.
-
             cardsDealt = true;
+        }
+
+        public void ResetInteraction()
+        {
+            player.interacting = false;
+            CameraManager.instance.ToggleCursorVisibleState(false);
+            dialogueIndex = -1;
         }
     }
 }

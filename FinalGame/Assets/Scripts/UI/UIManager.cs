@@ -22,6 +22,7 @@ namespace ZaldensGambit
         public Image SpiritIcon;
 
         public Image SpiritBar;
+        [SerializeField] private Sprite huskSpiritSprite;
 
         #endregion
 
@@ -94,14 +95,15 @@ namespace ZaldensGambit
             {
                 SpiritIcon.gameObject.SetActive(true);
                 SpiritBar.gameObject.SetActive(true);
+                SpiritBar.color = Color.white;
 
                 SpiritIcon.sprite = _spiritToDisplay._spiritSprite;
             }
             else
             {
-                SpiritIcon.gameObject.SetActive(false);
+                SpiritIcon.sprite = huskSpiritSprite;
 
-                SpiritBar.gameObject.SetActive(false);
+                SpiritBar.color = Color.gray;
             }
         }
     }
