@@ -181,15 +181,20 @@ namespace ZaldensGambit
                         // Show poisoned damage indicator
                         // Use coroutine with pauses inbetween to deal poison over time period
                         currentHealth = Mathf.Lerp(currentHealth, currentHealth - damageValue, 1f);
-                        if (DoTcoroutine == null)
+                        float procChance = Random.Range(0f, 100f);
+
+                        if (procChance <= 20)
                         {
-                            DoTcoroutine = StartCoroutine(DamageOverTimeEffect(10, 25));
-                        }
-                        else
-                        {
-                            StopCoroutine(DoTcoroutine);
-                            DoTcoroutine = StartCoroutine(DamageOverTimeEffect(10, 25));
-                        }
+                            if (DoTcoroutine == null)
+                            {
+                                DoTcoroutine = StartCoroutine(DamageOverTimeEffect(10, 25));
+                            }
+                            else
+                            {
+                                StopCoroutine(DoTcoroutine);
+                                DoTcoroutine = StartCoroutine(DamageOverTimeEffect(10, 25));
+                            }
+                        }                        
                         break;
                 }
             }
