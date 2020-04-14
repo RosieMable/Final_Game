@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using UnityEngine.SceneManagement;
 using ZaldensGambit;
 
 public class DungeonCardSystem : Singleton<DungeonCardSystem>
@@ -51,6 +52,9 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
 
     [SerializeField]
     private List<GameObject> NineRoomsDungeonPrefab;
+
+    AsyncOperation async;
+
 
     [Header("Temp Debug")]
     #region Temp for debug
@@ -157,7 +161,7 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
 
     public void CreateDungeon()
     {
-        GameObject.Find("TempObject").SetActive(false); // Remove after alpha submission
+        _spawnLocation = GameObject.FindGameObjectWithTag("SpawnPoint").transform;
 
         //Based on drawn cards, spawn the corrisponding dungeon prefab
         if (_drawnCards.Count != 0 && _spawnLocation != null)
@@ -252,6 +256,25 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
         return newList;
 
         }
+
+    public void LoadSceneAsync(string sceneName)
+    {
+        StartCoroutine(LoadAsync(sceneName));
+
+
+        async.allowSceneActivation = true;
+    }
+
+    IEnumerator LoadAsync(string sceneName)
+    {
+        Debug.LogWarning("ASYNC LOAD STARTED - " +
+          "DO NOT EXIT PLAY MODE UNTIL SCENE LOADS... UNITY WILL CRASH");
+        async = SceneManager.LoadSceneAsync(sceneName);
+        async.allowSceneActivation = false;
+        yield return async;
+        CreateDungeon();
+
+    }
 
     /// <summary>
     /// Compares two lists and returns a list of the difference. The two lists need to be of the same type.

@@ -40,6 +40,10 @@ namespace ZaldensGambit
 
         private UIShadow shadow;
 
+        [SerializeField]
+        bool revealed;
+
+        CardUISystem cardUI;
 
         private void Start()
         {
@@ -58,6 +62,10 @@ namespace ZaldensGambit
             shadow = FindObjectOfType<UIShadow>();
 
             shadow.effectColor = new Color(shadow.effectColor.r, shadow.effectColor.g, shadow.effectColor.b, 0);
+
+            revealed = false;
+
+             cardUI = FindObjectOfType<CardUISystem>();
         }
 
 
@@ -112,6 +120,7 @@ namespace ZaldensGambit
                 {
                     suit.sprite = chosenCard.CardSprite;
                     suit.gameObject.SetActive(true);
+                    revealed = true;
                 }
 
                 valueText.text = chosenCard.CardValue.ToString();
@@ -119,9 +128,15 @@ namespace ZaldensGambit
 
                 selfImage.sprite = frontCard;
 
-                if (revealCardDelegate != null && valueText.gameObject.activeInHierarchy)
+                if (revealed)
                 {
-                    revealCardDelegate();
+                    cardUI.cardsRevealed += 1;
+                    print(cardUI.cardsRevealed);
+
+                    if (revealCardDelegate != null)
+                    {
+                        revealCardDelegate();
+                    }
                 }
 
             }

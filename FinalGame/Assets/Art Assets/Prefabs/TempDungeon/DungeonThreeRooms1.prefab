@@ -161,10 +161,12 @@ MonoBehaviour:
   numEnemiesToSpawn: 0
   FamineEnemies:
   - {fileID: 5549502852493679761, guid: 762b45fa759ac024e8b502cb488af687, type: 3}
-  PestilenceEnemies: []
+  PestilenceEnemies:
+  - {fileID: 4584454962274531796, guid: cb7d447c1b189a342b2d54db59f842b5, type: 3}
   WarEnemies:
   - {fileID: 4584454962274531796, guid: dd3dd5671cc3f9d44a967856fb5a02eb, type: 3}
-  DeathEnemies: []
+  DeathEnemies:
+  - {fileID: 4584454962274531796, guid: 07453b97890f64b47aa43d8c200c975b, type: 3}
 --- !u!1 &2049677506461507622
 GameObject:
   m_ObjectHideFlags: 0
@@ -276,10 +278,12 @@ MonoBehaviour:
   numEnemiesToSpawn: 0
   FamineEnemies:
   - {fileID: 5549502852493679761, guid: 762b45fa759ac024e8b502cb488af687, type: 3}
-  PestilenceEnemies: []
+  PestilenceEnemies:
+  - {fileID: 4584454962274531796, guid: cb7d447c1b189a342b2d54db59f842b5, type: 3}
   WarEnemies:
   - {fileID: 4584454962274531796, guid: dd3dd5671cc3f9d44a967856fb5a02eb, type: 3}
-  DeathEnemies: []
+  DeathEnemies:
+  - {fileID: 4584454962274531796, guid: 07453b97890f64b47aa43d8c200c975b, type: 3}
 --- !u!1 &2277338519043448588
 GameObject:
   m_ObjectHideFlags: 0
@@ -484,10 +488,12 @@ MonoBehaviour:
   numEnemiesToSpawn: 0
   FamineEnemies:
   - {fileID: 5549502852493679761, guid: 762b45fa759ac024e8b502cb488af687, type: 3}
-  PestilenceEnemies: []
+  PestilenceEnemies:
+  - {fileID: 4584454962274531796, guid: cb7d447c1b189a342b2d54db59f842b5, type: 3}
   WarEnemies:
   - {fileID: 4584454962274531796, guid: dd3dd5671cc3f9d44a967856fb5a02eb, type: 3}
-  DeathEnemies: []
+  DeathEnemies:
+  - {fileID: 4584454962274531796, guid: 07453b97890f64b47aa43d8c200c975b, type: 3}
 --- !u!1 &5822942661403763443
 GameObject:
   m_ObjectHideFlags: 0

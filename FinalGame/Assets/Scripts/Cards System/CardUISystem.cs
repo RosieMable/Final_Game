@@ -45,7 +45,7 @@ namespace ZaldensGambit
         [SerializeField]
         GameObject DungeonCardssUIElements;
 
-        private int cardsRevealed;
+        public int cardsRevealed;
        
         private void OnEnable()
         {
@@ -70,9 +70,9 @@ namespace ZaldensGambit
                 card.selected = false;
             }
             CardsSelected.Clear();
-            cardsRevealed = -1;
+            cardsRevealed = 0;
             CardUI.selectCardDelegate += CheckCardsSelected;
-            CardUI.revealCardDelegate += AddToRevealedCards;
+            CardUI.revealCardDelegate += AfterSelection;
         }
 
 
@@ -98,7 +98,7 @@ namespace ZaldensGambit
                 card.gameObject.transform.SetParent(CenterPoint);
                 iTween.ScaleTo(card.gameObject, ScaleBasedNumberOfCards(dungeonCard.DrawnCards.Count), 0.2f);
                 card.selected = true;
-                print(cardsClickedOn);
+               // print(cardsClickedOn);
 
             }
 
@@ -107,27 +107,21 @@ namespace ZaldensGambit
                 iTween.MoveTo(HandDeck.gameObject, new Vector3(HandDeck.gameObject.transform.position.x, -300, HandDeck.gameObject.transform.position.z), 1f); //Moves the hand out of the way
                 CardUI.selectCardDelegate -= CheckCardsSelected;
                 cardsClickedOn = 0;
-
-
-
             }
-
         }
 
         private void AddToRevealedCards()
         {
            cardsRevealed += 1;
 
-            print(cardsRevealed);
+           print(cardsRevealed);
 
-            if(cardsRevealed >= dungeonCard.GlobalAmountCD)
-            {
+
                 //close ui system
                 //open spirit selection ui
                 //saves all selected options to be carried over
                 //SpiritSelection();
                  AfterSelection();
-            }
         }
 
         private void SpiritSelection()
@@ -147,20 +141,21 @@ namespace ZaldensGambit
             //input player system active again
             //portal active
 
-            //close UI
-            DungeonCardssUIElements.SetActive(false);
-            foreach (var cardSelected in CardsSelected)
+            if (cardsRevealed >= dungeonCard.GlobalAmountCD)
             {
-                Destroy(cardSelected);
+                //close UI
+                //after a delay
+                //possible animations?
+                StartCoroutine(CloseDungeonCardsUI(2f));
+
+                //reset interaction system
+                //FateWeaver fateWeaver = FindObjectOfType<FateWeaver>();
+                //fateWeaver.ResetInteraction();
+
+                cardsRevealed = 0;
+
+                //activate portal
             }
-
-            //reset interaction system
-            FateWeaver fateWeaver = FindObjectOfType<FateWeaver>();
-            fateWeaver.ResetInteraction();
-
-            cardsRevealed = 0;
-
-            //activate portal
         }
 
         private void FitCards()
@@ -173,6 +168,16 @@ namespace ZaldensGambit
             StartCoroutine(AnimateCardFanning(.25f, currentDeck));
         }
 
+        IEnumerator CloseDungeonCardsUI(float delay)
+        {
+            yield return new WaitForSecondsRealtime(delay);
+
+            DungeonCardssUIElements.SetActive(false);
+            foreach (var cardSelected in CardsSelected)
+            {
+                Destroy(cardSelected);
+            }
+        }
 
         IEnumerator AnimateCardFanning(float _animSpeed, List<Card_ScriptableObj> _cards)
         {
@@ -294,7 +299,7 @@ namespace ZaldensGambit
         private void OnDisable()
         {
             CardUI.selectCardDelegate -= CheckCardsSelected;
-            CardUI.revealCardDelegate -= AddToRevealedCards;
+            CardUI.revealCardDelegate -= AfterSelection;
         }
     }
 }
