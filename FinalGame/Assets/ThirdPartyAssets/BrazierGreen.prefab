@@ -4805,7 +4805,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.32156864, g: 0.67058825, b: 0.17254902, a: 1}
   m_Intensity: 2
-  m_Range: 15
+  m_Range: 28
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
