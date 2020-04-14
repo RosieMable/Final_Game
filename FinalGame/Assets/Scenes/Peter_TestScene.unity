@@ -956,6 +956,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 20
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &315486398 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3805914309176986445, guid: 6750f9ae6257623468e6ce260e40a940,
+    type: 3}
+  m_PrefabInstance: {fileID: 3805914310024780051}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db251052c97099f4f946e2015213602a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &381557140 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 519707896, guid: 378923ae927ea414abaf99fd73135676,
@@ -2564,7 +2576,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: -6.9e-44, y: -6.9e-44, z: NaN, w: 1.7e-44}
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -2770,6 +2782,8 @@ MonoBehaviour:
   attackDelay: 0
   attackCooldown: 0.5
   damage: 10
+  critDamage: 15
+  critChance: 5
   attackRange: 1
   aggroRange: 15
   speed: 4
@@ -4269,6 +4283,54 @@ PrefabInstance:
       propertyPath: m_FillAmount
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 971994427, guid: 378923ae927ea414abaf99fd73135676, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 315486398}
+    - target: {fileID: 971994427, guid: 378923ae927ea414abaf99fd73135676, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SelectCard
+      objectReference: {fileID: 0}
+    - target: {fileID: 58710948, guid: 378923ae927ea414abaf99fd73135676, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 315486398}
+    - target: {fileID: 58710948, guid: 378923ae927ea414abaf99fd73135676, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SortRight
+      objectReference: {fileID: 0}
+    - target: {fileID: 103144570, guid: 378923ae927ea414abaf99fd73135676, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 315486398}
+    - target: {fileID: 103144570, guid: 378923ae927ea414abaf99fd73135676, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SelectCard
+      objectReference: {fileID: 0}
+    - target: {fileID: 519707897, guid: 378923ae927ea414abaf99fd73135676, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 315486398}
+    - target: {fileID: 519707897, guid: 378923ae927ea414abaf99fd73135676, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SelectCard
+      objectReference: {fileID: 0}
+    - target: {fileID: 879343810, guid: 378923ae927ea414abaf99fd73135676, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 315486398}
+    - target: {fileID: 879343810, guid: 378923ae927ea414abaf99fd73135676, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SelectCard
+      objectReference: {fileID: 0}
+    - target: {fileID: 1128829293, guid: 378923ae927ea414abaf99fd73135676, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 315486398}
+    - target: {fileID: 1128829293, guid: 378923ae927ea414abaf99fd73135676, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SortLeft
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 378923ae927ea414abaf99fd73135676, type: 3}
 --- !u!1001 &1261000099
@@ -4926,7 +4988,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 8
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!64 &1739000057
 MeshCollider:
@@ -5032,6 +5094,8 @@ MonoBehaviour:
   attackDelay: 0
   attackCooldown: 0.5
   damage: 10
+  critDamage: 15
+  critChance: 5
   attackRange: 1.5
   aggroRange: 10
   speed: 4
@@ -8337,6 +8401,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: RangedNPC (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 5514159233635265066, guid: fb275b57ee504224cb9456d9475a94bb,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5514159233635265071, guid: fb275b57ee504224cb9456d9475a94bb,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -8395,17 +8464,17 @@ PrefabInstance:
     - target: {fileID: 5514159234720672683, guid: fb275b57ee504224cb9456d9475a94bb,
         type: 3}
       propertyPath: m_AnchorMin.x
-      value: 0
+      value: 0.83
       objectReference: {fileID: 0}
     - target: {fileID: 5514159234720672683, guid: fb275b57ee504224cb9456d9475a94bb,
         type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5514159234720672683, guid: fb275b57ee504224cb9456d9475a94bb,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fb275b57ee504224cb9456d9475a94bb, type: 3}
@@ -9400,6 +9469,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5213783746787388568, guid: 837d9efe81ce21547911977340216cf3,
+        type: 3}
+      propertyPath: critChance
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 837d9efe81ce21547911977340216cf3, type: 3}

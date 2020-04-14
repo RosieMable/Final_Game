@@ -9,7 +9,7 @@ namespace ZaldensGambit
         private float vertical;
         private float horizontal;
         private bool lightAttackInput;
-        private bool heavyAttackInput;
+        private bool sprintInput;
         private bool dodgeRollInput;
         private bool lockOnInput;
         private bool specialAttackInput;
@@ -79,7 +79,7 @@ namespace ZaldensGambit
             vertical = Input.GetAxis("Vertical");
             horizontal = Input.GetAxis("Horizontal");  
             lightAttackInput = Input.GetKeyDown(KeyCode.Mouse0);
-            //heavyAttackInput = // Needs new input, probably when controller support added?
+            sprintInput = Input.GetKey(KeyCode.LeftShift);
             dodgeRollInput = Input.GetKeyDown(KeyCode.Space);
             specialAttackInput = Input.GetKeyDown(KeyCode.R);
             blockInput = Input.GetKey(KeyCode.Mouse1);
@@ -102,7 +102,7 @@ namespace ZaldensGambit
             }
 
             states.lightAttack = lightAttackInput;
-            states.heavyAttack = heavyAttackInput;
+            states.sprint = sprintInput;
             states.dodgeRoll = dodgeRollInput;
             states.block = blockInput;
             states.specialAttack = specialAttackInput;           

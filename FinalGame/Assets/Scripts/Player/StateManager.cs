@@ -14,6 +14,7 @@ namespace ZaldensGambit
         [HideInInspector] public Vector3 movementDirection;
 
         [SerializeField] private float moveSpeed = 4;
+        private float originalSpeed;
         [SerializeField] private float rotateSpeed = 5;
 
         [SerializeField] private float maxStepHeight = 0.4f;        // The maximum a player can step upwards in units when they hit a wall that's potentially a step
@@ -30,7 +31,7 @@ namespace ZaldensGambit
         private Collider collider;
         [HideInInspector] public bool isInvulnerable;
         [HideInInspector] public bool grounded;
-        [HideInInspector] public bool lightAttack, heavyAttack, dodgeRoll, block, specialAttack;
+        [HideInInspector] public bool lightAttack, sprint, dodgeRoll, block, specialAttack;
         [HideInInspector] public bool inAction;
         [HideInInspector] public bool canMove;
         [HideInInspector] public bool lockOn;
@@ -79,7 +80,7 @@ namespace ZaldensGambit
             collider = GetComponent<Collider>();
             characterAudioSource = GetComponent<AudioSource>();
             shieldAudioSource = GameObject.Find("Shield").GetComponent<AudioSource>();
-
+            originalSpeed = moveSpeed;
 
             if (animHook == false)
             {
@@ -256,12 +257,25 @@ namespace ZaldensGambit
 
             if (isBlocking)
             {
-                moveSpeed = 4;
+                moveSpeed = originalSpeed / 1.4f;
             }
             else
             {
                 charAnim.SetBool("blocking", isBlocking);
-                moveSpeed = 6;
+                moveSpeed = originalSpeed;
+            }
+
+            if (sprint && !isBlocking)
+            {
+                print("sprinting");
+                charAnim.SetBool("sprinting", true);
+                moveSpeed = originalSpeed * 1.4f;
+            }
+            else if (!sprint && !isBlocking)
+            {
+                print("not sprinting");
+                charAnim.SetBool("sprinting", false);
+                moveSpeed = originalSpeed;
             }
 
             grounded = IsGrounded();
@@ -513,7 +527,7 @@ namespace ZaldensGambit
             AnimationClip desiredAnimation = null;
             Action slot = null;
 
-            if (!lightAttack && !heavyAttack && !dodgeRoll && !block && !specialAttack) // If there are no actions detected...
+            if (!lightAttack && !dodgeRoll && !block && !specialAttack) // If there are no actions detected...
             {
                 return;
             }

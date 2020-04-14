@@ -32,6 +32,8 @@ namespace ZaldensGambit
         public float attackDelay;
         public float attackCooldown = 0.5f;
         public int damage = 10;
+        public int critDamage = 15;
+        public float critChance = 5;
         [SerializeField] protected float attackRange = 1.5f;
         [SerializeField] protected float aggroRange = 10;
         [SerializeField] protected float speed = 4;
@@ -61,7 +63,6 @@ namespace ZaldensGambit
         protected bool movingToAttack;
         [SerializeField] protected static List<Enemy> currentAttackers = new List<Enemy>();
         protected static int maximumNumberOfAttackers = 2;
-        protected bool strafing;
         protected int currentSlot = -1;
 
         protected enum State { Idle, Pursuing, Attacking }
@@ -246,10 +247,7 @@ namespace ZaldensGambit
 
                 if (!isTrainingDummy) // If not flagged as a training dummy
                 {
-                    if (!strafing)
-                    {
-                        PerformStateBehaviour(); // Perform current state behaviour
-                    }
+                    PerformStateBehaviour(); // Perform current state behaviour
                 }
 
                 if (inAction) // If an animation is playing...

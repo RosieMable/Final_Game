@@ -66,7 +66,7 @@ namespace ZaldensGambit
             {
                 return ActionInput.lightAttack;
             }
-            if (state.heavyAttack)
+            if (state.sprint)
             {
                 return ActionInput.heavyAttack;
             }
