@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
         }
         else if (instance != this)
         {
-            Destroy(this);
+            Destroy(this.gameObject);
         }
 
         DontDestroyOnLoad(gameObject);
@@ -55,6 +55,8 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        CardInventory.instance.Init();
+        CardInventory.instance.ToggleInventory();
     }
 
     private IEnumerator DamageEffect(float duration)

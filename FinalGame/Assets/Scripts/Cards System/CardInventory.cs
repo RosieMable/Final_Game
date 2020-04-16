@@ -37,8 +37,12 @@ public class CardInventory : MonoBehaviour
             Destroy(this);
         }
 
-        DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(gameObject);
+        Init();
+    }
 
+    public void Init()
+    {
         inventoryPanel = GameObject.Find("InventoryPanel");
         camera = FindObjectOfType<Camera>();
         cardInfo = GameObject.Find("CardInfo").GetComponent<TextMeshProUGUI>();
@@ -80,7 +84,7 @@ public class CardInventory : MonoBehaviour
         }
     }
 
-    private void ToggleInventory()
+    public void ToggleInventory()
     {
         inventoryPanel.SetActive(!inventoryPanel.activeSelf);
 

@@ -105,5 +105,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5cb946bbffe0764baf5613830604394, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spiritPickUp: {fileID: 11400000, guid: 1b3f88a16635f86458a2d1f83512b24e, type: 2}
+  spiritPickUp: {fileID: 11400000, guid: 3f53607d5f41b0f4fa4c903677fe7014, type: 2}
   rotationSpeed: 180

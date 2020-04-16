@@ -207,7 +207,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5925844740738560718
 Transform:
   m_ObjectHideFlags: 0
@@ -293,7 +293,7 @@ MonoBehaviour:
   isInvulnerable: 0
   grounded: 0
   lightAttack: 0
-  heavyAttack: 0
+  sprint: 0
   dodgeRoll: 0
   block: 0
   specialAttack: 0
@@ -364,13 +364,11 @@ MonoBehaviour:
   - input: 0
     desiredAnimation: {fileID: 7400000, guid: ed214573cc2156e4b96dcdda121f6308, type: 2}
   - input: 1
-    desiredAnimation: {fileID: 7400000, guid: 6986ba3bd718bbb41bfaf53e8bb9aade, type: 2}
-  - input: 2
     desiredAnimation: {fileID: -6064320725909692092, guid: 830b8215bc09bd24bbd5a93210d1938a,
       type: 3}
-  - input: 3
+  - input: 2
     desiredAnimation: {fileID: 0}
-  - input: 4
+  - input: 3
     desiredAnimation: {fileID: 7400000, guid: 3e980ca95a290b34bae8adf22d3a7d75, type: 2}
 --- !u!114 &5925844740738560717
 MonoBehaviour:
