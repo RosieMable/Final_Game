@@ -267,13 +267,11 @@ namespace ZaldensGambit
 
             if (sprint && !isBlocking)
             {
-                print("sprinting");
                 charAnim.SetBool("sprinting", true);
                 moveSpeed = originalSpeed * 1.4f;
             }
             else if (!sprint && !isBlocking)
             {
-                print("not sprinting");
                 charAnim.SetBool("sprinting", false);
                 moveSpeed = originalSpeed;
             }
@@ -578,18 +576,6 @@ namespace ZaldensGambit
 
                     desiredAnimation = lightAttacksChain[animationClipIndex]; // Set animation to call
                 }
-                // Heavy Attack Combo
-                else if (slot.desiredAnimation == heavyAttacksChain[0])
-                {
-                    animationClipIndex++;
-
-                    if (animationClipIndex >= heavyAttacksChain.Length) // Array bounds check
-                    {
-                        animationClipIndex = 0; // Reset array position
-                    }
-
-                    desiredAnimation = heavyAttacksChain[animationClipIndex]; // Set animation to call
-                }
                 // Block mid combo
                 else if (desiredAnimation.name == "block")
                 {
@@ -652,6 +638,11 @@ namespace ZaldensGambit
                     return;
                 }
                 spiritSystem.ActiveAbility(spiritSystem.spiritEquipped);
+            }
+
+            if (desiredAnimation == null)
+            {
+                return;
             }
 
             if (desiredAnimation.name == "block")

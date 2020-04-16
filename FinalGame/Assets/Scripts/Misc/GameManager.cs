@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
             Destroy(this);
         }
 
-        DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(gameObject);
 
         damageEffect = GameObject.Find("DamageEffect").GetComponent<Image>();
         damageEffect.enabled = false;

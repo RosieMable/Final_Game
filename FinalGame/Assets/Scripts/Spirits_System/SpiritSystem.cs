@@ -52,7 +52,6 @@ namespace ZaldensGambit
         //for now it is going to be in update, but once the inventory system is on, this should happen when "equipping" the spirit
         private void Start()
         {
-
             OnEquipSpirit(spirit);
         }
 
@@ -160,7 +159,7 @@ namespace ZaldensGambit
             return canUseAbility;
         }
 
-        void OnEquipSpirit(BaseSpirit _SpiritToEquip)
+        public void OnEquipSpirit(BaseSpirit _SpiritToEquip)
         {
             PlayerCharacter = gameObject.GetComponent<StateManager>();
 
@@ -171,7 +170,7 @@ namespace ZaldensGambit
 
                 if (actionManager != null)
                 {
-                    actionManager.actionSlots[3].desiredAnimation = _SpiritToEquip.activeAbilityAnimation;
+                    actionManager.actionSlots[2].desiredAnimation = _SpiritToEquip.activeAbilityAnimation;
                 }
 
                 canUseAbility = true;

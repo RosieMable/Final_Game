@@ -178,7 +178,7 @@ public class CardInventory : MonoBehaviour
         if (spiritCards.Count + 1 <= spiritCardLimit)
         {
             spiritCards.Add(spirit);
-            spiritDeckCallback.Invoke(spirit); // Invoke delegate passing the spirit added to the inventory
+            //spiritDeckCallback.Invoke(spirit); // Invoke delegate passing the spirit added to the inventory
             return true;
         }
 
@@ -194,7 +194,7 @@ public class CardInventory : MonoBehaviour
         if (dungeonCards.Count + 1 <= dungeonCardLimit)
         {
             dungeonCards.Add(dungeonCard);
-            dungeonDeckCallback.Invoke(dungeonCard); // Invoke delegate passing the dungeonCard added to the inventory
+            //dungeonDeckCallback.Invoke(dungeonCard); // Invoke delegate passing the dungeonCard added to the inventory
             return true;
         }
 
