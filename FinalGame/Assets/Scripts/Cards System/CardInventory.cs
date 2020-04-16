@@ -43,6 +43,11 @@ public class CardInventory : MonoBehaviour
 
     public void Init()
     {
+        cardPositions[0] = GameObject.Find("Card 1").transform;
+        cardPositions[1] = GameObject.Find("Card 2").transform;
+        cardPositions[2] = GameObject.Find("Card 3").transform;
+        cardPositions[3] = GameObject.Find("Card 4").transform;
+        cardSelected = GameObject.Find("SelectedCard").transform;
         inventoryPanel = GameObject.Find("InventoryPanel");
         camera = FindObjectOfType<Camera>();
         cardInfo = GameObject.Find("CardInfo").GetComponent<TextMeshProUGUI>();
@@ -65,6 +70,19 @@ public class CardInventory : MonoBehaviour
 
     private void Update()
     {
+        if (cardPositions[0] == null)
+        {
+            cardPositions[0] = GameObject.Find("Card 1").transform;
+            cardPositions[1] = GameObject.Find("Card 2").transform;
+            cardPositions[2] = GameObject.Find("Card 3").transform;
+            cardPositions[3] = GameObject.Find("Card 4").transform;
+            cardSelected = GameObject.Find("SelectedCard").transform;
+            inventoryPanel = GameObject.Find("InventoryPanel");
+            camera = FindObjectOfType<Camera>();
+            cardInfo = GameObject.Find("CardInfo").GetComponent<TextMeshProUGUI>();
+            CardInventory.instance.ToggleInventory();
+        }
+
         if (Input.GetKeyDown(KeyCode.I))
         {
             ToggleInventory();

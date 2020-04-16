@@ -34,6 +34,13 @@ public class GameManager : MonoBehaviour
         StartCoroutine(GameOverAfterDelay(3));
     }    
 
+    public void InstantGameOver()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        CardInventory.instance.Init();
+        //CardInventory.instance.ToggleInventory();
+    }
+
     public void PlayDamageEffect()
     {
         int effectToPlay = (int)Random.Range(0f, damageEffects.Length);
@@ -56,7 +63,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(delay);
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         CardInventory.instance.Init();
-        CardInventory.instance.ToggleInventory();
+        //CardInventory.instance.ToggleInventory();
     }
 
     private IEnumerator DamageEffect(float duration)
