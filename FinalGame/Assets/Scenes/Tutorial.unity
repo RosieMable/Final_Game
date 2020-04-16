@@ -1356,96 +1356,6 @@ Mesh:
     offset: 0
     size: 0
     path: 
---- !u!1001 &98701920
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 1981892463}
-    m_Modifications:
-    - target: {fileID: 7856674861301851170, guid: 66753e54156577040b20daf802813f62,
-        type: 3}
-      propertyPath: m_Name
-      value: PickUpTest
-      objectReference: {fileID: 0}
-    - target: {fileID: 7856674861301851183, guid: 66753e54156577040b20daf802813f62,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7856674861301851183, guid: 66753e54156577040b20daf802813f62,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.97993314
-      objectReference: {fileID: 0}
-    - target: {fileID: 7856674861301851183, guid: 66753e54156577040b20daf802813f62,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -11.980003
-      objectReference: {fileID: 0}
-    - target: {fileID: 7856674861301851183, guid: 66753e54156577040b20daf802813f62,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7856674861301851183, guid: 66753e54156577040b20daf802813f62,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7856674861301851183, guid: 66753e54156577040b20daf802813f62,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7856674861301851183, guid: 66753e54156577040b20daf802813f62,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7856674861301851183, guid: 66753e54156577040b20daf802813f62,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7856674861301851183, guid: 66753e54156577040b20daf802813f62,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7856674861301851183, guid: 66753e54156577040b20daf802813f62,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7856674861301851183, guid: 66753e54156577040b20daf802813f62,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7856674861301851183, guid: 66753e54156577040b20daf802813f62,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7856674861301851183, guid: 66753e54156577040b20daf802813f62,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7856674861301851183, guid: 66753e54156577040b20daf802813f62,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7856674861301851171, guid: 66753e54156577040b20daf802813f62,
-        type: 3}
-      propertyPath: spiritPickUp
-      value: 
-      objectReference: {fileID: 11400000, guid: 3f53607d5f41b0f4fa4c903677fe7014,
-        type: 2}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 66753e54156577040b20daf802813f62, type: 3}
 --- !u!1 &106610254
 GameObject:
   m_ObjectHideFlags: 0
@@ -14724,7 +14634,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1436447386774278, guid: 841ed186f52eddc4da45efbc3601ac34, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4632888203439750, guid: 841ed186f52eddc4da45efbc3601ac34, type: 3}
       propertyPath: m_LocalPosition.x
@@ -41187,6 +41097,8 @@ GameObject:
   - component: {fileID: 1981892463}
   - component: {fileID: 1981892462}
   - component: {fileID: 1981892464}
+  - component: {fileID: 1981892466}
+  - component: {fileID: 1981892465}
   m_Layer: 0
   m_Name: Spirit pickup
   m_TagString: Untagged
@@ -41251,10 +41163,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1981892461}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -36, y: 101.614, z: 6.8}
+  m_LocalPosition: {x: -39.26, y: 101.614, z: -106.02}
   m_LocalScale: {x: 0.024080947, y: 0.024080947, z: 0.024080947}
-  m_Children:
-  - {fileID: 2020456044}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -41318,6 +41229,34 @@ Light:
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!136 &1981892465
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1981892461}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 29.536682
+  m_Height: 66.08196
+  m_Direction: 1
+  m_Center: {x: 0.537886, y: 15.022315, z: -8.12839}
+--- !u!114 &1981892466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1981892461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5cb946bbffe0764baf5613830604394, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spiritPickUp: {fileID: 11400000, guid: 3f53607d5f41b0f4fa4c903677fe7014, type: 2}
+  rotationSpeed: 180
 --- !u!1 &1994355705
 GameObject:
   m_ObjectHideFlags: 0
@@ -42997,12 +42936,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &2020456044 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7856674861301851183, guid: 66753e54156577040b20daf802813f62,
-    type: 3}
-  m_PrefabInstance: {fileID: 98701920}
-  m_PrefabAsset: {fileID: 0}
 --- !u!43 &2022033049
 Mesh:
   m_ObjectHideFlags: 0
