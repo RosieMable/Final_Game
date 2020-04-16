@@ -90,7 +90,7 @@ namespace ZaldensGambit
         public void CheckCardsSelected()
         {
             cardsClickedOn = 0;
-            CenterPoint.position = GetCentreForCards(dungeonCard.DrawnCards.Count);
+          //  CenterPoint.position = GetCentreForCards(dungeonCard.DrawnCards.Count);
 
             foreach (var card in CardsSelected)
             {
