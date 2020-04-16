@@ -46,12 +46,12 @@ Material:
     - _Edge: 0.113
     - _EmisIntensity: 3.37
     - _FADE: 1
-    - _GlowBrightness: 3
+    - _GlowBrightness: 11.4
     - _HARD: 0
     - _INVERT: 0
     - _NORMALS: 0
     - _NScale: 1
-    - _OffsetFade: 0.1
+    - _OffsetFade: -0.6
     - _Opacity: 2.49
     - _Outline: 0.059
     - _OutlineFixed: 1.58
