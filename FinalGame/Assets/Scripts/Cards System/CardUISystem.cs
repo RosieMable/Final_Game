@@ -46,7 +46,9 @@ namespace ZaldensGambit
         GameObject DungeonCardssUIElements;
 
         public int cardsRevealed;
-       
+
+        [SerializeField]
+        Portal portalToDungeon;
         private void OnEnable()
         {
             //CardUI.selectCardDelegate += CheckCardsSelected;
@@ -73,6 +75,8 @@ namespace ZaldensGambit
             cardsRevealed = 0;
             CardUI.selectCardDelegate += CheckCardsSelected;
             CardUI.revealCardDelegate += AfterSelection;
+
+            portalToDungeon.gameObject.SetActive(false);
         }
 
 
@@ -149,12 +153,13 @@ namespace ZaldensGambit
                 StartCoroutine(CloseDungeonCardsUI(2f));
 
                 //reset interaction system
-                //FateWeaver fateWeaver = FindObjectOfType<FateWeaver>();
-                //fateWeaver.ResetInteraction();
+                FateWeaver fateWeaver = FindObjectOfType<FateWeaver>();
+                fateWeaver.ResetInteraction();
 
                 cardsRevealed = 0;
 
                 //activate portal
+                portalToDungeon.gameObject.SetActive(true);
             }
         }
 
