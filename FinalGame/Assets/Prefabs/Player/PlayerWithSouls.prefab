@@ -23738,11 +23738,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterWithSouls
       objectReference: {fileID: 0}
-    - target: {fileID: -2251963865521844141, guid: aa83cbdacb708e5449be2451c47ef6ab,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: aa83cbdacb708e5449be2451c47ef6ab,
         type: 3}
       propertyPath: m_LocalPosition.x
