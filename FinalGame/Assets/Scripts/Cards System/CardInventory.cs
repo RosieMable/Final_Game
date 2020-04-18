@@ -80,7 +80,7 @@ public class CardInventory : MonoBehaviour
             inventoryPanel = GameObject.Find("InventoryPanel");
             camera = FindObjectOfType<Camera>();
             cardInfo = GameObject.Find("CardInfo").GetComponent<TextMeshProUGUI>();
-            CardInventory.instance.ToggleInventory();
+            ToggleInventory();
         }
 
         if (Input.GetKeyDown(KeyCode.I))
@@ -110,7 +110,7 @@ public class CardInventory : MonoBehaviour
         {
             if (spiritCards[i] != null)
             {
-                cardPositions[i].GetComponent<Image>().sprite = spiritCards[i]._spiritSprite;
+                cardPositions[i].GetComponent<Image>().sprite = spiritCards[i]._spiritSpriteCardback;
                 cardPositions[i].GetComponent<InventoryCardUI>().spirit = spiritCards[i];
             }
         }
@@ -125,7 +125,7 @@ public class CardInventory : MonoBehaviour
             if (selectedCardPosition == cardPositions[i])
             {
                 cardSelectedsInfo.spirit = cardPositions[i].GetComponent<InventoryCardUI>().spirit;
-                cardSelected.GetComponent<Image>().sprite = cardSelectedsInfo.spirit._spiritSprite;
+                cardSelected.GetComponent<Image>().sprite = cardSelectedsInfo.spirit._spiritSpriteCardback;
 
                 cardInfo.text = "Name: " + cardSelectedsInfo.spirit.SpiritName
                     + "\n Class: " + cardSelectedsInfo.spirit.spiritClass
@@ -154,7 +154,7 @@ public class CardInventory : MonoBehaviour
         {
             if (_cardToDisplay <= spiritCards.Count - 1 && spiritCards[_cardToDisplay] != null)
             {
-                cardPositions[i].GetComponent<Image>().sprite = spiritCards[_cardToDisplay]._spiritSprite;
+                cardPositions[i].GetComponent<Image>().sprite = spiritCards[_cardToDisplay]._spiritSpriteCardback;
                 cardPositions[i].GetComponent<InventoryCardUI>().spirit = spiritCards[_cardToDisplay];
                 Debug.Log("Display card: " + _cardToDisplay);
                 _cardToDisplay++;
@@ -182,7 +182,7 @@ public class CardInventory : MonoBehaviour
         {
             if (_cardToDisplay <= spiritCards.Count - 1 && spiritCards[_cardToDisplay] != null)
             {
-                cardPositions[i].GetComponent<Image>().sprite = spiritCards[_cardToDisplay]._spiritSprite;
+                cardPositions[i].GetComponent<Image>().sprite = spiritCards[_cardToDisplay]._spiritSpriteCardback;
                 cardPositions[i].GetComponent<InventoryCardUI>().spirit = spiritCards[_cardToDisplay];
                 Debug.Log("Display card: " + _cardToDisplay);
                 _cardToDisplay++;

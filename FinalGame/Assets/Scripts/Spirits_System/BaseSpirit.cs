@@ -37,10 +37,13 @@ public class BaseSpirit : ScriptableObject
 
     public SpiritClass spiritClass;
 
+    public Sprite _spiritSpriteIcon;
 
-    public Sprite _spiritSprite;
+    public Sprite SpiritSpriteIcon { get { return _spiritSpriteIcon; } }
 
-    public Sprite SpiritSprite { get { return _spiritSprite; } }
+    public Sprite _spiritSpriteCardback;
+
+    public Sprite SpiritSpriteCardback { get { return _spiritSpriteCardback; } }
 
     /// <summary>
     /// Active ability cooldown expressed in seconds.

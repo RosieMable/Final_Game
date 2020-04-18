@@ -97,7 +97,7 @@ namespace ZaldensGambit
                 SpiritBar.gameObject.SetActive(true);
                 SpiritBar.color = Color.white;
 
-                SpiritIcon.sprite = _spiritToDisplay._spiritSprite;
+                SpiritIcon.sprite = _spiritToDisplay._spiritSpriteIcon;
             }
             else
             {
