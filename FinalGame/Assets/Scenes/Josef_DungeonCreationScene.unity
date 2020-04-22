@@ -389,6 +389,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: 9_Room_Dungeon
       objectReference: {fileID: 0}
+    - target: {fileID: 1974961532399681336, guid: 5c35c16d1b5c2e944aa09dc972f637ec,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1974961532399681337, guid: 5c35c16d1b5c2e944aa09dc972f637ec,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -535,7 +540,7 @@ PrefabInstance:
     - target: {fileID: 8879419859491269138, guid: 0c1d016a7f746114780352463ecd292c,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8879419859491269137, guid: 0c1d016a7f746114780352463ecd292c,
         type: 3}
