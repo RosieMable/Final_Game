@@ -15,7 +15,9 @@ public class CardInventory : MonoBehaviour
 
     [SerializeField] private Transform[] cardPositions;
     [SerializeField] private Transform cardSelected;
-    private TextMeshProUGUI cardInfo;
+    private TextMeshProUGUI cardTitle;
+    private TextMeshProUGUI cardClass;
+    private TextMeshProUGUI cardBio;
     private Camera camera;
     private GameObject inventoryPanel;
     public List<BaseSpirit> spiritCards;
@@ -47,24 +49,17 @@ public class CardInventory : MonoBehaviour
         cardPositions[1] = GameObject.Find("Card 2").transform;
         cardPositions[2] = GameObject.Find("Card 3").transform;
         cardPositions[3] = GameObject.Find("Card 4").transform;
+        cardPositions[4] = GameObject.Find("Card 5").transform;
         cardSelected = GameObject.Find("SelectedCard").transform;
         inventoryPanel = GameObject.Find("InventoryPanel");
         camera = FindObjectOfType<Camera>();
-        cardInfo = GameObject.Find("CardInfo").GetComponent<TextMeshProUGUI>();
+        cardTitle = GameObject.Find("CardTitle").GetComponent<TextMeshProUGUI>();
+        cardClass = GameObject.Find("CardClass").GetComponent<TextMeshProUGUI>();
+        cardBio = GameObject.Find("CardBio").GetComponent<TextMeshProUGUI>();
     }
 
     private void Start()
     {
-        foreach (BaseSpirit spirit in spiritCards)
-        {
-            //print("Spirit in inventory: " + spirit.name);
-        }
-
-        foreach (Card_ScriptableObj dungeonCard in dungeonCards)
-        {
-            //print("Dungeon card in inventory: " + dungeonCard.name);
-        }
-
         ToggleInventory();
     }
 
@@ -72,14 +67,7 @@ public class CardInventory : MonoBehaviour
     {
         if (cardPositions[0] == null)
         {
-            cardPositions[0] = GameObject.Find("Card 1").transform;
-            cardPositions[1] = GameObject.Find("Card 2").transform;
-            cardPositions[2] = GameObject.Find("Card 3").transform;
-            cardPositions[3] = GameObject.Find("Card 4").transform;
-            cardSelected = GameObject.Find("SelectedCard").transform;
-            inventoryPanel = GameObject.Find("InventoryPanel");
-            camera = FindObjectOfType<Camera>();
-            cardInfo = GameObject.Find("CardInfo").GetComponent<TextMeshProUGUI>();
+            Init();
             ToggleInventory();
         }
 
@@ -127,9 +115,9 @@ public class CardInventory : MonoBehaviour
                 cardSelectedsInfo.spirit = cardPositions[i].GetComponent<InventoryCardUI>().spirit;
                 cardSelected.GetComponent<Image>().sprite = cardSelectedsInfo.spirit._spiritSpriteCardback;
 
-                cardInfo.text = "Name: " + cardSelectedsInfo.spirit.SpiritName
-                    + "\n Class: " + cardSelectedsInfo.spirit.spiritClass
-                    + "\n \n Bio: " + cardSelectedsInfo.spirit.SpiritDescription;
+                cardTitle.text = cardSelectedsInfo.spirit.SpiritName;
+                cardClass.text = cardSelectedsInfo.spirit.spiritClass.ToString();
+                cardBio.text = cardSelectedsInfo.spirit.SpiritDescription;
                 return;
             }
         }
@@ -161,6 +149,8 @@ public class CardInventory : MonoBehaviour
                 Debug.Log("Increment to value: " + _cardToDisplay);
             }
         }
+
+        SelectCard(cardPositions[2]);
     }
 
     public void SortRight()
@@ -190,6 +180,7 @@ public class CardInventory : MonoBehaviour
             }
         }
 
+        SelectCard(cardPositions[2]);
     }
 
     /// <summary>
