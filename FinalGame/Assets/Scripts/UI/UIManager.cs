@@ -34,6 +34,7 @@ namespace ZaldensGambit
             dialoguePanel = GameObject.Find("DialoguePanel");
             dialogueText = GameObject.Find("DialogueText").GetComponent<TextMeshProUGUI>();
             player = FindObjectOfType<StateManager>();
+            DontDestroyOnLoad(this);
         }
 
         private void Start()

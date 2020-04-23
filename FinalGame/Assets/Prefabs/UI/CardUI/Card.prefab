@@ -99,6 +99,7 @@ MonoBehaviour:
   - {fileID: 7289891479167028067}
   valueText: {fileID: 5361396545319234374}
   selfImage: {fileID: 2158864910168191962}
+  revealed: 0
 --- !u!114 &7486483486202337739
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -132,7 +133,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 3616349812707003935}
-          m_MethodName: Glouwin
+          m_MethodName: Glowin
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}

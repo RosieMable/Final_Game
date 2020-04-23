@@ -39,7 +39,7 @@ namespace ZaldensGambit
                 else // When dialogue is exhausted...
                 {
                     DungeonChoiceUI.SetActive(true);
-                    //print("End of main dialogue, looping back to start!");
+                    print("End of main dialogue, looping back to start!");
                 }
             }
         }

@@ -109,7 +109,11 @@ MonoBehaviour:
   SpawnRadius: 3
   enemySuit: 0
   numEnemiesToSpawn: 0
-  FamineEnemies: []
-  PestilenceEnemies: []
-  WarEnemies: []
-  DeathEnemies: []
+  FamineEnemies:
+  - {fileID: 5549502852493679761, guid: 762b45fa759ac024e8b502cb488af687, type: 3}
+  PestilenceEnemies:
+  - {fileID: 4584454962274531796, guid: cb7d447c1b189a342b2d54db59f842b5, type: 3}
+  WarEnemies:
+  - {fileID: 4584454962274531796, guid: dd3dd5671cc3f9d44a967856fb5a02eb, type: 3}
+  DeathEnemies:
+  - {fileID: 4584454962274531796, guid: 07453b97890f64b47aa43d8c200c975b, type: 3}

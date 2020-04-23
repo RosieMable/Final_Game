@@ -10,6 +10,12 @@ public class EnemiesDungeonSpawnManager : MonoBehaviour
     [SerializeField]
     List<EnemiesDungeonSingleSpawner> Spawners;
 
+    [SerializeField]
+    Transform playerSpawnPoint;
+
+    [SerializeField]
+    GameObject PlayerPrefab, CameraHolder;
+
     private void Awake()
     {
         if (dungeonSystem == null)
@@ -26,6 +32,12 @@ public class EnemiesDungeonSpawnManager : MonoBehaviour
             spawn.dungeonCard = dungeonSystem.DrawnCards[i++];
             spawn.PopulateSpawnerVariables(spawn.dungeonCard);
         }
+
+        GameObject player = GameObject.Instantiate(PlayerPrefab);
+        GameObject camera = Instantiate(CameraHolder);
+        player.transform.position = playerSpawnPoint.position;
+        camera.transform.position = playerSpawnPoint.position;
+        
                
     }
 

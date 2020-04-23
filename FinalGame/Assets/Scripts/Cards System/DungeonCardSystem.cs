@@ -55,6 +55,13 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
 
     AsyncOperation async;
 
+    [SerializeField]
+    Portal portalToDungeon;
+
+    [SerializeField]
+    string mainSceneName = "AlpaHub";
+
+    bool inHubScene;
 
     [Header("Temp Debug")]
     #region Temp for debug
@@ -72,7 +79,12 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
 
     protected override void Awake()
     {
+
         base.Awake();
+        if(SceneManager.GetActiveScene().name == mainSceneName)
+        {
+            portalToDungeon = FindObjectOfType<Portal>();
+        }
         DontDestroyOnLoad(this.gameObject);
     }
 
@@ -104,6 +116,18 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
 
     }
 
+    private void Update()
+    {
+        if (SceneManager.GetActiveScene().name == mainSceneName)
+        {
+            inHubScene = true;
+        }
+        else
+        {
+            inHubScene = false;
+        }
+    }
+
     public void SetGlobalAmount(Text text)
     {
 
@@ -118,6 +142,8 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
             GlobalAmountCD = 3;
             DrawCards(3);
             text.text = "x3";
+            if (inHubScene)
+                portalToDungeon.sceneToLoad = "3_Room_Dungeon";
         }
         if (nClick > 3)
         {
@@ -125,18 +151,24 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
             GlobalAmountCD = 3;
             DrawCards(3);
             text.text = "x3";
+            if (inHubScene)
+                portalToDungeon.sceneToLoad = "3_Room_Dungeon";
         }
         if (nClick == 2)
         {
             GlobalAmountCD = 6;
             DrawCards(6);
             text.text = "x6";
+            if (inHubScene)
+                portalToDungeon.sceneToLoad = "6_Room_Dungeon";
         }
         if (nClick == 3)
         {
             GlobalAmountCD = 9;
             DrawCards(9);
             text.text = "x9";
+            if (inHubScene)
+                portalToDungeon.sceneToLoad = "9_Room_Dungeon";
         }
 
 
@@ -161,7 +193,7 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
 
     public void CreateDungeon()
     {
-        _spawnLocation = GameObject.FindGameObjectWithTag("SpawnPoint").transform;
+        //_spawnLocation = GameObject.FindGameObjectWithTag("SpawnPoint").transform;
 
         //Based on drawn cards, spawn the corrisponding dungeon prefab
         if (_drawnCards.Count != 0 && _spawnLocation != null)
