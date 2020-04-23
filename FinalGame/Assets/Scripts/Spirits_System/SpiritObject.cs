@@ -5,7 +5,7 @@ using ZaldensGambit;
 
 public class SpiritObject : MonoBehaviour
 {
-    public Spirit_ScriptableObj Spirit;
+    public BaseSpirit Spirit;
 
    
     void AddSpiritToInventory()

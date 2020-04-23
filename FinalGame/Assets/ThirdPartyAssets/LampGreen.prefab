@@ -43,7 +43,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.32156864, g: 0.67058825, b: 0.17254902, a: 1}
   m_Intensity: 2.5
-  m_Range: 17.72763
+  m_Range: 28
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 2517202149937161021}
   - component: {fileID: 2491916367042505047}
   m_Layer: 0
-  m_Name: Lamp
+  m_Name: LampGreen
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -9,7 +9,7 @@ namespace ZaldensGambit
         private float vertical;
         private float horizontal;
         private bool lightAttackInput;
-        private bool heavyAttackInput;
+        private bool sprintInput;
         private bool dodgeRollInput;
         private bool lockOnInput;
         private bool specialAttackInput;
@@ -31,6 +31,15 @@ namespace ZaldensGambit
 
         private void Update()
         {
+            states.Tick(delta);
+
+            if (CardInventory.instance.inventoryOpen)
+            {
+                vertical = 0;
+                horizontal = 0;
+                return;
+            }
+
             if (!states.interacting)
             {
                 GetInput();
@@ -42,7 +51,6 @@ namespace ZaldensGambit
             }
             SearchForLockOnTarget();
             delta = Time.deltaTime;
-            states.Tick(delta);
 
             if (states.lockOnTarget != null)
             {
@@ -71,9 +79,9 @@ namespace ZaldensGambit
             vertical = Input.GetAxis("Vertical");
             horizontal = Input.GetAxis("Horizontal");  
             lightAttackInput = Input.GetKeyDown(KeyCode.Mouse0);
-            //heavyAttackInput = // Needs new input, probably when controller support added?
+            sprintInput = Input.GetKey(KeyCode.LeftShift);
             dodgeRollInput = Input.GetKeyDown(KeyCode.Space);
-            specialAttackInput = Input.GetKeyDown(KeyCode.Mouse2);
+            specialAttackInput = Input.GetKeyDown(KeyCode.R);
             blockInput = Input.GetKey(KeyCode.Mouse1);
         }
 
@@ -94,7 +102,7 @@ namespace ZaldensGambit
             }
 
             states.lightAttack = lightAttackInput;
-            states.heavyAttack = heavyAttackInput;
+            states.sprint = sprintInput;
             states.dodgeRoll = dodgeRollInput;
             states.block = blockInput;
             states.specialAttack = specialAttackInput;           

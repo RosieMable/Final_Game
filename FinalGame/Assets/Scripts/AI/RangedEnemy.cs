@@ -7,6 +7,7 @@ namespace ZaldensGambit
 {
     public class RangedEnemy : Enemy
     {
+        [SerializeField] private Transform firePoint;
         [SerializeField] private GameObject projectile;
         [SerializeField] private bool stationary;
         private bool movingToPosition;
@@ -40,15 +41,16 @@ namespace ZaldensGambit
                     Debug.DrawRay(transform.position + Vector3.up, transform.forward * 100);
                     if (playerInFront)
                     {
-                        if (attackDelay < Time.time && agent.isStopped && !inAction & !isInvulnerable)
+                        if (agent.enabled)
                         {
-                            int animationToPlay = Random.Range(0, attackAnimations.Length);
-                            charAnim.CrossFade(attackAnimations[animationToPlay].name, 0.2f);
-                            GameObject _projectile = Instantiate(projectile, transform.position + transform.forward + new Vector3(0, 1, 0), Quaternion.identity, null);
-                            _projectile.GetComponent<Projectile>().forwardVector = transform.forward;
-                            attackDelay = Time.time + attackCooldown - 0.5f + Random.Range(0, 1f);
-                            MoveToNewPosition();
+                            if (attackDelay < Time.time && agent.isStopped && !inAction & !isInvulnerable)
+                            {
+                                int animationToPlay = Random.Range(0, attackAnimations.Length);
+                                charAnim.CrossFade(attackAnimations[animationToPlay].name, 0.2f);
+                                StartCoroutine(FireWithDelay(0.5f));
+                            }
                         }
+                        
                     }
                     else
                     {
@@ -118,11 +120,20 @@ namespace ZaldensGambit
             rigidBody.velocity = Vector3.zero; // Reset velocity to ensure no gliding behaviour as navmesh agents do not follow ordinary rigidbody physics
             RotateTowardsTarget(player.transform);
 
-            if (!stationary)
+            if (!stationary && agent.enabled)
             {
                 agent.isStopped = false;
                 MoveToTarget();
             }
+        }
+
+        private IEnumerator FireWithDelay(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            GameObject _projectile = Instantiate(projectile, firePoint.position, transform.rotation, null);
+            _projectile.GetComponent<Projectile>().forwardVector = transform.forward;
+            attackDelay = Time.time + attackCooldown - 0.5f + Random.Range(0, 1f);
+            MoveToNewPosition();
         }
     }
 }

@@ -7,6 +7,13 @@ namespace ZaldensGambit
     public class WeaponHook : MonoBehaviour
     {
         public DamageCollider damageCollider;
+        private AudioSource audioSource;
+        [SerializeField] private AudioClip[] attackClips;
+
+        private void Start()
+        {
+            audioSource = GetComponent<AudioSource>();
+        }
 
         /// <summary>
         /// Enable damage attached collider.
@@ -22,6 +29,13 @@ namespace ZaldensGambit
         public void CloseDamageCollider()
         {
             damageCollider.gameObject.SetActive(false);
+        }
+
+        public void PlayAttackSound()
+        {
+            int clipToPlay = Random.Range(0, attackClips.Length);
+            audioSource.clip = attackClips[clipToPlay];
+            audioSource.Play();
         }
     }
 }

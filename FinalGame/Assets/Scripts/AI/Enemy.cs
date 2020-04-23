@@ -12,9 +12,10 @@ namespace ZaldensGambit
     /// </summary>
     public abstract class Enemy : MonoBehaviour
     {
-        private enum Type { Famine, War, Death, Pestilence } // Famine = Lifeleech on hit, War = More damage, Death = Delayed explosian on death, Pestilence = DoT effect
-        [SerializeField] private Type enemyType;
-        [SerializeField] protected float health = 100;
+        public enum Type { Famine, War, Death, Pestilence } // Famine = Lifeleech on hit, War = More damage, Death = Delayed explosian on death, Pestilence = DoT effect
+        public Type enemyType;
+        [SerializeField] public float currentHealth = 50;
+        private float maximumHealth;
         [HideInInspector] public bool isInvulnerable;
         [HideInInspector] public Animator charAnim;
         private AnimatorHook animHook;
@@ -31,10 +32,15 @@ namespace ZaldensGambit
         public float attackDelay;
         public float attackCooldown = 0.5f;
         public int damage = 10;
+        public int critDamage = 15;
+        public float critChance = 5;
         [SerializeField] protected float attackRange = 1.5f;
         [SerializeField] protected float aggroRange = 10;
         [SerializeField] protected float speed = 4;
         [SerializeField] protected float rotationSpeed = 2;
+        protected bool stunned;
+        private Coroutine stunnedCoroutine;
+
         protected GameObject player;
         [SerializeField] protected bool isTrainingDummy;
         [HideInInspector] public WeaponHook weaponHook;
@@ -45,8 +51,19 @@ namespace ZaldensGambit
         private int currentPatrolPoint;
         [SerializeField] protected LayerMask playerLayer;
         private CameraManager cameraManager;
+
         [SerializeField] protected AnimationClip[] hurtAnimations;
         [SerializeField] protected AnimationClip[] attackAnimations;
+
+        protected AudioSource characterAudioSource;
+        [SerializeField] protected AudioClip[] deathAudioClips;
+        [SerializeField] protected AudioClip[] hurtAudioClips;
+
+        protected bool withinRangeOfTarget;
+        protected bool movingToAttack;
+        [SerializeField] protected static List<Enemy> currentAttackers = new List<Enemy>();
+        protected static int maximumNumberOfAttackers = 2;
+        protected int currentSlot = -1;
 
         protected enum State { Idle, Pursuing, Attacking }
         protected State currentState;
@@ -66,11 +83,13 @@ namespace ZaldensGambit
             agent.speed = speed;
             agent.stoppingDistance = attackRange;
             healthSlider = GetComponentInChildren<Slider>();
-            healthSlider.maxValue = health;
-            healthSlider.value = health;
+            healthSlider.maxValue = currentHealth;
+            healthSlider.value = currentHealth;
             healthSlider.gameObject.SetActive(false);
             damageText = GetComponentInChildren<TextMeshProUGUI>();
             damageText.gameObject.SetActive(false);
+            characterAudioSource = GetComponent<AudioSource>();
+            maximumHealth = currentHealth;
 
             //if (animHook == false)
             //{
@@ -83,7 +102,6 @@ namespace ZaldensGambit
         {
             animHook.Initialise(null, this);
             cameraManager = CameraManager.instance;
-
             currentAttackers.Clear();
         }
 
@@ -97,9 +115,9 @@ namespace ZaldensGambit
                 return; // Return out of method, take no damage
             }
 
-            attackDelay = Time.time + attackCooldown * 2; // Add onto the attack delay as we have been hit            
-            health -= damageValue; // Reduce health by damage value
-            healthSlider.value = health; // Update slider to represent new health total
+            attackDelay = Time.time + attackCooldown; // Add onto the attack delay as we have been hit            
+            currentHealth = Mathf.Lerp(currentHealth, currentHealth - damageValue, 1f); // Reduce health by damage value
+            healthSlider.value = currentHealth; // Update slider to represent new health total
 
             if (damageText.IsActive()) // If already showing damage text...
             {
@@ -142,35 +160,71 @@ namespace ZaldensGambit
             int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length); // Return random animation from list
             charAnim.CrossFade(hurtAnimations[hurtAnimationToPlay].name, 0.1f); // Play animation
             charAnim.applyRootMotion = true;
+
+            int clipToPlay = Random.Range(0, hurtAudioClips.Length);
+            characterAudioSource.clip = hurtAudioClips[clipToPlay];
+            characterAudioSource.Play();
+        }
+
+        private void CheckHealth()
+        {
+            if (currentHealth >= maximumHealth)
+            {
+                currentHealth = maximumHealth;
+                healthSlider.value = currentHealth; // Update slider to represent new health total
+            }
+            else if (currentHealth <= 0)
+            {
+                currentHealth = 0;
+                healthSlider.value = currentHealth; // Update slider to represent new health total
+            }
+        }
+
+        public void RestoreHealth(float amountToRestore)
+        {
+            currentHealth = Mathf.Lerp(currentHealth, currentHealth + amountToRestore, 1f);
+            healthSlider.value = currentHealth; // Update slider to represent new health total
         }
 
         protected virtual void Update()
         {
-            Tick(Time.deltaTime);
-            canMove = charAnim.GetBool("canMove");            
+            CheckHealth();
 
-            if (health <= 0)
+            if (!stunned)
             {
-                if (!isDead)
+                Tick(Time.deltaTime);
+                canMove = charAnim.GetBool("canMove");
+
+                if (currentHealth <= 0)
                 {
-                    isDead = true;
-                    RemoveFromAttackersList();
-                    healthSlider.gameObject.SetActive(false);
-                    damageText.gameObject.SetActive(false);
-                    GetComponent<Collider>().enabled = false;
-                    rigidBody.isKinematic = true;
-                    print(gameObject.name + " died!");
-                    charAnim.Play("death");
-                    agent.enabled = false;
-                    Destroy(gameObject, 5);
+                    if (!isDead)
+                    {
+                        isDead = true;
+                        RemoveFromAttackersList();
+                        healthSlider.gameObject.SetActive(false);
+                        damageText.gameObject.SetActive(false);
+                        GetComponent<Collider>().enabled = false;
+                        rigidBody.isKinematic = true;
+                        print(gameObject.name + " died!");
+                        charAnim.Play("death");
+                        agent.enabled = false;
+                        Destroy(gameObject, 5);
+                        int clipToPlay = Random.Range(0, deathAudioClips.Length);
+                        characterAudioSource.clip = deathAudioClips[clipToPlay];
+                        characterAudioSource.Play();
+                    }
+                    else
+                    {
+                        transform.Translate(new Vector3(0, -0.1f, 0) * Time.fixedDeltaTime); // Sink into the ground whilst dead, should allow the model to submerge before being deleted.
+                    }
                 }
-            }
-            else
-            {
-                healthSlider.transform.LookAt(new Vector3(cameraManager.transform.position.x, healthSlider.transform.position.y, cameraManager.transform.position.z), Vector3.up);
-                //damageText.transform.LookAt(new Vector3(cameraManager.transform.position.x, damageText.transform.position.y, cameraManager.transform.position.z), Vector3.up);
-                Quaternion rotationToFace = Quaternion.LookRotation(damageText.transform.position - cameraManager.transform.position);
-                damageText.transform.rotation = new Quaternion(transform.rotation.x, rotationToFace.y, transform.rotation.z, rotationToFace.w); 
+                else
+                {
+                    healthSlider.transform.LookAt(new Vector3(cameraManager.transform.position.x, healthSlider.transform.position.y, cameraManager.transform.position.z), Vector3.up);
+                    //damageText.transform.LookAt(new Vector3(cameraManager.transform.position.x, damageText.transform.position.y, cameraManager.transform.position.z), Vector3.up);
+                    Quaternion rotationToFace = Quaternion.LookRotation(damageText.transform.position - cameraManager.transform.position);
+                    damageText.transform.rotation = new Quaternion(transform.rotation.x, rotationToFace.y, transform.rotation.z, rotationToFace.w);
+                }
             }
 
             //if (!canMove) // If the character can't move...
@@ -193,10 +247,7 @@ namespace ZaldensGambit
 
                 if (!isTrainingDummy) // If not flagged as a training dummy
                 {
-                    if (!strafing)
-                    {
-                        PerformStateBehaviour(); // Perform current state behaviour
-                    }
+                    PerformStateBehaviour(); // Perform current state behaviour
                 }
 
                 if (inAction) // If an animation is playing...
@@ -317,7 +368,7 @@ namespace ZaldensGambit
             rigidBody.velocity = Vector3.zero; // Reset velocity to ensure no gliding behaviour as navmesh agents do not follow ordinary rigidbody physics
             RotateTowardsTarget(player.transform);
 
-            if (movingToAttack) // If the AI is flagged as moving to attack...
+            if (movingToAttack && !inAction) // If the AI is flagged as moving to attack...
             {
                 MoveToTarget();
             }
@@ -413,6 +464,19 @@ namespace ZaldensGambit
             damageText.gameObject.SetActive(false);
         }
 
+        public void ApplyStun(float duration)
+        {
+            if (stunnedCoroutine != null)
+            {
+                StopCoroutine(stunnedCoroutine);
+                stunnedCoroutine = StartCoroutine(StunEffect(duration));
+            }
+            else
+            {
+                stunnedCoroutine = StartCoroutine(StunEffect(duration));
+            }
+        }
+
         /// <summary>
         /// Show AI UI for the duration specified.
         /// </summary>
@@ -442,6 +506,19 @@ namespace ZaldensGambit
             damageTextCoroutine = null;
         }
 
+        private IEnumerator StunEffect(float duration)
+        {
+            stunned = true;
+            charAnim.SetBool("stunned", true);
+            charAnim.CrossFade("Stunned", 0.2f);
+
+            yield return new WaitForSeconds(duration);
+
+            charAnim.SetBool("stunned", false);
+            stunned = false;
+            stunnedCoroutine = null;
+        }
+
         /// <summary>
         /// Draw the aggro & attack ranges in the scene view.
         /// </summary>
@@ -455,54 +532,6 @@ namespace ZaldensGambit
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(transform.position + Vector3.up, attackRange);
         }
-
-        // Experimental 'Combat Circle' logic attempt below
-        //https://www.trickyfast.com/2017/10/09/building-an-attack-slot-system-in-unity/
-        //https://gamedevelopment.tutsplus.com/tutorials/battle-circle-ai-let-your-player-feel-like-theyre-fighting-lots-of-enemies--gamedev-13535
-        /* Logic:
-         * 1) Move towards the player when within aggro range. - Done
-         * 2) When within a reasonable range, avoid other AIs unless moving to attack. - Done
-         * 3) Move towards the player whilst avoiding other AIs unless moving to attack. - Done
-         * 4) When the player is within attack range, check if I'm allowed to attack. - Done
-         * 
-         * Notes on permission given for attacks:
-         * - Cannot attack if there is already a maximum number of allowed attackers - Done
-         * - When denied, continue to move around the player and repeat
-         * - If the player moves out of attack range, remove from attackers list - Done
-         * - If killed, remove from attackers list - Done
-         * 
-         * Variables Needed:
-         * Aggro range - Done
-         * Attack range - Done
-         * In-range boolean - Done
-         * Moving-to-attack boolean - Done
-         * Avoid radius - Done
-         * List of attackers - Done
-         * Maximum number of allowed attackers- Done
-         * 
-         * Possible States:
-         * - Idle - Done
-         * - Pursuing - Done
-         * - LookingToAttack - 
-         * - Attacking - Done
-         * 
-         * 
-         * Additional Logic:
-         * 1) When the player is in range, check if we are able to attack. - Done
-         * 2) If we are able to attack, attack. If we are not, move to a attack slot position. - Done
-         * 3) If we are not able to attack and are at our attack slot position, move slightly around the position. - Done
-         * 4) If the target enters our attack range, no matter what we are to attack them. - Done
-         * 5) If the target attacks us, forcefully enter the list of attackers. - Done
-         * 6) If the player moves away from us, attempt to follow - Done
-        */
-
-        private float avoidRadius = 3;
-        protected bool withinRangeOfTarget;
-        protected bool movingToAttack;
-        [SerializeField] protected static List<Enemy> currentAttackers = new List<Enemy>();
-        protected static int maximumNumberOfAttackers = 2;
-        protected bool strafing;
-        protected int currentSlot = -1; 
 
         /// <summary>
         /// Removes the AI from the list of attackers and flags them as no longer moving to attack.

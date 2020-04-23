@@ -7,6 +7,8 @@ namespace ZaldensGambit
     public class DamageCollider : MonoBehaviour
     {
         public int damage = 10;
+        private int critDamage = 0;
+        private float critChance = 0;
 
         private void Awake()
         {
@@ -17,6 +19,8 @@ namespace ZaldensGambit
             else if (GetComponentInParent<Enemy>())
             {
                 damage = GetComponentInParent<Enemy>().damage;
+                critDamage = GetComponentInParent<Enemy>().critDamage;
+                critChance = GetComponentInParent<Enemy>().critChance;
             }
         }
 
@@ -40,8 +44,19 @@ namespace ZaldensGambit
 
             if (states != null) // If we hit the player...
             {
-                states.TakeDamage(damage, GetComponentInParent<Enemy>().gameObject.transform);
-                GetComponentInParent<WeaponHook>().CloseDamageCollider();
+                int crit = Random.Range(0, 101);
+
+                if (crit <= critChance)
+                {
+                    Debug.Log("Crit!");
+                    states.TakeDamage(critDamage, GetComponentInParent<Enemy>().gameObject.transform);
+                    GetComponentInParent<WeaponHook>().CloseDamageCollider();
+                }
+                else
+                {
+                    states.TakeDamage(damage, GetComponentInParent<Enemy>().gameObject.transform);
+                    GetComponentInParent<WeaponHook>().CloseDamageCollider();
+                }
             }
         }
     }

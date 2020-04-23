@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2170585335401786176}
   - component: {fileID: 2190017584535822634}
   m_Layer: 0
-  m_Name: Lamp (1)
+  m_Name: LampPink
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4855,7 +4855,7 @@ Light:
   m_Type: 2
   m_Color: {r: 0.8867924, g: 0.38039216, b: 0.69803923, a: 1}
   m_Intensity: 2.5
-  m_Range: 17.72763
+  m_Range: 28
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10

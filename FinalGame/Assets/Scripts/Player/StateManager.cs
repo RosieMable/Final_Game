@@ -14,6 +14,7 @@ namespace ZaldensGambit
         [HideInInspector] public Vector3 movementDirection;
 
         [SerializeField] private float moveSpeed = 4;
+        private float originalSpeed;
         [SerializeField] private float rotateSpeed = 5;
 
         [SerializeField] private float maxStepHeight = 0.4f;        // The maximum a player can step upwards in units when they hit a wall that's potentially a step
@@ -26,10 +27,11 @@ namespace ZaldensGambit
         private int experience = 0;
         private int experienceForNextLevel = 1000;
         public int damage = 10;
-        //public float stamina = 100;
+        private bool isDead = false;
+        private Collider collider;
         [HideInInspector] public bool isInvulnerable;
         [HideInInspector] public bool grounded;
-        [HideInInspector] public bool lightAttack, heavyAttack, dodgeRoll, block, specialAttack;
+        [HideInInspector] public bool lightAttack, sprint, dodgeRoll, block, specialAttack;
         [HideInInspector] public bool inAction;
         [HideInInspector] public bool canMove;
         [HideInInspector] public bool lockOn;
@@ -42,11 +44,9 @@ namespace ZaldensGambit
         [SerializeField] private AnimationClip[] lightAttacksChain;
         [SerializeField] private AnimationClip[] heavyAttacksChain;
         private int animationClipIndex = 0;
-
         [SerializeField] private AnimationClip[] hurtAnimations;
 
-        public Enemy lockOnTarget;
-
+        [HideInInspector] public Enemy lockOnTarget;
         [HideInInspector] public GameObject activeModel;
         [HideInInspector] public Animator charAnim;
         [HideInInspector] public Rigidbody rigidBody;
@@ -55,6 +55,12 @@ namespace ZaldensGambit
         [HideInInspector] public AnimatorHook animHook;
         [HideInInspector] public ActionManager actionManager;
         [HideInInspector] public WeaponHook weaponHook;
+        private AudioSource characterAudioSource;
+        private AudioSource weaponAudioSource;
+        private AudioSource shieldAudioSource;
+        [SerializeField] private AudioClip[] hurtAudioClips;
+        [SerializeField] private AudioClip[] attackBlockedAudioClips;
+        private Coroutine DoTcoroutine;
 
         private float actionDelay;
         [HideInInspector] public float actionLockoutDuration = 1f;
@@ -71,6 +77,10 @@ namespace ZaldensGambit
             rigidBody.drag = 4;
             rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             animHook = GetComponentInChildren<AnimatorHook>();
+            collider = GetComponent<Collider>();
+            characterAudioSource = GetComponent<AudioSource>();
+            shieldAudioSource = GameObject.Find("Shield").GetComponent<AudioSource>();
+            originalSpeed = moveSpeed;
 
             if (animHook == false)
             {
@@ -117,13 +127,13 @@ namespace ZaldensGambit
         /// <summary>
         /// Deals damage to the player unless invulnerable or the damageSource is directly in front of the player whilst they are blocking.
         /// </summary>
-        public void TakeDamage(float value, Transform damageSource)
+        public void TakeDamage(float damageValue, Transform damageSource)
         {
             Enemy enemy = damageSource.GetComponent<Enemy>();
 
-            if (isInvulnerable)
+            if (isInvulnerable || isDead)
             {
-                print("Cannot take damage whilst invulnerable!");
+                print("Cannot take damage whilst invulnerable, or dead!");
                 return;
             }
 
@@ -136,6 +146,10 @@ namespace ZaldensGambit
                     if (hit.transform == damageSource)
                     {
                         charAnim.CrossFade("BlockShieldHit", 0.1f);
+                        int audioToPlay = Random.Range(0, attackBlockedAudioClips.Length);
+                        shieldAudioSource.clip = attackBlockedAudioClips[audioToPlay];
+                        shieldAudioSource.Play();
+
                         if (enemy)
                         {
                             enemy.attackDelay = Time.time + enemy.attackCooldown * 2f;
@@ -145,19 +159,77 @@ namespace ZaldensGambit
                 }
             }
 
-            float previousHealth = currentHealth;
-            currentHealth -= value;
-            canMove = false;
-
-            if (currentHealth <= 0)
+            if (enemy)
             {
-                print("Player died!");
-                // Play death animation
+                switch (enemy.enemyType)
+                {
+                    case Enemy.Type.Famine:
+                        // Life leech quarter of damage dealt and add to hp
+                        currentHealth = Mathf.Lerp(currentHealth, currentHealth - damageValue, 1f);
+                        float healthStolen = damageValue / 4;
+                        enemy.RestoreHealth(healthStolen);
+                        break;
+                    case Enemy.Type.War:
+                        // Deal increased damage
+                        currentHealth = Mathf.Lerp(currentHealth, currentHealth - damageValue, 1f);
+                        break;
+                    case Enemy.Type.Death:
+                        // Deal normal damage
+                        currentHealth = Mathf.Lerp(currentHealth, currentHealth - damageValue, 1f);
+                        break;
+                    case Enemy.Type.Pestilence:
+                        // Apply a DoT effect
+                        // Show poisoned damage indicator
+                        // Use coroutine with pauses inbetween to deal poison over time period
+                        currentHealth = Mathf.Lerp(currentHealth, currentHealth - damageValue, 1f);
+                        float procChance = Random.Range(0f, 100f);
+
+                        if (procChance <= 20)
+                        {
+                            if (DoTcoroutine == null)
+                            {
+                                DoTcoroutine = StartCoroutine(DamageOverTimeEffect(10, 25));
+                            }
+                            else
+                            {
+                                StopCoroutine(DoTcoroutine);
+                                DoTcoroutine = StartCoroutine(DamageOverTimeEffect(10, 25));
+                            }
+                        }                        
+                        break;
+                }
             }
+            else
+            {
+                currentHealth = Mathf.Lerp(currentHealth, currentHealth - damageValue, 1f);                
+            }
+
+            canMove = false;
+            GameManager.instance.PlayDamageEffect();
+
+            if (currentHealth <= 0 && !isDead)
+            {
+                isDead = true;
+                charAnim.SetBool("isDead", isDead);
+                print("Player died!");
+                collider.enabled = false;
+                rigidBody.isKinematic = true;
+                charAnim.Play("Death");
+                GameManager.instance.GameOver();
+            }
+
+            int audioClipToPlay = Random.Range(0, hurtAudioClips.Length);
+            characterAudioSource.clip = hurtAudioClips[audioClipToPlay];
+            characterAudioSource.Play();
 
             int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length);
             charAnim.CrossFade(hurtAnimations[hurtAnimationToPlay].name, 0.1f);
             charAnim.applyRootMotion = true;
+        }
+
+        public void RestoreHealth(float amountToRestore)
+        {
+            currentHealth = Mathf.Lerp(currentHealth, currentHealth + amountToRestore, 1f);
         }
 
         /// <summary>
@@ -165,6 +237,11 @@ namespace ZaldensGambit
         /// </summary>
         public void Tick(float deltaTime)
         {
+            if (isDead)
+            {
+                return;
+            }
+
             CheckHealth();
             delta = deltaTime;
 
@@ -180,12 +257,23 @@ namespace ZaldensGambit
 
             if (isBlocking)
             {
-                moveSpeed = 4;
+                moveSpeed = originalSpeed / 1.4f;
             }
             else
             {
                 charAnim.SetBool("blocking", isBlocking);
-                moveSpeed = 6;
+                moveSpeed = originalSpeed;
+            }
+
+            if (sprint && !isBlocking)
+            {
+                charAnim.SetBool("sprinting", true);
+                moveSpeed = originalSpeed * 1.4f;
+            }
+            else if (!sprint && !isBlocking)
+            {
+                charAnim.SetBool("sprinting", false);
+                moveSpeed = originalSpeed;
             }
 
             grounded = IsGrounded();
@@ -338,6 +426,17 @@ namespace ZaldensGambit
             {
                 currentHealth = 0;
             }
+
+            if (currentHealth <= 0 && !isDead)
+            {
+                isDead = true;
+                charAnim.SetBool("isDead", isDead);
+                print("Player died!");
+                collider.enabled = false;
+                rigidBody.isKinematic = true;
+                charAnim.Play("Death");
+                GameManager.instance.GameOver();
+            }
         }
 
         /// <summary>
@@ -414,7 +513,7 @@ namespace ZaldensGambit
         /// </summary>
         protected void RotateTowardsTarget(Transform target)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(target.position - transform.position, Vector3.up); // Calculate the rotation desired
+            Quaternion targetRotation = Quaternion.LookRotation(new Vector3(target.position.x, transform.position.y, target.position.z) - transform.position, Vector3.up); // Calculate the rotation desired
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotateSpeed); // Apply rotation
         }
 
@@ -423,16 +522,10 @@ namespace ZaldensGambit
         /// </summary>
         public void DetectAction()
         {
-            // We are checking for action inputs
-            // If we are attacking and blocking, shieldbash
-            // If we are not blocking, but are attacking - attack
-            // 
-            // 
-
             AnimationClip desiredAnimation = null;
             Action slot = null;
 
-            if (!lightAttack && !heavyAttack && !dodgeRoll && !block) // If there are no actions detected...
+            if (!lightAttack && !dodgeRoll && !block && !specialAttack) // If there are no actions detected...
             {
                 return;
             }
@@ -460,6 +553,17 @@ namespace ZaldensGambit
                     desiredAnimation = slot.desiredAnimation;           
                 }
 
+                if (specialAttack)
+                {
+                    listenForCombos = false;
+                    SpiritSystem spiritSystem = GetComponent<SpiritSystem>();
+                    if (!spiritSystem.CheckAbilityCooldown())
+                    {
+                        return;
+                    }
+                    spiritSystem.ActiveAbility(spiritSystem.spiritEquipped);
+                }
+
                 // Light Attack Combo
                 if (slot.desiredAnimation == lightAttacksChain[0])
                 {
@@ -471,18 +575,6 @@ namespace ZaldensGambit
                     }
 
                     desiredAnimation = lightAttacksChain[animationClipIndex]; // Set animation to call
-                }
-                // Heavy Attack Combo
-                else if (slot.desiredAnimation == heavyAttacksChain[0])
-                {
-                    animationClipIndex++;
-
-                    if (animationClipIndex >= heavyAttacksChain.Length) // Array bounds check
-                    {
-                        animationClipIndex = 0; // Reset array position
-                    }
-
-                    desiredAnimation = heavyAttacksChain[animationClipIndex]; // Set animation to call
                 }
                 // Block mid combo
                 else if (desiredAnimation.name == "block")
@@ -536,6 +628,21 @@ namespace ZaldensGambit
             else
             {
                 desiredAnimation = slot.desiredAnimation;
+            }
+
+            if (specialAttack)
+            {
+                SpiritSystem spiritSystem = GetComponent<SpiritSystem>();
+                if (!spiritSystem.CheckAbilityCooldown())
+                {
+                    return;
+                }
+                spiritSystem.ActiveAbility(spiritSystem.spiritEquipped);
+            }
+
+            if (desiredAnimation == null)
+            {
+                return;
             }
 
             if (desiredAnimation.name == "block")
@@ -707,10 +814,33 @@ namespace ZaldensGambit
             if (other.GetComponent<Enemy>() && shieldBashing)
             {
                 other.GetComponent<Enemy>().TakeDamage(5);
-                other.GetComponent<Enemy>().attackDelay = Time.time + other.GetComponent<Enemy>().attackCooldown * 4f;
+                //other.GetComponent<Enemy>().attackDelay = Time.time + other.GetComponent<Enemy>().attackCooldown * 4f;
+                other.GetComponent<Enemy>().ApplyStun(2.5f);
             }
         }
-    }
+
+        private IEnumerator PlayAudioAfterDelay(AudioSource source, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            source.Play();
+        }
+
+        private IEnumerator DamageOverTimeEffect(float duration, float damageDealt)
+        {
+            float damageCooldown = duration / 5;
+            float damageToDeal = damageDealt / 5;
+
+            for (int i = 0; i < 5; i++)
+            {
+                yield return new WaitForSeconds(damageCooldown);
+                currentHealth = Mathf.Lerp(currentHealth, currentHealth - damageToDeal, 1f);
+                print("DoT " + i);
+            }
+
+            DoTcoroutine = null;
+        }
+
+    }    
 }
 
 

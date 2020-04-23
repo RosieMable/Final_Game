@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3805914309176986446
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3805914309176986444}
+  - component: {fileID: 3805914309176986445}
+  - component: {fileID: 3805914309176986483}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3805914309176986444
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3805914309176986446}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -11.293795, y: 0.9990581, z: 0.7984308}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3805914309176986445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3805914309176986446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db251052c97099f4f946e2015213602a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dungeonCardLimit: 50
+  spiritCardLimit: 20
+  inventoryOpen: 0
+  cardPositions:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  cardSelected: {fileID: 0}
+  spiritCards:
+  - {fileID: 11400000, guid: 703a8cc3b42bed44e9798731ea5c478c, type: 2}
+  - {fileID: 11400000, guid: 1b3f88a16635f86458a2d1f83512b24e, type: 2}
+  - {fileID: 11400000, guid: 3f53607d5f41b0f4fa4c903677fe7014, type: 2}
+  - {fileID: 11400000, guid: d937aade88fb2fe498ad6a6d733d7e20, type: 2}
+  - {fileID: 11400000, guid: f85849c956879814f96f45057632dca2, type: 2}
+  - {fileID: 11400000, guid: d937aade88fb2fe498ad6a6d733d7e20, type: 2}
+  - {fileID: 11400000, guid: 2258e813c12c32643a5259e83b33535e, type: 2}
+  dungeonCards:
+  - {fileID: 11400000, guid: 72a8c1d4642177b409aeeb14a10ff723, type: 2}
+  - {fileID: 11400000, guid: cd133860e1738e34fb39aa34928de237, type: 2}
+  - {fileID: 11400000, guid: 7d2dcdf5987abc947ad1f87ff16ea282, type: 2}
+  - {fileID: 11400000, guid: 2ab84199831a9eb4485fd9cc28e004f0, type: 2}
+  - {fileID: 11400000, guid: b2d4ebb9fb9a8094a8a8e61635da88a6, type: 2}
+--- !u!114 &3805914309176986483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3805914309176986446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f39c8398bd80e1459f0533d4d773e57, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageEffects:
+  - {fileID: 21300000, guid: 7d881ab32671b37469a184684241cc53, type: 3}
+  - {fileID: 21300000, guid: 5df91b2b973ca93498959bb8fd96331b, type: 3}
+  - {fileID: 21300000, guid: 11fb6e1bd960c28499231d8e3344b35f, type: 3}
+  - {fileID: 21300000, guid: a151c72301595a644bfe6bca246a7a78, type: 3}
+  - {fileID: 21300000, guid: 45b24bc1dbf1f6d448da24d666cf6a3f, type: 3}

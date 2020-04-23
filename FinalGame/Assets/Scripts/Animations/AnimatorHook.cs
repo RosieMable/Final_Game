@@ -104,6 +104,7 @@ namespace ZaldensGambit
                 else
                 {
                     enemyStates.weaponHook.OpenDamageCollider();
+                    enemyStates.weaponHook.PlayAttackSound();
 
                     if (enemyStates.weaponHook.damageCollider != null)
                     {
@@ -118,6 +119,7 @@ namespace ZaldensGambit
 
             states.weaponHook.OpenDamageCollider();
             states.weaponHook.damageCollider.damage = states.damage;
+            states.weaponHook.PlayAttackSound();
 
             if (states.weaponHook.damageCollider != null)
             {
@@ -185,7 +187,7 @@ namespace ZaldensGambit
                 else
                 {
                     enemyStates.inAction = true;
-                    enemyStates.actionLockoutDuration = 2;
+                    enemyStates.actionLockoutDuration = 5;
                 }
                 return;
             }

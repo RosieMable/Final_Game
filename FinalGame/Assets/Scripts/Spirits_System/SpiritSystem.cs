@@ -8,27 +8,50 @@ namespace ZaldensGambit
     public class SpiritSystem : MonoBehaviour
     {
         [SerializeField]
-        private Spirit_ScriptableObj spirit;
+        private BaseSpirit spirit;
+
+        public BaseSpirit spiritEquipped;
 
         [SerializeField]
         float HealthPlayerBase;
 
+        [SerializeField]
+        Transform AbilitySpawnPoint;
+
+        [SerializeField]
+        bool canUseAbility;
+
+        ActionManager actionManager;
+
         private StateManager PlayerCharacter;
 
-        delegate void OnSpiritChanged(Spirit_ScriptableObj _spirit);
+        delegate void OnSpiritChanged(BaseSpirit _spirit);
         OnSpiritChanged onSpiritChanged;
 
-        public Spirit_ScriptableObj[] DemoSpirits;
+        public BaseSpirit[] DemoSpirits;
+
+        RFX4_EffectEvent _EffectEvent;
+
+        UpdateShieldMesh shieldMesh;
+
+        UpdateSwordMesh swordMesh;
         private void OnEnable()
         {
             onSpiritChanged += UIManager.Instance.ManageSpiritUI;
             onSpiritChanged += Spirits_PlayerModel.Instance.SetCorrectProps;
         }
+        private void Awake()
+        {
+            actionManager = GetComponent<ActionManager>();
+            _EffectEvent = GetComponentInChildren<RFX4_EffectEvent>();
+
+            swordMesh = GetComponentInChildren<UpdateSwordMesh>();
+            shieldMesh = GetComponentInChildren<UpdateShieldMesh>();
+        }
 
         //for now it is going to be in update, but once the inventory system is on, this should happen when "equipping" the spirit
         private void Start()
         {
-
             OnEquipSpirit(spirit);
         }
 
@@ -36,23 +59,33 @@ namespace ZaldensGambit
         {
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                OnEquipSpirit(DemoSpirits[0]);
+                spiritEquipped = DemoSpirits[0];
+                OnEquipSpirit(spiritEquipped);
             }
             else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
-                OnEquipSpirit(DemoSpirits[1]);
+                spiritEquipped = DemoSpirits[1];
+                OnEquipSpirit(spiritEquipped);
             }
             else if (Input.GetKeyDown(KeyCode.Alpha3))
             {
-                OnEquipSpirit(DemoSpirits[2]);
+                spiritEquipped = DemoSpirits[2];
+                OnEquipSpirit(spiritEquipped);
             }
             else if (Input.GetKeyDown(KeyCode.Alpha4))
             {
-                OnEquipSpirit(DemoSpirits[3]);
+                spiritEquipped = DemoSpirits[3];
+                OnEquipSpirit(spiritEquipped);
             }
             else if (Input.GetKeyDown(KeyCode.Alpha5))
             {
-                OnEquipSpirit(DemoSpirits[4]);
+                spiritEquipped = DemoSpirits[4];
+                OnEquipSpirit(spiritEquipped);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha6))
+            {
+                spiritEquipped = DemoSpirits[5];
+                OnEquipSpirit(spiritEquipped);
             }
             else if (Input.GetKeyDown(KeyCode.Alpha0))
             {
@@ -60,41 +93,87 @@ namespace ZaldensGambit
             }
         }
 
-        protected void ActiveAbility()
+        public void ActiveAbility(BaseSpirit _CurrentSpirit)
         {
-            //Active Ability logic
-            AnimationLogic();
+            if (canUseAbility)
+            {
+                //Active Ability logic
+                UpdateVFXScript(_CurrentSpirit);
+                AbilityCooldown(_CurrentSpirit);
+            }
+
         }
 
-        protected void AnimationLogic()
+        protected void UpdateVFXScript(BaseSpirit _EquippedSpirit)
         {
             //AnimationLogic for the active ability
+
+            switch (_EquippedSpirit.spiritClass)
+            {
+                case BaseSpirit.SpiritClass.Cleric:
+                    //hook up with RFX4 effect event 
+                    swordMesh.RevertToOriginalMat();
+                    shieldMesh.RevertToOriginalMat();
+                    _EffectEvent.MainEffect = _EquippedSpirit.VFXPrefab;
+                    break;
+                case BaseSpirit.SpiritClass.Paladin:
+                    swordMesh.RevertToOriginalMat();
+                    shieldMesh.RevertToOriginalMat();
+                    shieldMesh.VFXPrefab = _EquippedSpirit.VFXPrefab;
+                    shieldMesh.UpdateMeshEffect();
+                    break;
+                case BaseSpirit.SpiritClass.Ranger:
+                    _EffectEvent.MainEffect = _EquippedSpirit.VFXPrefab;
+                    break;
+                case BaseSpirit.SpiritClass.Berserker:
+                    swordMesh.RevertToOriginalMat();
+                    shieldMesh.RevertToOriginalMat();
+                    swordMesh.VFXPrefab = _EquippedSpirit.VFXPrefab;
+                    _EffectEvent.MainEffect = null;
+                   swordMesh.UpdateMeshEffect();
+                    break;
+                case BaseSpirit.SpiritClass.Sellsword:
+                    swordMesh.RevertToOriginalMat();
+                    shieldMesh.RevertToOriginalMat();
+                    swordMesh.VFXPrefab = _EquippedSpirit.VFXPrefab;
+                    swordMesh.UpdateMeshEffect();
+                    break;
+                case BaseSpirit.SpiritClass.Mage:
+                    //hook up with RFX4 effect event 
+                    swordMesh.RevertToOriginalMat();
+                    shieldMesh.RevertToOriginalMat();
+                    _EffectEvent.MainEffect = _EquippedSpirit.VFXPrefab;
+                    break;
+            }
+
         }
 
-        protected void PassiveAbility(Spirit_ScriptableObj _EquippedSpirit)
+        void AbilityCooldown(BaseSpirit _EquippedSpirit)
         {
-            if (PlayerCharacter)
-            {
-                PlayerCharacter.currentHealth = HealthPlayerBase;
-                PlayerCharacter.currentHealth = PlayerCharacter.currentHealth + _EquippedSpirit.HealthModifier;
-                print(PlayerCharacter.currentHealth);
-            }
-            else
-            {
-                throw new System.Exception("No PlayerCharacter found!");
-            }
+            canUseAbility = false;
+            StartCoroutine(DoAfter(_EquippedSpirit.ActiveAbilityCooldown, () => canUseAbility = true));
         }
 
-        void OnEquipSpirit(Spirit_ScriptableObj _SpiritToEquip)
+        public bool CheckAbilityCooldown()
+        {
+            return canUseAbility;
+        }
+
+        public void OnEquipSpirit(BaseSpirit _SpiritToEquip)
         {
             PlayerCharacter = gameObject.GetComponent<StateManager>();
 
             if (_SpiritToEquip != null)
             {
-                PassiveAbility(_SpiritToEquip);
-
                 //Update UI
                 onSpiritChanged?.Invoke(_SpiritToEquip);
+
+                if (actionManager != null)
+                {
+                    actionManager.actionSlots[2].desiredAnimation = _SpiritToEquip.activeAbilityAnimation;
+                }
+
+                canUseAbility = true;
 
             }
             else
@@ -102,8 +181,22 @@ namespace ZaldensGambit
                 //Update UI
                 onSpiritChanged?.Invoke(_SpiritToEquip);
             }
+        }
 
+        public void DoDamageToEnemy(GameObject enemy)
+        {
+            enemy.gameObject.GetComponent<Enemy>();
+        }
 
+        void PopulateCardStats(BaseSpirit spirit)
+        {
+
+        }
+
+        IEnumerator DoAfter(float _delayTime, System.Action _actionToDo)
+        {
+            yield return new WaitForSecondsRealtime(_delayTime);
+            _actionToDo();
         }
 
         private void OnDisable()

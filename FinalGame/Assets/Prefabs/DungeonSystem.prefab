@@ -1,0 +1,107 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4720459965261732093
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4720459965261732035}
+  - component: {fileID: 4720459965261732034}
+  m_Layer: 0
+  m_Name: DungeonSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4720459965261732035
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4720459965261732093}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4720459965261732034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4720459965261732093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 644c3f97f4a759e4ab0d79047b9eda68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  allDungeonCards:
+  - {fileID: 11400000, guid: 24d784b38c74b7e4ea9fc1ab2a36c88f, type: 2}
+  - {fileID: 11400000, guid: 772f36d2111a2304ba87898555c7e6a3, type: 2}
+  - {fileID: 11400000, guid: 15f91563620e6eb4a848ed44a424d459, type: 2}
+  - {fileID: 11400000, guid: 2b96820e3ffb21e4bb1aa01caf10806f, type: 2}
+  - {fileID: 11400000, guid: cc7ae495c156ab8459f92e940cb95a4c, type: 2}
+  - {fileID: 11400000, guid: b51396a3e5307e644b8aad8bcc43b374, type: 2}
+  - {fileID: 11400000, guid: 2ab84199831a9eb4485fd9cc28e004f0, type: 2}
+  - {fileID: 11400000, guid: efd1353b1265b93498e4ca08f67819c0, type: 2}
+  - {fileID: 11400000, guid: bc43eeee859414c42b5a57f770ec3296, type: 2}
+  - {fileID: 11400000, guid: 0dc7d36d1d4f65842ab2e00aaac45f69, type: 2}
+  - {fileID: 11400000, guid: be6ddbae0f0806b4792cd5a1123d9075, type: 2}
+  - {fileID: 11400000, guid: 299c8dfbf3efcf2408e780c696e7f6ed, type: 2}
+  - {fileID: 11400000, guid: 7d2dcdf5987abc947ad1f87ff16ea282, type: 2}
+  - {fileID: 11400000, guid: cd133860e1738e34fb39aa34928de237, type: 2}
+  - {fileID: 11400000, guid: 57f65858340addd409ff690ec81f5693, type: 2}
+  - {fileID: 11400000, guid: ea10b453c532bb34386ab2dec0506e94, type: 2}
+  - {fileID: 11400000, guid: 13bfc2855ed2b0c4bac3a2fd20b821ec, type: 2}
+  - {fileID: 11400000, guid: 23b3736713720c7448ef18e01cb1ae50, type: 2}
+  - {fileID: 11400000, guid: 2922dc55b9db0f0418afbdc26981c1c7, type: 2}
+  - {fileID: 11400000, guid: 2e21c12db7b1a65418a23e6f62e98d88, type: 2}
+  - {fileID: 11400000, guid: 72a8c1d4642177b409aeeb14a10ff723, type: 2}
+  - {fileID: 11400000, guid: 2dee5e7ebfded7749b99ff8362fd7c9d, type: 2}
+  - {fileID: 11400000, guid: 562a3174af75a5f4191602fb2a0cbfa6, type: 2}
+  - {fileID: 11400000, guid: 0f8826f83618e8a40a08c41d1d0eb44c, type: 2}
+  - {fileID: 11400000, guid: b2d4ebb9fb9a8094a8a8e61635da88a6, type: 2}
+  - {fileID: 11400000, guid: d059782902d048a418bc6517066b686f, type: 2}
+  - {fileID: 11400000, guid: c50be4a3a085bb541862585ce53015df, type: 2}
+  - {fileID: 11400000, guid: 6f5299e06147457429db9279d1a730ef, type: 2}
+  - {fileID: 11400000, guid: 0b1f23f1314937c45803469b37ff56da, type: 2}
+  - {fileID: 11400000, guid: 4de13bcd92e90ad47abe687dd89f59b3, type: 2}
+  - {fileID: 11400000, guid: be6ddbae0f0806b4792cd5a1123d9075, type: 2}
+  - {fileID: 11400000, guid: 2e21c12db7b1a65418a23e6f62e98d88, type: 2}
+  - {fileID: 11400000, guid: 2922dc55b9db0f0418afbdc26981c1c7, type: 2}
+  - {fileID: 11400000, guid: cd133860e1738e34fb39aa34928de237, type: 2}
+  - {fileID: 11400000, guid: 7d2dcdf5987abc947ad1f87ff16ea282, type: 2}
+  - {fileID: 11400000, guid: 13bfc2855ed2b0c4bac3a2fd20b821ec, type: 2}
+  - {fileID: 11400000, guid: ea10b453c532bb34386ab2dec0506e94, type: 2}
+  - {fileID: 11400000, guid: 299c8dfbf3efcf2408e780c696e7f6ed, type: 2}
+  - {fileID: 11400000, guid: 57f65858340addd409ff690ec81f5693, type: 2}
+  - {fileID: 11400000, guid: 23b3736713720c7448ef18e01cb1ae50, type: 2}
+  _possibleDungeonCardsReward: []
+  GlobalAmountCD: 0
+  ownedSpirits:
+  - {fileID: 11400000, guid: 3f53607d5f41b0f4fa4c903677fe7014, type: 2}
+  allSpirits:
+  - {fileID: 11400000, guid: 703a8cc3b42bed44e9798731ea5c478c, type: 2}
+  - {fileID: 11400000, guid: 1b3f88a16635f86458a2d1f83512b24e, type: 2}
+  - {fileID: 11400000, guid: 3f53607d5f41b0f4fa4c903677fe7014, type: 2}
+  - {fileID: 11400000, guid: d937aade88fb2fe498ad6a6d733d7e20, type: 2}
+  - {fileID: 11400000, guid: f85849c956879814f96f45057632dca2, type: 2}
+  _possibleSpiritRewards: []
+  _spawnLocation: {fileID: 0}
+  ThreeRoomsDungeonPrefab:
+  - {fileID: 524216371159460029, guid: 49b13cf58a0727845a4247a0634f6748, type: 3}
+  SixRoomsDungeonPrefab: []
+  NineRoomsDungeonPrefab: []
+  isDebug: 0
+  debugCardsDrawn: {fileID: 0}
+  debugCardRewards: {fileID: 0}
+  debugCardOwned: {fileID: 0}
+  debugAllCards: {fileID: 0}

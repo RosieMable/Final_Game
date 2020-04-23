@@ -22,6 +22,7 @@ namespace ZaldensGambit
         public Image SpiritIcon;
 
         public Image SpiritBar;
+        [SerializeField] private Sprite huskSpiritSprite;
 
         #endregion
 
@@ -33,6 +34,7 @@ namespace ZaldensGambit
             dialoguePanel = GameObject.Find("DialoguePanel");
             dialogueText = GameObject.Find("DialogueText").GetComponent<TextMeshProUGUI>();
             player = FindObjectOfType<StateManager>();
+            DontDestroyOnLoad(this);
         }
 
         private void Start()
@@ -45,12 +47,12 @@ namespace ZaldensGambit
         {
             UpdateHealthUI();
 
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                SceneManager.LoadScene("Title Screen");
-                Cursor.visible = true;
-                Cursor.lockState = CursorLockMode.None;
-            }
+            //if (Input.GetKeyDown(KeyCode.Escape))
+            //{
+            //    SceneManager.LoadScene("Title Screen");
+            //    Cursor.visible = true;
+            //    Cursor.lockState = CursorLockMode.None;
+            //}
         }
 
         public void DisplayDialogue(Dialogue dialogueToShow)
@@ -88,20 +90,21 @@ namespace ZaldensGambit
             }                     
         }
 
-        public void ManageSpiritUI(Spirit_ScriptableObj _spiritToDisplay)
+        public void ManageSpiritUI(BaseSpirit _spiritToDisplay)
         {
             if (_spiritToDisplay != null)
             {
                 SpiritIcon.gameObject.SetActive(true);
                 SpiritBar.gameObject.SetActive(true);
+                SpiritBar.color = Color.white;
 
-                SpiritIcon.sprite = _spiritToDisplay._spiritSprite;
+                SpiritIcon.sprite = _spiritToDisplay._spiritSpriteIcon;
             }
             else
             {
-                SpiritIcon.gameObject.SetActive(false);
+                SpiritIcon.sprite = huskSpiritSprite;
 
-                SpiritBar.gameObject.SetActive(false);
+                SpiritBar.color = Color.gray;
             }
         }
     }

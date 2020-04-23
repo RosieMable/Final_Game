@@ -7,7 +7,7 @@ namespace ZaldensGambit
 {
     public enum ActionInput
     {
-        lightAttack, heavyAttack, block, specialAttack, dodgeRoll
+        lightAttack, block, specialAttack, dodgeRoll
     }
 
     public class ActionManager : MonoBehaviour
@@ -65,10 +65,6 @@ namespace ZaldensGambit
             if (state.lightAttack)
             {
                 return ActionInput.lightAttack;
-            }
-            if (state.heavyAttack)
-            {
-                return ActionInput.heavyAttack;
             }
             if (state.block)
             {

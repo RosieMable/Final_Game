@@ -29,7 +29,8 @@ namespace ZaldensGambit
                 if (states != null) // If we hit the player...
                 {
                     RaycastHit hitInfo;
-                    Physics.Raycast(transform.position, forwardVector, out hitInfo, 0.5f);
+                    Debug.DrawRay(transform.position + Vector3.up / 2, transform.forward * 2f, Color.red, 5);
+                    Physics.Raycast(transform.position + Vector3.up / 2, transform.forward, out hitInfo, 2f);
 
                     if (hitInfo.collider != null)
                     {
@@ -40,10 +41,10 @@ namespace ZaldensGambit
                     }
                 }
             }
-
-            GetComponent<MeshRenderer>().enabled = false;
-            GetComponent<Collider>().enabled = false;
             Destroy(gameObject, 1);
+            gameObject.SetActive(false);
+            GetComponent<Collider>().enabled = false;
+            //GetComponent<MeshRenderer>().enabled = false;
         }
 
         private void OnTriggerEnter(Collider other)
