@@ -40,6 +40,7 @@ namespace ZaldensGambit
                 {
                     DungeonChoiceUI.SetActive(true);
                     print("End of main dialogue, looping back to start!");
+                    dialogueIndex = -1;
                 }
             }
         }
