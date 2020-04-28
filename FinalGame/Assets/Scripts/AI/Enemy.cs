@@ -15,7 +15,7 @@ namespace ZaldensGambit
         public enum Type { Famine, War, Death, Pestilence } // Famine = Lifeleech on hit, War = More damage, Death = Delayed explosian on death, Pestilence = DoT effect
         public Type enemyType;
         [SerializeField] public float currentHealth = 50;
-        private float maximumHealth;
+        protected float maximumHealth;
         [HideInInspector] public bool isInvulnerable;
         [HideInInspector] public Animator charAnim;
         private AnimatorHook animHook;
@@ -283,10 +283,22 @@ namespace ZaldensGambit
                     RemoveFromAttackersList();
                     break;
                 case State.Attacking:
-                    if (!isInvulnerable && !inAction)
+                    if (!isInvulnerable && !inAction && Time.time > attackDelay)
                     {
-                        charAnim.CrossFade("attack", 0.1f);
-                        RotateTowardsTarget(player.transform);
+                        agent.isStopped = true;
+                        bool playerInFront = Physics.Raycast(transform.position, transform.forward, 2, playerLayer);
+
+                        if (playerInFront)
+                        {
+                            attackDelay = Time.time + attackCooldown;
+                            int animationToPlay = Random.Range(0, attackAnimations.Length);
+                            charAnim.CrossFade(attackAnimations[animationToPlay].name, 0.2f);
+                            RotateTowardsTarget(player.transform);
+                        }
+                        else
+                        {
+                            RotateTowardsTarget(player.transform);
+                        }
                     }
                     else
                     {
