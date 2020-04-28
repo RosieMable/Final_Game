@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7384033999442564160}
   - component: {fileID: 7384033999442564163}
   m_Layer: 0
-  m_Name: Ramp 1
+  m_Name: Ramp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -27,7 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7384033999442564162}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -18.58, y: 1, z: 30.37}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 56bb70bad6077c343a568e6dd49a6f7c, type: 2}
+  - {fileID: 2100000, guid: 47789f0200b0efd4da2f52522feb015c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -263,6 +263,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7384033999442564167}
     m_Modifications:
+    - target: {fileID: 172604, guid: 72ee938e36712134b9a16980629526a3, type: 3}
+      propertyPath: m_Name
+      value: SD_Env_Floor_Stone_01 (1)
+      objectReference: {fileID: 0}
     - target: {fileID: 448988, guid: 72ee938e36712134b9a16980629526a3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -311,10 +315,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.x
       value: 1.2
       objectReference: {fileID: 0}
-    - target: {fileID: 172604, guid: 72ee938e36712134b9a16980629526a3, type: 3}
-      propertyPath: m_Name
-      value: SD_Env_Floor_Stone_01 (1)
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72ee938e36712134b9a16980629526a3, type: 3}
 --- !u!4 &7384033998059804079 stripped
@@ -330,6 +330,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7384033999442564167}
     m_Modifications:
+    - target: {fileID: 172604, guid: 72ee938e36712134b9a16980629526a3, type: 3}
+      propertyPath: m_Name
+      value: SD_Env_Floor_Stone_01 (2)
+      objectReference: {fileID: 0}
     - target: {fileID: 448988, guid: 72ee938e36712134b9a16980629526a3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -378,10 +382,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.x
       value: 1.2
       objectReference: {fileID: 0}
-    - target: {fileID: 172604, guid: 72ee938e36712134b9a16980629526a3, type: 3}
-      propertyPath: m_Name
-      value: SD_Env_Floor_Stone_01 (2)
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72ee938e36712134b9a16980629526a3, type: 3}
 --- !u!4 &7384033998225165860 stripped
@@ -397,6 +397,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7384033999442564167}
     m_Modifications:
+    - target: {fileID: 172604, guid: 72ee938e36712134b9a16980629526a3, type: 3}
+      propertyPath: m_Name
+      value: SD_Env_Floor_Stone_01
+      objectReference: {fileID: 0}
     - target: {fileID: 448988, guid: 72ee938e36712134b9a16980629526a3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -445,10 +449,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.x
       value: 1.2
       objectReference: {fileID: 0}
-    - target: {fileID: 172604, guid: 72ee938e36712134b9a16980629526a3, type: 3}
-      propertyPath: m_Name
-      value: SD_Env_Floor_Stone_01
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72ee938e36712134b9a16980629526a3, type: 3}
 --- !u!4 &7384033999054541345 stripped
@@ -464,6 +464,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7384033999442564167}
     m_Modifications:
+    - target: {fileID: 172604, guid: 72ee938e36712134b9a16980629526a3, type: 3}
+      propertyPath: m_Name
+      value: SD_Env_Floor_Stone_01 (3)
+      objectReference: {fileID: 0}
     - target: {fileID: 448988, guid: 72ee938e36712134b9a16980629526a3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -512,10 +516,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.x
       value: 1.2
       objectReference: {fileID: 0}
-    - target: {fileID: 172604, guid: 72ee938e36712134b9a16980629526a3, type: 3}
-      propertyPath: m_Name
-      value: SD_Env_Floor_Stone_01 (3)
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72ee938e36712134b9a16980629526a3, type: 3}
 --- !u!4 &7384033999414419946 stripped
@@ -531,6 +531,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 7384033999442564167}
     m_Modifications:
+    - target: {fileID: 172604, guid: 72ee938e36712134b9a16980629526a3, type: 3}
+      propertyPath: m_Name
+      value: SD_Env_Floor_Stone_01 (4)
+      objectReference: {fileID: 0}
     - target: {fileID: 448988, guid: 72ee938e36712134b9a16980629526a3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -578,10 +582,6 @@ PrefabInstance:
     - target: {fileID: 448988, guid: 72ee938e36712134b9a16980629526a3, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 172604, guid: 72ee938e36712134b9a16980629526a3, type: 3}
-      propertyPath: m_Name
-      value: SD_Env_Floor_Stone_01 (4)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72ee938e36712134b9a16980629526a3, type: 3}
