@@ -10,11 +10,19 @@ namespace ZaldensGambit
         private int critDamage = 0;
         private float critChance = 0;
 
+        private int baseDamage;
+
+        private StateManager playerStateManager;
+        private SpiritSystem playerSpiritSystem;
         private void Awake()
         {
-            if (GetComponentInParent<StateManager>())
+            playerStateManager = GetComponentInParent<StateManager>();
+            playerSpiritSystem = GetComponentInParent<SpiritSystem>();
+
+            if (playerStateManager)
             {
-                damage = GetComponentInParent<StateManager>().damage;
+                damage = playerStateManager.damage;
+                baseDamage = damage;
             }
             else if (GetComponentInParent<Enemy>())
             {
@@ -38,7 +46,14 @@ namespace ZaldensGambit
             {
                 if (enemyStates != null) // If we hit an enemy...
                 {
-                    enemyStates.TakeDamage(damage); // Needs to be changed to a variable instead of hard coded value
+                    if (playerSpiritSystem.spiritEquipped != null)
+                    {
+                        ChooseDamageType(playerSpiritSystem.spiritEquipped, enemyStates);
+                    }
+                    else
+                    {
+                        enemyStates.TakeDamage(damage);
+                    }
                 }
             }
 
@@ -57,6 +72,40 @@ namespace ZaldensGambit
                     states.TakeDamage(damage, GetComponentInParent<Enemy>().gameObject.transform);
                     GetComponentInParent<WeaponHook>().CloseDamageCollider();
                 }
+            }
+        }
+
+
+        private void ChooseDamageType(BaseSpirit _playerSpirit, Enemy _enemy)
+        {
+           if (_playerSpirit.abilityEvoked)
+                {
+                    switch (_playerSpirit.spiritClass)
+                    {
+                        case BaseSpirit.SpiritClass.Berserker:
+                            damage += (int)_playerSpirit.DamageModifier;
+                            _enemy.TakeDamage(damage);
+                             print("Enemy Damaged by " + damage);
+                              damage = baseDamage;
+                            _playerSpirit.abilityEvoked = false;
+                            return;
+                        case BaseSpirit.SpiritClass.Sellsword:
+                            damage += (int)_playerSpirit.DamageModifier;
+                            _enemy.TakeDamage(damage);
+                            playerStateManager.RestoreHealth(_playerSpirit.HealthModifier);
+                            print("Enemy Damaged by " + damage);
+                            damage = baseDamage;
+                            _playerSpirit.abilityEvoked = false;
+                            return;
+                        default:
+                            damage = baseDamage;
+                            _enemy.TakeDamage(damage);
+                            return;
+                    }
+                }
+            else
+            {
+                _enemy.TakeDamage(damage);
             }
         }
     }

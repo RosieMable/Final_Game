@@ -57,5 +57,17 @@ public class BaseSpirit : ScriptableObject
 
     public AnimationClip activeAbilityAnimation;
 
+    [SerializeField]
+    private float _healthModifier;
+
+    public float HealthModifier { get { return _healthModifier; } private set { HealthModifier = _healthModifier; } }
+
+    [SerializeField]
+    private float _damageModifier;
+
+    public float DamageModifier { get { return _damageModifier; } private set { DamageModifier = _damageModifier; } }
+
+    public bool abilityEvoked;
+
     
 }

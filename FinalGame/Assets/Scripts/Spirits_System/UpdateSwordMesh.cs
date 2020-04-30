@@ -296,11 +296,13 @@ public class UpdateSwordMesh : MonoBehaviour
 
         if (meshRenderer != null)
         {
+            meshRenderer.materials = new Material[1];
             meshRenderer.material = startingMaterial;
         }
 
         if (skinMeshRenderer != null)
         {
+            meshRenderer.materials = new Material[1];
             meshRenderer.material = startingMaterial;
         }
 
@@ -308,8 +310,6 @@ public class UpdateSwordMesh : MonoBehaviour
         {
             comp.SetActive(false);
         }
-
-
     }
 
     private void UpdatePSMesh(GameObject go)

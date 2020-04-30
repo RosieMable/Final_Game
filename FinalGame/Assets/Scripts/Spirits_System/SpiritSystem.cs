@@ -91,6 +91,16 @@ namespace ZaldensGambit
             {
                 OnEquipSpirit(spirit);
             }
+
+            if(spiritEquipped != null)
+            {
+                if (spiritEquipped.abilityEvoked == false)
+                {
+                    swordMesh.RevertToOriginalMat();
+                    shieldMesh.RevertToOriginalMat();
+                }
+            }
+
         }
 
         public void ActiveAbility(BaseSpirit _CurrentSpirit)
@@ -100,6 +110,7 @@ namespace ZaldensGambit
                 //Active Ability logic
                 UpdateVFXScript(_CurrentSpirit);
                 AbilityCooldown(_CurrentSpirit);
+                _CurrentSpirit.abilityEvoked = true;
             }
 
         }
@@ -183,20 +194,16 @@ namespace ZaldensGambit
             }
         }
 
-        public void DoDamageToEnemy(GameObject enemy)
-        {
-            enemy.gameObject.GetComponent<Enemy>();
-        }
-
-        void PopulateCardStats(BaseSpirit spirit)
-        {
-
-        }
-
         IEnumerator DoAfter(float _delayTime, System.Action _actionToDo)
         {
             yield return new WaitForSecondsRealtime(_delayTime);
             _actionToDo();
+        }
+
+        public void ClericHealing()
+        {
+            PlayerCharacter.RestoreHealth(spiritEquipped.HealthModifier);
+            print("Healed of " + spiritEquipped.HealthModifier);
         }
 
         private void OnDisable()
