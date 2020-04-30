@@ -4255,6 +4255,51 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1188148225721962322, guid: 0d7a6669ee1d190428377bec14c60e2f,
+        type: 3}
+      propertyPath: canSpin
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1188148225721962322, guid: 0d7a6669ee1d190428377bec14c60e2f,
+        type: 3}
+      propertyPath: canLaser
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1188148225721962322, guid: 0d7a6669ee1d190428377bec14c60e2f,
+        type: 3}
+      propertyPath: canCharge
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1188148225721962322, guid: 0d7a6669ee1d190428377bec14c60e2f,
+        type: 3}
+      propertyPath: canSummon
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1188148225721962322, guid: 0d7a6669ee1d190428377bec14c60e2f,
+        type: 3}
+      propertyPath: canSplit
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1188148225721962322, guid: 0d7a6669ee1d190428377bec14c60e2f,
+        type: 3}
+      propertyPath: canTeleport
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1188148225721962322, guid: 0d7a6669ee1d190428377bec14c60e2f,
+        type: 3}
+      propertyPath: canSpiritRip
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1188148225721962322, guid: 0d7a6669ee1d190428377bec14c60e2f,
+        type: 3}
+      propertyPath: canDodge
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1188148225721962322, guid: 0d7a6669ee1d190428377bec14c60e2f,
+        type: 3}
+      propertyPath: aggroRange
+      value: 25
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0d7a6669ee1d190428377bec14c60e2f, type: 3}
 --- !u!1 &1151311320
@@ -4343,8 +4388,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1151311320}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.7425193, y: 1.05, z: 2.6}
-  m_LocalScale: {x: 0.5, y: 3, z: 0.5}
+  m_LocalPosition: {x: 1.7425193, y: 1.05, z: 9.04}
+  m_LocalScale: {x: 5.108, y: 3, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 11
