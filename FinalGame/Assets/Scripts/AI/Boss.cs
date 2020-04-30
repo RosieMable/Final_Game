@@ -1,14 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 /*
  * The Boss needs multiple actions that are used in combat.
  * Each action needs an individual cooldown (and duration in some cases) so that the boss does not repeat the same action over and over.
  * Each action also requires its own animation, and method which is called when the action is being performed.
  * The Boss when not performing a special action needs to simply approach and attack.
- * 
- * 
  * 
  * List of possible actions
  * List of suitable actions
@@ -23,17 +22,30 @@ using UnityEngine;
 namespace ZaldensGambit
 {
     public class Boss : Enemy
-    {
-        
-        private enum Action { SpiritRip, Teleport, Clone, Summon, Charge, Laser, Dodge, Spin, None }
-        [SerializeField] private bool canSpiritRip, canTeleport, canSplit, canSummon, canCharge, canLaser, canDodge, canSpin;
-        [SerializeField] private float globalActionCooldown;
+    {        
+        private enum Action { SpiritRip, Teleport, Clone, Summon, Charge, Laser, Dodge, Spin, Nothing }
+        [SerializeField] private bool canSpiritRip, canTeleport, canSplit, canSummon, canCharge, canLaser, canDodge, canSpin;        
         [SerializeField] private float spiritRipCooldown, teleportCooldown, cloneCooldown, summonCooldown, chargeCooldown, laserCooldown, dodgeCooldown, spinCooldown;
         private float spiritRipTimer, teleportTimer, cloneTimer, summonTimer, chargeTimer, laserTimer, dodgeTimer, spinTimer;
         private bool singleAbilityBoss;
         private Action activeAction;
-        private Action lastAction = Action.None;
+        private Action lastAction = Action.Nothing;
+
+        // Global Variables
         private float timeUntilNextAction = 0;
+        [SerializeField] private float globalActionCooldown;
+        private bool abilityCasting;
+
+        // Laser Variables
+        private bool lasering;
+
+        // Charging Variables
+        private bool charging;
+        private Vector3 chargePosition;
+        private float originalSpeed;
+        private float originalAcceleration;
+        private float chargeSpeed;
+        private float chargeAcceleration;
 
         // Dodging Variables
         private bool lookingToDodge;
@@ -53,12 +65,16 @@ namespace ZaldensGambit
             base.Awake();
             weaponHook = GetComponentInChildren<WeaponHook>();
             weaponHook.CloseDamageCollider();
+            originalSpeed = speed;
+            chargeSpeed = speed * 2;
+            originalAcceleration = agent.acceleration;
+            chargeAcceleration = originalAcceleration * 2;
         }
 
         protected override void Update()
         {
             base.Update();
-            UpdateBossState();
+            CalculatePossibleActions();
             //PlayVoiceLines(currentHealth); // Needs further work to function correctly
 
             if (activeClones.Count == 0)
@@ -75,6 +91,115 @@ namespace ZaldensGambit
             {
                 charAnim.CrossFade("dodgeRoll", 0.2f);
                 lookingToDodge = false;
+            }
+
+            if (lasering)
+            {
+                RaycastHit hit;
+                Physics.Raycast(transform.position + Vector3.up, transform.forward, out hit, Mathf.Infinity);
+
+                if (hit.collider.gameObject == player)
+                {
+                    player.GetComponent<StateManager>().TakeDamage(1, transform, false);
+                }
+            }
+        }
+
+        protected override void CombatBehaviour()
+        {
+            if (abilityCasting)
+            {
+                RotateTowardsTarget(player.transform);
+                agent.Stop();
+            }
+            else if (charging)
+            {
+                RotateTowardsTarget(chargePosition);
+                agent.speed = chargeSpeed;
+                agent.acceleration = chargeAcceleration;
+                agent.stoppingDistance = 0;
+                agent.SetDestination(chargePosition);
+            }
+            else if (movingToAttack)
+            {
+                MoveToTarget();
+            }
+
+            if (Vector3.Distance(transform.position, chargePosition) <= 2)
+            {
+                agent.speed = originalSpeed;
+                agent.acceleration = originalAcceleration;
+                agent.stoppingDistance = 1;
+                charging = false;
+            }
+        }
+
+        protected override State UpdateState()
+        {
+            bool canConsiderAttacking = Vector3.Distance(transform.position, player.transform.position) < aggroRange;
+
+            if (canConsiderAttacking)
+            {
+                movingToAttack = true;
+            }
+
+            bool isInAttackRange = Vector3.Distance(transform.position, player.transform.position) < attackRange;
+
+            if (isInAttackRange && !abilityCasting || !charging)
+            {
+                return State.Attacking;
+            }
+
+            bool isInAggroRange = Vector3.Distance(transform.position, player.transform.position) < aggroRange;
+
+            if (isInAggroRange)
+            {
+                return State.Pursuing;
+            }
+
+            return State.Idle;
+        }
+
+        protected override void PerformStateBehaviour()
+        {
+            switch (currentState)
+            {
+                case State.Idle:
+                    // Maybe regen health after a delay?
+                    Patrol();
+                    withinRangeOfTarget = false;
+                    break;
+                case State.Attacking:
+                    if (!isInvulnerable && !inAction && Time.time > attackDelay)
+                    {
+                        agent.isStopped = true;
+                        bool playerInFront = Physics.Raycast(transform.position, transform.forward, 2, playerLayer);
+
+                        if (playerInFront)
+                        {
+                            attackDelay = Time.time + attackCooldown;
+                            int animationToPlay = Random.Range(0, attackAnimations.Length);
+                            charAnim.CrossFade(attackAnimations[animationToPlay].name, 0.2f);
+                            RotateTowardsTarget(player.transform);
+                        }
+                        else
+                        {
+                            RotateTowardsTarget(player.transform);
+                        }
+                    }
+                    else
+                    {
+                        RotateTowardsTarget(player.transform);
+                    }
+                    break;
+                case State.Pursuing:
+                    withinRangeOfTarget = true;
+                    if (!isInvulnerable && !inAction)
+                    {
+                        agent.isStopped = false;
+                        CombatBehaviour();
+                    }
+                    break;
             }
         }
 
@@ -124,7 +249,6 @@ namespace ZaldensGambit
             if (timeUntilNextAction <= Time.time) // When the global cooldown period has passed...
             {
                 print("Calculating actions...");
-
                 // Check all possible actions that can be done, if they are suitable add them to the list of possible actions.
                 possibleActions.Clear(); // Remove all previous possible actions that were recorded, as we are going to recalculate and do not want duplicates.
 
@@ -191,7 +315,7 @@ namespace ZaldensGambit
 
                 if (singleAbilityBoss)
                 {
-                    lastAction = Action.None;
+                    lastAction = Action.Nothing;
                 }
 
                 if (possibleActions != null && possibleActions.Count != 0)
@@ -213,15 +337,90 @@ namespace ZaldensGambit
             }
 
             int selection = Random.Range(0, possibleActions.Count); // Generate a random number based on the total number of possibleActions
-
             activeAction = possibleActions[selection]; // Set activeAction to the number generated in the list of possibleActions
-
             ExecuteAction();
         }
 
         private void ExecuteAction()
         {           
             switch (activeAction)
+            {
+                case Action.SpiritRip:
+                    StartCoroutine(PerformAction(activeAction, 3));
+                    break;
+                case Action.Teleport:
+                    StartCoroutine(PerformAction(activeAction, 2));
+                    break;
+                case Action.Clone:
+                    StartCoroutine(PerformAction(activeAction, 3));
+                    break;
+                case Action.Summon:
+                    StartCoroutine(PerformAction(activeAction, 3));
+                    break;
+                case Action.Charge:
+                    StartCoroutine(PerformAction(activeAction, 3));
+                    break;
+                case Action.Laser:
+                    StartCoroutine(PerformAction(activeAction, 3));
+                    break;
+                case Action.Dodge:
+                    StartCoroutine(PerformAction(activeAction, 0));
+                    break;
+                case Action.Spin:
+                    StartCoroutine(PerformAction(activeAction, 1f));
+                    break;
+                default:
+                    print("Waiting...");
+                    break;
+            }
+
+            if (activeAction != Action.Nothing)
+            {
+                lastAction = activeAction;
+                activeAction = Action.Nothing;
+                timeUntilNextAction = Time.time + globalActionCooldown;
+            }
+        }
+
+        private IEnumerator PerformAction(Action action, float delayBeforeCast)
+        {
+            switch (action)
+            {
+                case Action.SpiritRip:
+                    // Animation cast + voiceline
+                    abilityCasting = true;
+                    break;
+                case Action.Teleport:
+                    // Animation cast + voiceline
+                    abilityCasting = true;
+                    break;
+                case Action.Clone:
+                    // Animation cast + voiceline
+                    abilityCasting = true;
+                    break;
+                case Action.Summon:
+                    // Animation cast + voiceline
+                    abilityCasting = true;
+                    break;
+                case Action.Charge:
+                    // Animation cast + voiceline
+                    abilityCasting = true;
+                    break;
+                case Action.Laser:
+                    // Animation cast + voiceline
+                    abilityCasting = true;
+                    break;
+                case Action.Dodge:
+                    // ???
+                    break;
+                case Action.Spin:
+                    // ???
+                    break;
+            }
+
+            yield return new WaitForSeconds(delayBeforeCast); // Cast time, allows animation to play before ability effect activates
+
+            switch (action)
             {
                 case Action.SpiritRip:
                     // Projectile attack
@@ -293,14 +492,19 @@ namespace ZaldensGambit
                 case Action.Charge:
                     // Charge towards the player and deal damage on contact + knockback, destroy obstacle if collided with
                     chargeTimer = Time.time + chargeCooldown;
-                    // Unsure how to handle this right now
+                    chargePosition = player.transform.position;
+                    charging = true;
+                    // Charge towards position
                     print("Perform charge");
                     break;
                 case Action.Laser:
                     // Constant projectile attack
                     laserTimer = Time.time + laserCooldown;
                     // Coroutine that deals damage continuously
+                    lasering = true;
                     print("Perform laser");
+                    yield return new WaitForSeconds(4);
+                    lasering = false;
                     break;
                 case Action.Dodge:
                     // Look to dodge the players incoming attacks
@@ -314,30 +518,20 @@ namespace ZaldensGambit
                     // Play an animation with a long delay before disabling the damage collider
                     print("Perform spin");
                     break;
-                default:
-                    print("Waiting...");
-                    break;
             }
-
-            if (activeAction != Action.None)
-            {
-                lastAction = activeAction;
-                activeAction = Action.None;
-                timeUntilNextAction = Time.time + globalActionCooldown;
-            }
+            abilityCasting = false;
         }
 
-        private void UpdateBossState()
+        private void OnCollisionEnter(Collision collision)
         {
-            CalculatePossibleActions();
+            if (charging)
+            {
+                if (collision.gameObject.GetComponent<StateManager>())
+                {
+                    collision.gameObject.GetComponent<StateManager>().TakeDamage(30, transform, false);
+                    charging = false;
+                }
+            }
         }
-    }
-
-    //[System.Serializable]
-    //public class BossAction
-    //{
-    //    public float cooldown;
-    //    public float duration;
-    //    public string desiredAnimation;
-    //}
+    }    
 }

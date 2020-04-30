@@ -127,7 +127,7 @@ namespace ZaldensGambit
         /// <summary>
         /// Deals damage to the player unless invulnerable or the damageSource is directly in front of the player whilst they are blocking.
         /// </summary>
-        public void TakeDamage(float damageValue, Transform damageSource)
+        public void TakeDamage(float damageValue, Transform damageSource, bool isBlockable)
         {
             Enemy enemy = damageSource.GetComponent<Enemy>();
 
@@ -137,7 +137,7 @@ namespace ZaldensGambit
                 return;
             }
 
-            if (isBlocking && !shieldBashing)
+            if (isBlocking && !shieldBashing && isBlockable)
             {
                 RaycastHit[] hits = Physics.BoxCastAll(transform.position + transform.forward, transform.localScale / 2, transform.forward, transform.rotation, 5, ignoredLayers);
 
@@ -807,7 +807,7 @@ namespace ZaldensGambit
                 }
                 else
                 {
-                    TakeDamage(other.GetComponent<Projectile>().damageValue, other.transform);
+                    TakeDamage(other.GetComponent<Projectile>().damageValue, other.transform, true);
                 }
             }
 
