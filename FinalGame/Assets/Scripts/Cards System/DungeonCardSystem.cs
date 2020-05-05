@@ -198,7 +198,6 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
         //Based on drawn cards, spawn the corrisponding dungeon prefab
         if (_drawnCards.Count != 0 && _spawnLocation != null)
         {
-
             if (_drawnCards.Count == 3)
             {
                 GameObject.Instantiate(ThreeRoomsDungeonPrefab[Random.Range(0, ThreeRoomsDungeonPrefab.Count)], _spawnLocation);
@@ -292,8 +291,6 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
     public void LoadSceneAsync(string sceneName)
     {
         StartCoroutine(LoadAsync(sceneName));
-
-
         async.allowSceneActivation = true;
     }
 

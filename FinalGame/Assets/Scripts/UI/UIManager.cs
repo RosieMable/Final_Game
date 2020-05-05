@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.SceneManagement;
 
 namespace ZaldensGambit
 {
     public class UIManager : Singleton<UIManager>
     {
-        private static UIManager _instance;
+        public static UIManager instance;
 
         private Image healthBar;
         private TextMeshProUGUI healthText;
@@ -26,15 +25,23 @@ namespace ZaldensGambit
 
         #endregion
 
-        private void Awake()
+        private new void Awake()
         {
-            base.Awake();
+            if (instance == null)
+            {
+                instance = this;
+            }
+            else if (instance != this)
+            {
+                Destroy(gameObject);
+            }
+
             healthBar = GameObject.Find("HealthBar").GetComponent<Image>();
             healthText = GameObject.Find("HealthText").GetComponent<TextMeshProUGUI>();
             dialoguePanel = GameObject.Find("DialoguePanel");
             dialogueText = GameObject.Find("DialogueText").GetComponent<TextMeshProUGUI>();
             player = FindObjectOfType<StateManager>();
-            DontDestroyOnLoad(this);
+            DontDestroyOnLoad(this);            
         }
 
         private void Start()

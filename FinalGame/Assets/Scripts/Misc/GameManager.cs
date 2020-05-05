@@ -58,6 +58,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void LoadScene(string sceneName)
+    {
+        SceneManager.LoadSceneAsync(sceneName);
+    }
+
     private IEnumerator GameOverAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);

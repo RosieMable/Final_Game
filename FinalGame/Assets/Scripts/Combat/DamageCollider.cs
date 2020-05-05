@@ -59,7 +59,7 @@ namespace ZaldensGambit
 
             if (states != null) // If we hit the player...
             {
-                int crit = Random.Range(0, 101);
+                int crit = Random.Range(1, 101);
 
                 if (crit <= critChance)
                 {
