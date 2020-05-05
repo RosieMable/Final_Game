@@ -36,7 +36,7 @@ namespace ZaldensGambit
                     {
                         if (hitInfo.collider.gameObject.name != "Shield")
                         {
-                            states.TakeDamage(damageValue, transform, true);
+                            states.TakeDamage(damageValue, transform, true, true);
                         }
                     }
                 }

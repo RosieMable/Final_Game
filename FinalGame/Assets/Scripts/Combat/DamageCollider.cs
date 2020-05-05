@@ -64,12 +64,12 @@ namespace ZaldensGambit
                 if (crit <= critChance)
                 {
                     Debug.Log("Crit!");
-                    states.TakeDamage(critDamage, GetComponentInParent<Enemy>().gameObject.transform);
+                    states.TakeDamage(critDamage, GetComponentInParent<Enemy>().gameObject.transform, true, true);
                     GetComponentInParent<WeaponHook>().CloseDamageCollider();
                 }
                 else
                 {
-                    states.TakeDamage(damage, GetComponentInParent<Enemy>().gameObject.transform);
+                    states.TakeDamage(damage, GetComponentInParent<Enemy>().gameObject.transform, true, true);
                     GetComponentInParent<WeaponHook>().CloseDamageCollider();
                 }
             }

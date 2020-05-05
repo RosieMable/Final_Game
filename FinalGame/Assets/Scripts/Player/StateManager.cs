@@ -127,7 +127,7 @@ namespace ZaldensGambit
         /// <summary>
         /// Deals damage to the player unless invulnerable or the damageSource is directly in front of the player whilst they are blocking.
         /// </summary>
-        public void TakeDamage(float damageValue, Transform damageSource, bool isBlockable)
+        public void TakeDamage(float damageValue, Transform damageSource, bool isBlockable, bool playHurtAnimation)
         {
             Enemy enemy = damageSource.GetComponent<Enemy>();
 
@@ -222,9 +222,13 @@ namespace ZaldensGambit
             characterAudioSource.clip = hurtAudioClips[audioClipToPlay];
             characterAudioSource.Play();
 
-            int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length);
-            charAnim.CrossFade(hurtAnimations[hurtAnimationToPlay].name, 0.1f);
-            charAnim.applyRootMotion = true;
+            if (playHurtAnimation)
+            {
+                int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length);
+                charAnim.CrossFade(hurtAnimations[hurtAnimationToPlay].name, 0.1f);
+                charAnim.applyRootMotion = true;
+            }
+            
         }
 
         public void RestoreHealth(float amountToRestore)
@@ -807,7 +811,7 @@ namespace ZaldensGambit
                 }
                 else
                 {
-                    TakeDamage(other.GetComponent<Projectile>().damageValue, other.transform, true);
+                    TakeDamage(other.GetComponent<Projectile>().damageValue, other.transform, true, true);
                 }
             }
 

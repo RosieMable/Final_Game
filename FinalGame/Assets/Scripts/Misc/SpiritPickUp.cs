@@ -7,7 +7,7 @@ namespace ZaldensGambit
 {
     public class SpiritPickUp : MonoBehaviour
     {
-        [SerializeField] private BaseSpirit spiritPickUp;
+        public BaseSpirit spiritPickUp;
         [SerializeField] private float rotationSpeed = 180f;
         private bool pickedUp;
 

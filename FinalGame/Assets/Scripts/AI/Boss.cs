@@ -3,22 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-/*
- * The Boss needs multiple actions that are used in combat.
- * Each action needs an individual cooldown (and duration in some cases) so that the boss does not repeat the same action over and over.
- * Each action also requires its own animation, and method which is called when the action is being performed.
- * The Boss when not performing a special action needs to simply approach and attack.
- * 
- * List of possible actions
- * List of suitable actions
- * bools for each action
- * 
- * Calculates what actions are suitable and stores into list
- * Executes action
- * Waits for global cooldown
- * Cannot use same action until action specific cooldown has passed
- */
-
 namespace ZaldensGambit
 {
     public class Boss : Enemy
@@ -35,9 +19,15 @@ namespace ZaldensGambit
         private float timeUntilNextAction = 0;
         [SerializeField] private float globalActionCooldown;
         private bool abilityCasting;
+        [SerializeField] private GameObject abilityChargingParticleEffect;
+
+        // Spirit Rip Variables
+        [SerializeField] private GameObject spiritPickUp;
 
         // Laser Variables
         private bool lasering;
+        private float laserHitDelay;
+        private float laserHitCooldown = 0.05f;
 
         // Charging Variables
         private bool charging;
@@ -75,6 +65,7 @@ namespace ZaldensGambit
         {
             base.Update();
             CalculatePossibleActions();
+            print(currentState);
             //PlayVoiceLines(currentHealth); // Needs further work to function correctly
 
             if (activeClones.Count == 0)
@@ -93,15 +84,19 @@ namespace ZaldensGambit
                 lookingToDodge = false;
             }
 
-            if (lasering)
+            if (lasering && Time.time > laserHitDelay)
             {
                 RaycastHit hit;
                 Physics.Raycast(transform.position + Vector3.up, transform.forward, out hit, Mathf.Infinity);
 
-                if (hit.collider.gameObject == player)
+                if (hit.collider != null)
                 {
-                    player.GetComponent<StateManager>().TakeDamage(1, transform, false);
-                }
+                    if (hit.collider.gameObject == player || hit.collider.gameObject.GetComponentInParent<StateManager>())
+                    {
+                        player.GetComponent<StateManager>().TakeDamage(1, transform, false, false);
+                        laserHitDelay = laserHitCooldown + Time.time;
+                    }
+                }                
             }
         }
 
@@ -145,7 +140,7 @@ namespace ZaldensGambit
 
             bool isInAttackRange = Vector3.Distance(transform.position, player.transform.position) < attackRange;
 
-            if (isInAttackRange && !abilityCasting || !charging)
+            if (isInAttackRange && (!abilityCasting || !charging))
             {
                 return State.Attacking;
             }
@@ -246,13 +241,13 @@ namespace ZaldensGambit
         {
             List<Action> possibleActions = new List<Action>();
 
-            if (timeUntilNextAction <= Time.time) // When the global cooldown period has passed...
+            if (timeUntilNextAction <= Time.time && (currentState == State.Pursuing || currentState == State.Attacking)) // When the global cooldown period has passed...
             {
                 print("Calculating actions...");
                 // Check all possible actions that can be done, if they are suitable add them to the list of possible actions.
                 possibleActions.Clear(); // Remove all previous possible actions that were recorded, as we are going to recalculate and do not want duplicates.
 
-                if (canSpiritRip && lastAction != Action.SpiritRip && spiritRipTimer <= Time.time) // If we are allowed to perform the action, it was not the last action performed and the cooldown period has passed...
+                if (canSpiritRip && lastAction != Action.SpiritRip && spiritRipTimer <= Time.time && player.GetComponent<SpiritSystem>().spiritEquipped != null) // If we are allowed to perform the action, it was not the last action performed and the cooldown period has passed...
                 {
                     if (CanSeePlayer()) // If the player is within sight of the Boss and does not have an obstacle in its path...
                     {
@@ -329,7 +324,7 @@ namespace ZaldensGambit
         private void ChooseAction(List<Action> possibleActions)
         {
             print("Choosing an action...");
-            print("I am avoiding " + lastAction);
+            print("I am avoiding the action: " + lastAction);
             print("My choices are...");
             foreach (Action action in possibleActions)
             {
@@ -418,6 +413,56 @@ namespace ZaldensGambit
                     break;
             }
 
+            if (abilityCasting)
+            {                
+                GameObject particleEffect = Instantiate(abilityChargingParticleEffect, transform.position + Vector3.up, abilityChargingParticleEffect.transform.rotation, transform);
+            }
+
+            if (action == Action.Teleport)
+            {
+                GameObject particleEffect = Instantiate(abilityChargingParticleEffect, player.transform.position + -player.transform.forward * 2 + Vector3.up, abilityChargingParticleEffect.transform.rotation, player.transform);
+            }
+
+            if (action == Action.Summon)
+            {
+                GameObject summonEffect = null;
+                for (int i = 0; i < 4; i++)
+                {
+                    switch (i)
+                    {
+                        case 0:
+                            summonEffect = Instantiate(abilityChargingParticleEffect, transform.position + transform.right, Quaternion.identity, transform);                            
+                            break;
+                        case 1:
+                            summonEffect = Instantiate(abilityChargingParticleEffect, transform.position + -transform.right, Quaternion.identity, transform);                            
+                            break;
+                        case 2:
+                            summonEffect = Instantiate(abilityChargingParticleEffect, transform.position + transform.forward, Quaternion.identity, transform);                            
+                            break;
+                        case 3:
+                            summonEffect = Instantiate(abilityChargingParticleEffect, transform.position + -transform.forward, Quaternion.identity, transform);      
+                            break;
+                    }
+                }
+            }
+
+            if (action == Action.Clone)
+            {
+                GameObject cloneEffect = null;
+                for (int i = 0; i < 2; i++)
+                {
+                    switch (i)
+                    {
+                        case 0:
+                            cloneEffect = Instantiate(abilityChargingParticleEffect, transform.position + transform.right * 2, Quaternion.identity, transform);
+                            break;
+                        case 1:
+                            cloneEffect = Instantiate(abilityChargingParticleEffect, transform.position + -transform.right * 2, Quaternion.identity, transform);
+                            break;
+                    }
+                }
+            }
+
             yield return new WaitForSeconds(delayBeforeCast); // Cast time, allows animation to play before ability effect activates
 
             switch (action)
@@ -429,6 +474,9 @@ namespace ZaldensGambit
                     bool isPlayerInSight = Physics.Raycast(transform.position + Vector3.up, transform.forward, Mathf.Infinity, playerLayer);
                     if (isPlayerInSight)
                     {
+                        GameObject _spiritPickUp = Instantiate(spiritPickUp, transform.position + Vector3.up, Quaternion.identity);
+                        _spiritPickUp.GetComponent<SpiritPickUp>().spiritPickUp = player.GetComponent<SpiritSystem>().spiritEquipped;
+
                         player.GetComponent<SpiritSystem>().spiritEquipped = null;
                         player.GetComponent<SpiritSystem>().OnEquipSpirit(null);
                     }
@@ -528,7 +576,7 @@ namespace ZaldensGambit
             {
                 if (collision.gameObject.GetComponent<StateManager>())
                 {
-                    collision.gameObject.GetComponent<StateManager>().TakeDamage(30, transform, false);
+                    collision.gameObject.GetComponent<StateManager>().TakeDamage(30, transform, false, true);
                     charging = false;
                 }
             }
