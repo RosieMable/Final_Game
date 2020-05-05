@@ -271,7 +271,28 @@ namespace ZaldensGambit
                 states.actionLockoutDuration = 2f;                
             }
         }
+
+
+        public void ClericHealing()
+        {
+            if (states != null)
+            {
+                SpiritSystem spiritSystem = GetComponentInParent<SpiritSystem>();
+                spiritSystem.ClericHealing();
+            }
+        }
+
+        public void PaladinDamage()
+        {
+            if (states != null)
+            {
+                SpiritSystem spiritSystem = GetComponentInParent<SpiritSystem>();
+                spiritSystem.PaladinDamage();
+            }
+        }
+
     }
+
 }
 
 

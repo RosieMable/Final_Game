@@ -203,9 +203,27 @@ namespace ZaldensGambit
         public void ClericHealing()
         {
             PlayerCharacter.RestoreHealth(spiritEquipped.HealthModifier);
-            print("Healed of " + spiritEquipped.HealthModifier);
+            print("Healed for " + spiritEquipped.HealthModifier);
         }
 
+
+        public void PaladinDamage()
+        {
+            //PlayerCharacter.TakeDamageAndStun(float dmg, float stunDuration)
+            print("Deal Damage Paladin!");
+        }
+
+        public void MageDamage()
+        {
+            //PlayerCharacter.TakeDamageAOE(float dmg, float AOEdmg)
+            print("Deal Damage Mage!");
+        }
+
+        public void RangerDamage()
+        {
+            //PlayerCharacter.TakeDamageAndStun(float dmg, float stunDuration)
+            print("Deal Damage Ranger!");
+        }
         private void OnDisable()
         {
             //   UIDelegate -= UIManager.Instance.ManageSpiritUI;

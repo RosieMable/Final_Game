@@ -67,6 +67,17 @@ public class BaseSpirit : ScriptableObject
 
     public float DamageModifier { get { return _damageModifier; } private set { DamageModifier = _damageModifier; } }
 
+    [SerializeField]
+    private float _AOEDanageModifier;
+
+    public float AOEDamageModifier { get { return _AOEDanageModifier; } private set { AOEDamageModifier = _AOEDanageModifier; } }
+
+
+    [SerializeField]
+    private float _stunModifier;
+
+    public float StunModifier { get { return _stunModifier; }  private set { StunModifier = _stunModifier; } }
+
     public bool abilityEvoked;
 
     

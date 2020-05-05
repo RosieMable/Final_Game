@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 using ZaldensGambit;
+using UnityEditorInternal;
 
 public class RFX4_PhysicsMotion : MonoBehaviour
 {
@@ -92,10 +93,20 @@ public class RFX4_PhysicsMotion : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         print(collision.gameObject.name);
-        if (dealDamageOnHit)
-        {
 
-        }
+            SpiritSystem spiritSystem = FindObjectOfType<SpiritSystem>();
+            if (spiritSystem != null)
+            {
+                if(spiritSystem.spiritEquipped.spiritClass == BaseSpirit.SpiritClass.Mage)
+                {
+                    spiritSystem.MageDamage();
+                }
+                else if(spiritSystem.spiritEquipped.spiritClass == BaseSpirit.SpiritClass.Ranger)
+                {
+                    spiritSystem.RangerDamage();
+                }
+            }
+       
 
         if (isCollided && !effectSettings.UseCollisionDetection) return;
         foreach (ContactPoint contact in collision.contacts)
