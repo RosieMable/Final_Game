@@ -65,7 +65,6 @@ namespace ZaldensGambit
         {
             base.Update();
             CalculatePossibleActions();
-            print(currentState);
             //PlayVoiceLines(currentHealth); // Needs further work to function correctly
 
             if (activeClones.Count == 0)
@@ -84,20 +83,30 @@ namespace ZaldensGambit
                 lookingToDodge = false;
             }
 
-            if (lasering && Time.time > laserHitDelay)
+            if (lasering)
             {
-                RaycastHit hit;
-                Physics.Raycast(transform.position + Vector3.up, transform.forward, out hit, Mathf.Infinity);
+                charAnim.SetBool("lasering", true);
 
-                if (hit.collider != null)
+                if (Time.time > laserHitDelay)
                 {
-                    if (hit.collider.gameObject == player || hit.collider.gameObject.GetComponentInParent<StateManager>())
+                    RaycastHit hit;
+                    Physics.Raycast(transform.position + Vector3.up, transform.forward, out hit, Mathf.Infinity);
+
+                    if (hit.collider != null)
                     {
-                        player.GetComponent<StateManager>().TakeDamage(1, transform, false, false);
-                        laserHitDelay = laserHitCooldown + Time.time;
+                        if (hit.collider.gameObject == player || hit.collider.gameObject.GetComponentInParent<StateManager>())
+                        {
+                            player.GetComponent<StateManager>().TakeDamage(1, transform, false, false);
+                            laserHitDelay = laserHitCooldown + Time.time;
+                        }
                     }
-                }                
+                }
             }
+            else
+            {
+                charAnim.SetBool("lasering", false);
+            }
+            
         }
 
         protected override void CombatBehaviour()
@@ -140,7 +149,7 @@ namespace ZaldensGambit
 
             bool isInAttackRange = Vector3.Distance(transform.position, player.transform.position) < attackRange;
 
-            if (isInAttackRange && (!abilityCasting || !charging))
+            if (isInAttackRange && (!abilityCasting && !charging))
             {
                 return State.Attacking;
             }
@@ -165,7 +174,7 @@ namespace ZaldensGambit
                     withinRangeOfTarget = false;
                     break;
                 case State.Attacking:
-                    if (!isInvulnerable && !inAction && Time.time > attackDelay)
+                    if (!isInvulnerable && !inAction && Time.time > attackDelay && !abilityCasting)
                     {
                         agent.isStopped = true;
                         bool playerInFront = Physics.Raycast(transform.position, transform.forward, 2, playerLayer);
@@ -243,7 +252,7 @@ namespace ZaldensGambit
 
             if (timeUntilNextAction <= Time.time && (currentState == State.Pursuing || currentState == State.Attacking)) // When the global cooldown period has passed...
             {
-                print("Calculating actions...");
+                //print("Calculating actions...");
                 // Check all possible actions that can be done, if they are suitable add them to the list of possible actions.
                 possibleActions.Clear(); // Remove all previous possible actions that were recorded, as we are going to recalculate and do not want duplicates.
 
@@ -257,7 +266,7 @@ namespace ZaldensGambit
 
                 if (canSpin && lastAction != Action.Spin && spinTimer <= Time.time)
                 {
-                    if (IsPlayerWithinRange(3)) // If the player is within attacking range of the Boss...
+                    if (IsPlayerWithinRange(attackRange * 2)) // If the player is within attacking range of the Boss...
                     {
                         possibleActions.Add(Action.Spin);
                     }
@@ -323,12 +332,12 @@ namespace ZaldensGambit
 
         private void ChooseAction(List<Action> possibleActions)
         {
-            print("Choosing an action...");
-            print("I am avoiding the action: " + lastAction);
-            print("My choices are...");
+            //print("Choosing an action...");
+            //print("I am avoiding the action: " + lastAction);
+            //print("My choices are...");
             foreach (Action action in possibleActions)
             {
-                print(action);
+                //print(action);
             }
 
             int selection = Random.Range(0, possibleActions.Count); // Generate a random number based on the total number of possibleActions
@@ -383,6 +392,7 @@ namespace ZaldensGambit
             {
                 case Action.SpiritRip:
                     // Animation cast + voiceline
+                    charAnim.CrossFade("SpiritRip", 0.2f);
                     abilityCasting = true;
                     break;
                 case Action.Teleport:
@@ -391,10 +401,12 @@ namespace ZaldensGambit
                     break;
                 case Action.Clone:
                     // Animation cast + voiceline
+                    charAnim.CrossFade("Clone", 0.2f);
                     abilityCasting = true;
                     break;
                 case Action.Summon:
                     // Animation cast + voiceline
+                    charAnim.CrossFade("Summon", 0.2f);
                     abilityCasting = true;
                     break;
                 case Action.Charge:
@@ -403,6 +415,7 @@ namespace ZaldensGambit
                     break;
                 case Action.Laser:
                     // Animation cast + voiceline
+                    charAnim.CrossFade("Cast Forward", 0.2f);
                     abilityCasting = true;
                     break;
                 case Action.Dodge:
@@ -563,10 +576,12 @@ namespace ZaldensGambit
                 case Action.Spin:
                     // Spin and move towards the player at the same time
                     spinTimer = Time.time + spinCooldown;
+                    charAnim.CrossFade("Spin", 0.2f);
                     // Play an animation with a long delay before disabling the damage collider
                     print("Perform spin");
                     break;
             }
+            yield return new WaitForSeconds(delayBeforeCast / 2);
             abilityCasting = false;
         }
 
