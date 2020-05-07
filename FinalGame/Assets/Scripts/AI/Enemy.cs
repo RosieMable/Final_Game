@@ -249,6 +249,10 @@ namespace ZaldensGambit
                 {
                     PerformStateBehaviour(); // Perform current state behaviour
                 }
+                else
+                {
+                    rigidBody.isKinematic = true;
+                }
 
                 if (inAction) // If an animation is playing...
                 {
@@ -523,9 +527,11 @@ namespace ZaldensGambit
             stunned = true;
             charAnim.SetBool("stunned", true);
             charAnim.CrossFade("Stunned", 0.2f);
+            agent.isStopped = true;
 
             yield return new WaitForSeconds(duration);
 
+            agent.isStopped = false;
             charAnim.SetBool("stunned", false);
             stunned = false;
             stunnedCoroutine = null;

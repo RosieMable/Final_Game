@@ -296,12 +296,12 @@ namespace ZaldensGambit
                     }
                 }
 
-                if (canSplit && lastAction != Action.Clone && cloneTimer <= Time.time && !clonesActive)
+                if (canSplit && lastAction != Action.Clone && cloneTimer <= Time.time && !clonesActive && !summonsActive)
                 {
                     possibleActions.Add(Action.Clone);
                 }
 
-                if (canSummon && lastAction != Action.Summon && summonTimer <= Time.time && !summonsActive)
+                if (canSummon && lastAction != Action.Summon && summonTimer <= Time.time && !summonsActive && !clonesActive)
                 {
                     possibleActions.Add(Action.Summon);
                 }

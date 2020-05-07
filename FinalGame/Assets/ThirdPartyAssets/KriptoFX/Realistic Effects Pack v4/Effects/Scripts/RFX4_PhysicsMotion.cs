@@ -94,18 +94,26 @@ public class RFX4_PhysicsMotion : MonoBehaviour
     {
         print(collision.gameObject.name);
 
-            SpiritSystem spiritSystem = FindObjectOfType<SpiritSystem>();
-            if (spiritSystem != null)
+        SpiritSystem spiritSystem = FindObjectOfType<SpiritSystem>();
+        if (spiritSystem != null)
+        {
+            if(spiritSystem.spiritEquipped.spiritClass == BaseSpirit.SpiritClass.Mage)
             {
-                if(spiritSystem.spiritEquipped.spiritClass == BaseSpirit.SpiritClass.Mage)
+                if (collision.gameObject.GetComponent<Enemy>())
                 {
-                    spiritSystem.MageDamage();
+                    collision.gameObject.GetComponent<Enemy>().TakeDamage(spiritSystem.spiritEquipped.DamageModifier);
                 }
-                else if(spiritSystem.spiritEquipped.spiritClass == BaseSpirit.SpiritClass.Ranger)
+
+                spiritSystem.MageDamage(collision.transform.position);
+            }
+            else if(spiritSystem.spiritEquipped.spiritClass == BaseSpirit.SpiritClass.Ranger)
+            {
+                if (collision.gameObject.GetComponent<Enemy>())
                 {
-                    spiritSystem.RangerDamage();
+                    spiritSystem.RangerDamage(collision.gameObject.GetComponent<Enemy>());
                 }
             }
+        }
        
 
         if (isCollided && !effectSettings.UseCollisionDetection) return;

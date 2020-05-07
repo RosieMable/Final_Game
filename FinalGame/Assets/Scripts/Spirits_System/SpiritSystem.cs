@@ -141,7 +141,7 @@ namespace ZaldensGambit
                     shieldMesh.RevertToOriginalMat();
                     swordMesh.VFXPrefab = _EquippedSpirit.VFXPrefab;
                     _EffectEvent.MainEffect = null;
-                   swordMesh.UpdateMeshEffect();
+                    swordMesh.UpdateMeshEffect();
                     break;
                 case BaseSpirit.SpiritClass.Sellsword:
                     swordMesh.RevertToOriginalMat();
@@ -209,19 +209,57 @@ namespace ZaldensGambit
 
         public void PaladinDamage()
         {
-            //PlayerCharacter.TakeDamageAndStun(float dmg, float stunDuration)
+            // Deal damage to characters hit in front, then apply stun
+
+            RaycastHit[] hits = Physics.BoxCastAll(transform.position + transform.forward, transform.localScale, transform.forward, transform.rotation, 5);
+            List<Enemy> enemiesHit = new List<Enemy>();
+
+            foreach (RaycastHit hit in hits)
+            {
+                if (hit.collider.gameObject.GetComponent<Enemy>())
+                {
+                    enemiesHit.Add(hit.collider.gameObject.GetComponent<Enemy>());
+                }
+            }
+
+            foreach (Enemy enemy in enemiesHit)
+            {
+                enemy.TakeDamage(spiritEquipped.DamageModifier);
+                enemy.ApplyStun(spiritEquipped.StunModifier);
+            }
+
             print("Deal Damage Paladin!");
         }
 
-        public void MageDamage()
+        public void MageDamage(Vector3 position)
         {
-            //PlayerCharacter.TakeDamageAOE(float dmg, float AOEdmg)
+            // Deal damage to character hit, then deal AoE damage to everyone else within a radius
+
+            Collider[] collidersInRange = Physics.OverlapSphere(position, 2.5f);
+            List<Enemy> enemiesHit = new List<Enemy>();
+
+            foreach (Collider collider in collidersInRange)
+            {
+                if (collider.GetComponent<Enemy>())
+                {
+                    enemiesHit.Add(collider.GetComponent<Enemy>());
+                }
+            }
+
+            foreach (Enemy enemy in enemiesHit)
+            {
+                enemy.TakeDamage(spiritEquipped.AOEDamageModifier);
+            }
+
             print("Deal Damage Mage!");
         }
 
-        public void RangerDamage()
+        public void RangerDamage(Enemy enemy)
         {
-            //PlayerCharacter.TakeDamageAndStun(float dmg, float stunDuration)
+            // Deal damage to character hit and stun
+            enemy.TakeDamage(spiritEquipped.DamageModifier);
+            enemy.ApplyStun(spiritEquipped.StunModifier);
+
             print("Deal Damage Ranger!");
         }
         private void OnDisable()
