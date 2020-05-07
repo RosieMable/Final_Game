@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using ZaldensGambit;
 
 public class UpdateSwordMesh : MonoBehaviour
 {
@@ -25,6 +26,8 @@ public class UpdateSwordMesh : MonoBehaviour
     public Material startingMaterial;
 
     public GameObject[] ComponentsPS;
+
+    private SpiritSystem spiritSystem;
 
     string[] colorProperties =
    {
@@ -56,6 +59,8 @@ public class UpdateSwordMesh : MonoBehaviour
         {
             comp.SetActive(false);
         }
+
+        spiritSystem = GetComponentInParent<SpiritSystem>();
 
     }
 
@@ -314,11 +319,21 @@ public class UpdateSwordMesh : MonoBehaviour
 
     private void UpdatePSMesh(GameObject go)
     {
-
-        foreach (var comp in ComponentsPS)
+        if(spiritSystem.spiritEquipped.spiritClass == BaseSpirit.SpiritClass.Berserker)
         {
-            comp.SetActive(true);
+            foreach (var comp in ComponentsPS)
+            {
+                comp.SetActive(true);
+            }
         }
+        else
+        {
+            foreach (var comp in ComponentsPS)
+            {
+                comp.SetActive(false);
+            }
+        }
+
 
         if (startParticleParameters == null) InitStartParticleParameters();
 
