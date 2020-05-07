@@ -16,6 +16,8 @@ namespace ZaldensGambit
         private TextMeshProUGUI dialogueText;
         private GameObject dialoguePanel;
 
+        private Image spiritBar;
+
         #region "Spirit UI Variables"
 
         public Image SpiritIcon;
@@ -40,6 +42,7 @@ namespace ZaldensGambit
             healthText = GameObject.Find("HealthText").GetComponent<TextMeshProUGUI>();
             dialoguePanel = GameObject.Find("DialoguePanel");
             dialogueText = GameObject.Find("DialogueText").GetComponent<TextMeshProUGUI>();
+            spiritBar = GameObject.Find("SpiritBar").GetComponent<Image>();
             player = FindObjectOfType<StateManager>();
             DontDestroyOnLoad(this);            
         }
@@ -96,6 +99,24 @@ namespace ZaldensGambit
                 }
             }                     
         }
+
+        public void UpdateAbilityBar(float abilityCooldown)
+        {
+            StartCoroutine(AbilityCooldown(abilityCooldown));
+        }
+
+        IEnumerator AbilityCooldown(float countdownValue)
+        {
+            float currentValue = 0;
+            spiritBar.fillAmount = 0;
+            while (currentValue < countdownValue)
+            {
+                yield return new WaitForSecondsRealtime(1.0f);
+                currentValue++;
+                spiritBar.fillAmount = 1 / countdownValue * currentValue;
+            }
+        }
+
 
         public void ManageSpiritUI(BaseSpirit _spiritToDisplay)
         {

@@ -35,6 +35,10 @@ namespace ZaldensGambit
         UpdateShieldMesh shieldMesh;
 
         UpdateSwordMesh swordMesh;
+
+        [SerializeField]
+        bool DebugTesting;
+
         private void OnEnable()
         {
             onSpiritChanged += UIManager.Instance.ManageSpiritUI;
@@ -57,40 +61,44 @@ namespace ZaldensGambit
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+            if (DebugTesting)
             {
-                spiritEquipped = DemoSpirits[0];
-                OnEquipSpirit(spiritEquipped);
+                if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    spiritEquipped = DemoSpirits[0];
+                    OnEquipSpirit(spiritEquipped);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha2))
+                {
+                    spiritEquipped = DemoSpirits[1];
+                    OnEquipSpirit(spiritEquipped);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha3))
+                {
+                    spiritEquipped = DemoSpirits[2];
+                    OnEquipSpirit(spiritEquipped);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha4))
+                {
+                    spiritEquipped = DemoSpirits[3];
+                    OnEquipSpirit(spiritEquipped);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha5))
+                {
+                    spiritEquipped = DemoSpirits[4];
+                    OnEquipSpirit(spiritEquipped);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha6))
+                {
+                    spiritEquipped = DemoSpirits[5];
+                    OnEquipSpirit(spiritEquipped);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha0))
+                {
+                    OnEquipSpirit(spirit);
+                }
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha2))
-            {
-                spiritEquipped = DemoSpirits[1];
-                OnEquipSpirit(spiritEquipped);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                spiritEquipped = DemoSpirits[2];
-                OnEquipSpirit(spiritEquipped);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha4))
-            {
-                spiritEquipped = DemoSpirits[3];
-                OnEquipSpirit(spiritEquipped);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha5))
-            {
-                spiritEquipped = DemoSpirits[4];
-                OnEquipSpirit(spiritEquipped);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha6))
-            {
-                spiritEquipped = DemoSpirits[5];
-                OnEquipSpirit(spiritEquipped);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha0))
-            {
-                OnEquipSpirit(spirit);
-            }
+           
 
             if(spiritEquipped != null)
             {
@@ -99,7 +107,10 @@ namespace ZaldensGambit
                     swordMesh.RevertToOriginalMat();
                     shieldMesh.RevertToOriginalMat();
                 }
+
             }
+
+
 
         }
 
@@ -162,7 +173,9 @@ namespace ZaldensGambit
         void AbilityCooldown(BaseSpirit _EquippedSpirit)
         {
             canUseAbility = false;
+            UIManager.instance.UpdateAbilityBar(_EquippedSpirit.ActiveAbilityCooldown);
             StartCoroutine(DoAfter(_EquippedSpirit.ActiveAbilityCooldown, () => canUseAbility = true));
+
         }
 
         public bool CheckAbilityCooldown()
