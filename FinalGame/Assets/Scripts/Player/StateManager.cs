@@ -331,7 +331,8 @@ namespace ZaldensGambit
             if (stepUp)
             {
                 //Take the RigidBody and apply the stepUpOffset to its position
-                transform.position += stepUpOffset;
+                transform.position += stepUpOffset;                
+                //rigidBody.MovePosition(transform.position += stepUpOffset);
                 //When it hit the stair, it stopped our player, so reapply their last velocity
                 rigidBody.velocity = currentVelocity; //You'll need to store this from the last physics frame...
             }

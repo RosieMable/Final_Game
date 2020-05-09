@@ -55,6 +55,11 @@ namespace ZaldensGambit
 
         private void Update()
         {
+            if (!player)
+            {
+                player = FindObjectOfType<StateManager>();
+            }
+
             UpdateHealthUI();
 
             //if (Input.GetKeyDown(KeyCode.Escape))

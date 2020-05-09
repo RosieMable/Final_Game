@@ -241,7 +241,7 @@ PrefabInstance:
     - target: {fileID: 8216772091304252482, guid: 4f0f02f7f66e73f468fb7585508b7df0,
         type: 3}
       propertyPath: m_Name
-      value: WarRanged
+      value: DeathRanged
       objectReference: {fileID: 0}
     - target: {fileID: 8216772091304252487, guid: 4f0f02f7f66e73f468fb7585508b7df0,
         type: 3}
@@ -359,6 +359,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3870572566793984443, guid: da901e3dc618b3a429ad50dac661aa54,
         type: 3}
+    - target: {fileID: 8216772091304252483, guid: 4f0f02f7f66e73f468fb7585508b7df0,
+        type: 3}
+      propertyPath: ignoreCombatCircle
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8216772090723015069, guid: 4f0f02f7f66e73f468fb7585508b7df0,
         type: 3}
       propertyPath: m_IsActive

@@ -23,12 +23,12 @@ namespace ZaldensGambit
         [HideInInspector] public float delta;
         [HideInInspector] public Rigidbody rigidBody;
         [HideInInspector] public NavMeshAgent agent;
-        private Slider healthSlider;
-        private Coroutine healthCoroutine;
+        protected Slider healthSlider;
+        protected Coroutine healthCoroutine;
         public bool lockedOnto;
-        private TextMeshProUGUI damageText;
-        private float damageTextValue;
-        private Coroutine damageTextCoroutine;
+        protected TextMeshProUGUI damageText;
+        protected float damageTextValue;
+        protected Coroutine damageTextCoroutine;
         public float attackDelay;
         public float attackCooldown = 0.5f;
         public int damage = 10;
@@ -64,6 +64,7 @@ namespace ZaldensGambit
         [SerializeField] protected static List<Enemy> currentAttackers = new List<Enemy>();
         protected static int maximumNumberOfAttackers = 2;
         protected int currentSlot = -1;
+        protected bool ignoreCombatCircle;
 
         protected enum State { Idle, Pursuing, Attacking }
         protected State currentState;
@@ -72,7 +73,6 @@ namespace ZaldensGambit
 
         protected virtual void Awake()
         {
-            player = FindObjectOfType<StateManager>().gameObject;
             rigidBody = GetComponent<Rigidbody>();
             rigidBody.angularDrag = 999;
             rigidBody.drag = 4;
@@ -100,6 +100,7 @@ namespace ZaldensGambit
         
         protected virtual void Start()
         {
+            player = FindObjectOfType<StateManager>().gameObject;
             animHook.Initialise(null, this);
             cameraManager = CameraManager.instance;
             currentAttackers.Clear();
@@ -108,7 +109,7 @@ namespace ZaldensGambit
         /// <summary>
         /// Reduces the AI's health and plays hurt animations + applies root motion.
         /// </summary>
-        public void TakeDamage(float damageValue)
+        public virtual void TakeDamage(float damageValue)
         {
             if (isInvulnerable) // If flagged as invulnerable due to taking damage recently...
             {
@@ -150,12 +151,15 @@ namespace ZaldensGambit
                 damageTextCoroutine = StartCoroutine(RevealDamageText(3));
             }
 
-            if (!currentAttackers.Contains(this)) // If the AI is not within the list of attackers...
+            if (!ignoreCombatCircle)
             {
-                currentAttackers[Random.Range(0, currentAttackers.Count - 1)].GetComponent<Enemy>().RemoveFromAttackersList(); // Remove a random AI from the list
-                currentAttackers.Add(this); // Add self to the list
-                movingToAttack = true; // Flag as moving to attack to no longer be bound to the combat circle positions
-            }            
+                if (!currentAttackers.Contains(this)) // If the AI is not within the list of attackers...
+                {
+                    currentAttackers[Random.Range(0, currentAttackers.Count - 1)].GetComponent<Enemy>().RemoveFromAttackersList(); // Remove a random AI from the list
+                    currentAttackers.Add(this); // Add self to the list
+                    movingToAttack = true; // Flag as moving to attack to no longer be bound to the combat circle positions
+                }
+            }
 
             int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length); // Return random animation from list
             charAnim.CrossFade(hurtAnimations[hurtAnimationToPlay].name, 0.1f); // Play animation
@@ -188,6 +192,12 @@ namespace ZaldensGambit
 
         protected virtual void Update()
         {
+            if (!player)
+            {
+                player = FindObjectOfType<StateManager>().gameObject;
+            }
+
+
             CheckHealth();
 
             if (!stunned)
@@ -380,51 +390,57 @@ namespace ZaldensGambit
         /// </summary>
         protected virtual void CombatBehaviour()
         {
-            var slotManager = player.GetComponent<AttackSlotManager>();
-            rigidBody.velocity = Vector3.zero; // Reset velocity to ensure no gliding behaviour as navmesh agents do not follow ordinary rigidbody physics
-            RotateTowardsTarget(player.transform);
+            if (!ignoreCombatCircle)
+            {
 
-            if (movingToAttack && !inAction) // If the AI is flagged as moving to attack...
-            {
-                MoveToTarget();
-            }
-            else // Otherwise if not moving to attack...
-            {
-                if (agent.enabled) // If Navmeshagent is active...
+
+
+                var slotManager = player.GetComponent<AttackSlotManager>();
+                rigidBody.velocity = Vector3.zero; // Reset velocity to ensure no gliding behaviour as navmesh agents do not follow ordinary rigidbody physics
+                RotateTowardsTarget(player.transform);
+
+                if (movingToAttack && !inAction) // If the AI is flagged as moving to attack...
                 {
-                    if (currentSlot == -1) // If not assigned a slot...
-                    {
-                        currentSlot = slotManager.ReserveSlot(this, currentSlot, false);
-                    }
-
-                    if (currentSlot == -1) // If still not assigned a slot...
-                    {
-                        return;
-                    }
-
-                    NavMeshPath path = new NavMeshPath();
-                    agent.CalculatePath(slotManager.GetSlotPosition(currentSlot), path); // Calculate if the position of the slot is on the NavMesh
-
-                    if (path.status == NavMeshPathStatus.PathPartial)
-                    {
-                        print("Path out of bounds");
-                        RemoveFromAttackersList();
-                        return;
-                    }
-                    if (path.status == NavMeshPathStatus.PathInvalid)
-                    {
-                        print("Path invalid");
-                        RemoveFromAttackersList();
-                        return;
-                    }
-                    if (path.status == NavMeshPathStatus.PathComplete)
-                    {
-                        print("Path complete");
-                    }
-
-                    agent.destination = slotManager.GetSlotPosition(currentSlot);
+                    MoveToTarget();
                 }
-            }            
+                else // Otherwise if not moving to attack...
+                {
+                    if (agent.enabled) // If Navmeshagent is active...
+                    {
+                        if (currentSlot == -1) // If not assigned a slot...
+                        {
+                            currentSlot = slotManager.ReserveSlot(this, currentSlot, false);
+                        }
+
+                        if (currentSlot == -1) // If still not assigned a slot...
+                        {
+                            return;
+                        }
+
+                        NavMeshPath path = new NavMeshPath();
+                        agent.CalculatePath(slotManager.GetSlotPosition(currentSlot), path); // Calculate if the position of the slot is on the NavMesh
+
+                        if (path.status == NavMeshPathStatus.PathPartial)
+                        {
+                            print("Path out of bounds");
+                            RemoveFromAttackersList();
+                            return;
+                        }
+                        if (path.status == NavMeshPathStatus.PathInvalid)
+                        {
+                            print("Path invalid");
+                            RemoveFromAttackersList();
+                            return;
+                        }
+                        if (path.status == NavMeshPathStatus.PathComplete)
+                        {
+                            print("Path complete");
+                        }
+
+                        agent.destination = slotManager.GetSlotPosition(currentSlot);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -432,16 +448,19 @@ namespace ZaldensGambit
         /// </summary>
         protected virtual State UpdateState()
         {
-            bool canConsiderAttacking = Vector3.Distance(transform.position, player.transform.position) < aggroRange;
-
-            if (canConsiderAttacking)
+            if (!ignoreCombatCircle)
             {
-                if (currentAttackers.Count < maximumNumberOfAttackers)
+                bool canConsiderAttacking = Vector3.Distance(transform.position, player.transform.position) < aggroRange;
+
+                if (canConsiderAttacking)
                 {
-                    if (!currentAttackers.Contains(this))                       
+                    if (currentAttackers.Count < maximumNumberOfAttackers)
                     {
-                        currentAttackers.Add(this);
-                        movingToAttack = true;
+                        if (!currentAttackers.Contains(this))
+                        {
+                            currentAttackers.Add(this);
+                            movingToAttack = true;
+                        }
                     }
                 }
             }
@@ -496,7 +515,7 @@ namespace ZaldensGambit
         /// <summary>
         /// Show AI UI for the duration specified.
         /// </summary>
-        private IEnumerator RevealHealthBar(float duration)
+        protected IEnumerator RevealHealthBar(float duration)
         {
             healthSlider.gameObject.SetActive(true);
 
@@ -512,7 +531,7 @@ namespace ZaldensGambit
         /// <summary>
         /// Show AI UI for the duration specified
         /// </summary>
-        private IEnumerator RevealDamageText(float duration)
+        protected IEnumerator RevealDamageText(float duration)
         {
             damageText.gameObject.SetActive(true);
 
@@ -522,7 +541,7 @@ namespace ZaldensGambit
             damageTextCoroutine = null;
         }
 
-        private IEnumerator StunEffect(float duration)
+        protected IEnumerator StunEffect(float duration)
         {
             stunned = true;
             charAnim.SetBool("stunned", true);
@@ -556,18 +575,21 @@ namespace ZaldensGambit
         /// </summary>
         protected void RemoveFromAttackersList()
         {
-            if (currentAttackers.Contains(this))
+            if (!ignoreCombatCircle)
             {
-                currentAttackers.Remove(this);
-            }
+                if (currentAttackers.Contains(this))
+                {
+                    currentAttackers.Remove(this);
+                }
 
-            movingToAttack = false;
-            var slotManager = player.GetComponent<AttackSlotManager>();
+                movingToAttack = false;
+                var slotManager = player.GetComponent<AttackSlotManager>();
 
-            if (currentSlot != -1) // If the AI has a valid slot assigned...
-            {
-                slotManager.ClearSlot(currentSlot); // Clear slot
-                currentSlot = -1; // Assign invalid slot - will be recalculated when they attempt to reserve another.
+                if (currentSlot != -1) // If the AI has a valid slot assigned...
+                {
+                    slotManager.ClearSlot(currentSlot); // Clear slot
+                    currentSlot = -1; // Assign invalid slot - will be recalculated when they attempt to reserve another.
+                }
             }
         }
     }        

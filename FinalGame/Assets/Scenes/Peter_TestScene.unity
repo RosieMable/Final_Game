@@ -3883,6 +3883,21 @@ PrefabInstance:
       propertyPath: globalActionCooldown
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 1188148225721962322, guid: 0d7a6669ee1d190428377bec14c60e2f,
+        type: 3}
+      propertyPath: hurtAnimations.Array.data[0]
+      value: 
+      objectReference: {fileID: 7400000, guid: a841118dda39a6a40aa7bad5e36c927a, type: 2}
+    - target: {fileID: 1188148225721962322, guid: 0d7a6669ee1d190428377bec14c60e2f,
+        type: 3}
+      propertyPath: hurtAnimations.Array.data[1]
+      value: 
+      objectReference: {fileID: 7400000, guid: f1545cabb8b1ff94088aedaf6fdd8d2f, type: 2}
+    - target: {fileID: 1188148225721962322, guid: 0d7a6669ee1d190428377bec14c60e2f,
+        type: 3}
+      propertyPath: hurtAnimations.Array.data[2]
+      value: 
+      objectReference: {fileID: 7400000, guid: 1ce7165c2ee3d8249b875bd666c45c2a, type: 2}
     - target: {fileID: 1188148226539053983, guid: 0d7a6669ee1d190428377bec14c60e2f,
         type: 3}
       propertyPath: m_textInfo.characterCount

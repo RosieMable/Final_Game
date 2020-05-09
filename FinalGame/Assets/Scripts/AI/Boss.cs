@@ -64,49 +64,52 @@ namespace ZaldensGambit
         protected override void Update()
         {
             base.Update();
-            CalculatePossibleActions();
-            //PlayVoiceLines(currentHealth); // Needs further work to function correctly
 
-            if (activeClones.Count == 0)
+            if (!stunned)
             {
-                clonesActive = false;
-            }
+                CalculatePossibleActions();
+                //PlayVoiceLines(currentHealth); // Needs further work to function correctly
 
-            if (activeSummons.Count == 0)
-            {
-                summonsActive = false;
-            }
-
-            if (lookingToDodge && Input.GetMouseButtonDown(0) && IsPlayerWithinRange(3))
-            {
-                charAnim.CrossFade("dodgeRoll", 0.2f);
-                lookingToDodge = false;
-            }
-
-            if (lasering)
-            {
-                charAnim.SetBool("lasering", true);
-
-                if (Time.time > laserHitDelay)
+                if (activeClones.Count == 0)
                 {
-                    RaycastHit hit;
-                    Physics.Raycast(transform.position + Vector3.up, transform.forward, out hit, Mathf.Infinity);
+                    clonesActive = false;
+                }
 
-                    if (hit.collider != null)
+                if (activeSummons.Count == 0)
+                {
+                    summonsActive = false;
+                }
+
+                if (lookingToDodge && Input.GetMouseButtonDown(0) && IsPlayerWithinRange(3))
+                {
+                    charAnim.CrossFade("dodgeRoll", 0.2f);
+                    lookingToDodge = false;
+                }
+
+                if (lasering)
+                {
+                    charAnim.SetBool("lasering", true);
+
+                    if (Time.time > laserHitDelay)
                     {
-                        if (hit.collider.gameObject == player || hit.collider.gameObject.GetComponentInParent<StateManager>())
+                        RaycastHit hit;
+                        Physics.Raycast(transform.position + Vector3.up, transform.forward, out hit, Mathf.Infinity);
+
+                        if (hit.collider != null)
                         {
-                            player.GetComponent<StateManager>().TakeDamage(1, transform, false, false);
-                            laserHitDelay = laserHitCooldown + Time.time;
+                            if (hit.collider.gameObject == player || hit.collider.gameObject.GetComponentInParent<StateManager>())
+                            {
+                                player.GetComponent<StateManager>().TakeDamage(1, transform, false, false);
+                                laserHitDelay = laserHitCooldown + Time.time;
+                            }
                         }
                     }
                 }
+                else
+                {
+                    charAnim.SetBool("lasering", false);
+                }
             }
-            else
-            {
-                charAnim.SetBool("lasering", false);
-            }
-            
         }
 
         protected override void CombatBehaviour()
@@ -205,6 +208,57 @@ namespace ZaldensGambit
                     }
                     break;
             }
+        }
+
+        public override void TakeDamage(float damageValue)
+        {
+            if (isInvulnerable) // If flagged as invulnerable due to taking damage recently...
+            {
+                return; // Return out of method, take no damage
+            }
+
+            attackDelay = Time.time + attackCooldown; // Add onto the attack delay as we have been hit            
+            currentHealth = Mathf.Lerp(currentHealth, currentHealth - damageValue, 1f); // Reduce health by damage value
+            healthSlider.value = currentHealth; // Update slider to represent new health total
+
+            if (damageText.IsActive()) // If already showing damage text...
+            {
+                damageTextValue += damageValue; // Add onto existing damage text displayed                
+            }
+            else // If not showing damage text...
+            {
+                damageTextValue = damageValue; // Show initial damage
+            }
+
+            damageText.text = damageTextValue.ToString();
+
+            if (healthCoroutine != null) // If the AI health is already visible
+            {
+                StopCoroutine(healthCoroutine); // Stop coroutine, prevents bar from disappearing before intended
+                healthCoroutine = StartCoroutine(RevealHealthBar(3)); // Recall coroutine, ensures bar disappears when intended
+            }
+            else
+            {
+                healthCoroutine = StartCoroutine(RevealHealthBar(3)); // Start health coroutine to display AI health
+            }
+
+            if (damageTextCoroutine != null) // Same as above but for damage text
+            {
+                StopCoroutine(damageTextCoroutine);
+                damageTextCoroutine = StartCoroutine(RevealDamageText(3));
+            }
+            else
+            {
+                damageTextCoroutine = StartCoroutine(RevealDamageText(3));
+            }
+
+            int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length); // Return random animation from list
+            charAnim.CrossFade(hurtAnimations[hurtAnimationToPlay].name, 0.1f); // Play animation
+            charAnim.applyRootMotion = true;
+
+            int clipToPlay = Random.Range(0, hurtAudioClips.Length);
+            characterAudioSource.clip = hurtAudioClips[clipToPlay];
+            characterAudioSource.Play();
         }
 
         private void PlayVoiceLines(float currentHealth)

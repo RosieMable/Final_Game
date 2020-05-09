@@ -237,7 +237,7 @@ namespace ZaldensGambit
 
             foreach (Enemy enemy in enemiesHit)
             {
-                enemy.TakeDamage(spiritEquipped.DamageModifier);
+                enemy.TakeDamage(spiritEquipped.AOEDamageModifier);
                 enemy.ApplyStun(spiritEquipped.StunModifier);
             }
 
