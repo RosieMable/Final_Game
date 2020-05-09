@@ -35,7 +35,7 @@ namespace ZaldensGambit
         public int critDamage = 15;
         public float critChance = 5;
         [SerializeField] protected float attackRange = 1.5f;
-        [SerializeField] protected float aggroRange = 10;
+        public float aggroRange = 10;
         [SerializeField] protected float speed = 4;
         [SerializeField] protected float rotationSpeed = 2;
         protected bool stunned;
@@ -546,11 +546,17 @@ namespace ZaldensGambit
             stunned = true;
             charAnim.SetBool("stunned", true);
             charAnim.CrossFade("Stunned", 0.2f);
-            agent.isStopped = true;
+            if (agent.enabled)
+            {
+                agent.isStopped = true;
+            }
 
             yield return new WaitForSeconds(duration);
 
-            agent.isStopped = false;
+            if (agent.enabled)
+            {
+                agent.isStopped = false;
+            }
             charAnim.SetBool("stunned", false);
             stunned = false;
             stunnedCoroutine = null;

@@ -342,7 +342,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Combat Playtest
+  m_Text: 'Tutorial
+
+'
 --- !u!222 &354722427
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -526,7 +528,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &880386307
 RectTransform:
   m_ObjectHideFlags: 0
@@ -768,7 +770,7 @@ RectTransform:
   m_GameObject: {fileID: 1095981283}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.694643, y: 1.694643, z: 1.694643}
+  m_LocalScale: {x: 1.8502113, y: 1.8502113, z: 1.8502113}
   m_Children: []
   m_Father: {fileID: 1232165199}
   m_RootOrder: 0
@@ -862,7 +864,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
@@ -1011,7 +1013,7 @@ GameObject:
   - component: {fileID: 1409248951}
   - component: {fileID: 1409248954}
   m_Layer: 5
-  m_Name: Combat Playtest
+  m_Name: Tutorial
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1034,7 +1036,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 6.310111, y: 50.024}
+  m_AnchoredPosition: {x: -121.7, y: 21}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1409248951
@@ -1139,7 +1141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 391efcda3a9d90b4094a0939429b56d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: Tyler_PlayTest
+  sceneName: Tutorial
 --- !u!1 &1454937561
 GameObject:
   m_ObjectHideFlags: 0
@@ -1236,7 +1238,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1554967462
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1397,7 +1399,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 147.75002, y: 9.3762}
+  m_AnchoredPosition: {x: 147.75002, y: 21}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1643156401
@@ -1522,7 +1524,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1823961284
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1714,7 +1716,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: The Arena
+  m_Text: Spirit Test Chamber
 --- !u!222 &1850957423
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1803,7 +1805,7 @@ GameObject:
   - component: {fileID: 2086109832}
   - component: {fileID: 2086109835}
   m_Layer: 5
-  m_Name: The Arena
+  m_Name: Spirit Test Chamber
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1826,7 +1828,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 148.46, y: 50.024}
+  m_AnchoredPosition: {x: 12.6, y: 21.1}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2086109832
@@ -1931,4 +1933,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 391efcda3a9d90b4094a0939429b56d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: The Arena
+  sceneName: TB SPIRIT ROOM

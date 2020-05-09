@@ -41,7 +41,7 @@ namespace ZaldensGambit
 
         private void OnEnable()
         {
-            onSpiritChanged += UIManager.Instance.ManageSpiritUI;
+            //onSpiritChanged += UIManager.Instance.ManageSpiritUI; // - Moved to start as UIManager Instance reference is not initialised when OnEnable() runs
             onSpiritChanged += Spirits_PlayerModel.Instance.SetCorrectProps;
         }
         private void Awake()
@@ -56,6 +56,7 @@ namespace ZaldensGambit
         //for now it is going to be in update, but once the inventory system is on, this should happen when "equipping" the spirit
         private void Start()
         {
+            onSpiritChanged += UIManager.Instance.ManageSpiritUI;
             OnEquipSpirit(spirit);
         }
 
@@ -173,7 +174,7 @@ namespace ZaldensGambit
         void AbilityCooldown(BaseSpirit _EquippedSpirit)
         {
             canUseAbility = false;
-            UIManager.instance.UpdateAbilityBar(_EquippedSpirit.ActiveAbilityCooldown);
+            UIManager.Instance.UpdateAbilityBar(_EquippedSpirit.ActiveAbilityCooldown);
             StartCoroutine(DoAfter(_EquippedSpirit.ActiveAbilityCooldown, () => canUseAbility = true));
 
         }
