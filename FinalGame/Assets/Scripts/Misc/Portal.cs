@@ -7,7 +7,15 @@ namespace ZaldensGambit
     public class Portal : MonoBehaviour
     {
         public string sceneToLoad;
+        const string hubScene = "AlpaHub";
         public bool isDungeonPortal;
+        public bool isHubPortal;
+
+        private void Start()
+        {
+            if(isHubPortal)
+                DungeonCardSystem.Instance.CalculateRewards();
+        }
 
         private void OnTriggerEnter(Collider other)
         {
@@ -17,6 +25,12 @@ namespace ZaldensGambit
                 {
                     //load scene async
                     DungeonCardSystem.Instance.LoadSceneAsync(sceneToLoad);
+                    DungeonCardSystem.Instance.asyncDungeonScene.allowSceneActivation = true;
+                }
+                else if (isHubPortal)
+                {
+                    DungeonCardSystem.Instance.AddCardRewardToInventory();
+                    GameManager.instance.LoadScene(hubScene);
                 }
                 else
                 {

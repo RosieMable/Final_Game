@@ -1052,5 +1052,21 @@ PrefabInstance:
       propertyPath: m_Convex
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 8925893234356473489, guid: 0c1d016a7f746114780352463ecd292c,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8925714425949668541, guid: 0c1d016a7f746114780352463ecd292c,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8925054757621972633, guid: 0c1d016a7f746114780352463ecd292c,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 1796430040373017941, guid: 0c1d016a7f746114780352463ecd292c, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 0c1d016a7f746114780352463ecd292c, type: 3}

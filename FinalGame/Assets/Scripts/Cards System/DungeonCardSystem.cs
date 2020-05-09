@@ -15,9 +15,9 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
 
     public List<Card_ScriptableObj> allDungeonCards; //Reference to all the cards within the game
 
-    [SerializeField]
     private List<Card_ScriptableObj> _possibleDungeonCardsReward; //reference to the difference between all the cards within the game and the player's owned one, from there the reward is calculated
 
+    [SerializeField]
     private List<Card_ScriptableObj> _cardReward;
     public List<Card_ScriptableObj> DungeonCardsReward { get { return _cardReward; } private set { DungeonCardsReward = _cardReward; } }
 
@@ -55,8 +55,17 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
 
     AsyncOperation async;
 
+    public AsyncOperation asyncDungeonScene { get { return async; } private set { asyncDungeonScene = async; } }
+
+    AsyncOperation asyncHub;
+
+    public AsyncOperation asyncHubScene {  get { return asyncHub; } private set { asyncHubScene = asyncHub; } }
+
     [SerializeField]
     Portal portalToDungeon;
+
+    [SerializeField]
+    GameObject portalDungeon, portalArena;
 
     [SerializeField]
     string mainSceneName = "AlpaHub";
@@ -80,11 +89,13 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
     protected override void Awake()
     {
 
-        base.Awake();
-        if(SceneManager.GetActiveScene().name == mainSceneName)
+        if (SceneManager.GetActiveScene().name == mainSceneName)
         {
-            portalToDungeon = FindObjectOfType<Portal>();
+            portalToDungeon = portalDungeon.GetComponentInChildren<Portal>();
         }
+
+
+        base.Awake();
         DontDestroyOnLoad(this.gameObject);
     }
 
@@ -93,6 +104,8 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
         cardInventory = CardInventory.instance;
 
         string temp = "";
+
+        portalDungeon.SetActive(false);
 
 
         foreach (var item in cardInventory.dungeonCards)
@@ -143,7 +156,10 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
             DrawCards(3);
             text.text = "x3";
             if (inHubScene)
+            {
+                portalDungeon.SetActive(true);
                 portalToDungeon.sceneToLoad = "3_Room_Dungeon";
+            }
         }
         if (nClick > 3)
         {
@@ -152,7 +168,10 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
             DrawCards(3);
             text.text = "x3";
             if (inHubScene)
+            {
+                portalDungeon.SetActive(true);
                 portalToDungeon.sceneToLoad = "3_Room_Dungeon";
+            }
         }
         if (nClick == 2)
         {
@@ -160,7 +179,10 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
             DrawCards(6);
             text.text = "x6";
             if (inHubScene)
+            {
+                portalDungeon.SetActive(true);
                 portalToDungeon.sceneToLoad = "6_Room_Dungeon";
+            }
         }
         if (nClick == 3)
         {
@@ -168,7 +190,10 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
             DrawCards(9);
             text.text = "x9";
             if (inHubScene)
+            {
+                portalDungeon.SetActive(true);
                 portalToDungeon.sceneToLoad = "9_Room_Dungeon";
+            }
         }
 
 
@@ -218,17 +243,17 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
         //Based on drawn cards, spawn the corrisponding dungeon prefab
         if (_drawnCards.Count != 0 && allSpirits.Count != 0)
         {
-            if (_drawnCards.Count == 3)
+             if (_drawnCards.Count == 9)
             {
-                //Rewards for 3 Rooms Dungeons
-                GetDungeonCardsReward(3);
+                //Rewards for 9 Rooms Dungeons
+                GetDungeonCardsReward(9);
                 string temp = "";
                 foreach (var item in _cardReward)
                 {
                     Debug.Log(item.CardName);
                     temp += item.CardName + "\n";
                 }
-                debugCardRewards.text = "Cards Reward: \n\n" + temp;
+                // debugCardRewards.text = "Cards Reward: \n\n" + temp;
             }
             else if (_drawnCards.Count == 6)
             {
@@ -240,20 +265,30 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
                     Debug.Log(item.CardName);
                     temp += item.CardName + "\n";
                 }
-                debugCardRewards.text = "Cards Reward: \n\n" + temp;
+                //  debugCardRewards.text = "Cards Reward: \n\n" + temp;
             }
-            else if (_drawnCards.Count == 9)
+            else if (_drawnCards.Count == 3)
             {
-                //Rewards for 9 Rooms Dungeons
-                GetDungeonCardsReward(9);
+                //Rewards for 3 Rooms Dungeons
+                GetDungeonCardsReward(3);
                 string temp = "";
                 foreach (var item in _cardReward)
                 {
                     Debug.Log(item.CardName);
                     temp += item.CardName + "\n";
                 }
-                debugCardRewards.text = "Cards Reward: \n\n" + temp;
+               // debugCardRewards.text = "Cards Reward: \n\n" + temp;
             }
+
+        }
+    }
+
+    public void AddCardRewardToInventory()
+    {
+        foreach (var dungeonCardReward in _cardReward)
+        {
+            cardInventory.AddDungeonCardToInventory(dungeonCardReward);
+            print("Card Added to Inventory: " + dungeonCardReward.CardName);
         }
     }
 
@@ -291,7 +326,23 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
     public void LoadSceneAsync(string sceneName)
     {
         StartCoroutine(LoadAsync(sceneName));
-        async.allowSceneActivation = true;
+        async.allowSceneActivation = false;
+    }
+
+    public void LoadHubAsync()
+    {
+        StartCoroutine(LoadAsyncHub());
+
+    }
+
+    IEnumerator LoadAsyncHub()
+    {
+        Debug.LogWarning("ASYNC LOAD STARTED - " +
+        "DO NOT EXIT PLAY MODE UNTIL SCENE LOADS... UNITY WILL CRASH");
+        asyncHub = SceneManager.LoadSceneAsync("AlpaHub");
+        asyncHub.allowSceneActivation = false;
+        yield return asyncHub;
+        CalculateRewards();
     }
 
     IEnumerator LoadAsync(string sceneName)
