@@ -92,6 +92,7 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
         if (SceneManager.GetActiveScene().name == mainSceneName)
         {
             portalToDungeon = portalDungeon.GetComponentInChildren<Portal>();
+
         }
 
 

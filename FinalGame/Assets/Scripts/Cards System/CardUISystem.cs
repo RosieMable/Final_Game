@@ -16,7 +16,7 @@ namespace ZaldensGambit
         [SerializeField]
         List<Card_ScriptableObj> drawnCards;
 
-        public List<CardUI> CardsSelected;
+        public List<DungeonCardUI> DungeonCardsSelected;
 
         [SerializeField]
         List<GameObject> CardsDealt;
@@ -39,7 +39,7 @@ namespace ZaldensGambit
         private Transform HandDeckPos;
 
         [SerializeField]
-        GameObject prefabCard;
+        GameObject prefabDungeonCard, prefabSpiritCard;
 
         [Header("Dungeon Cards UI Elements")]
         [SerializeField]
@@ -67,14 +67,14 @@ namespace ZaldensGambit
             currentDeck = CardInventory.instance.dungeonCards;
             HandDeckPos = HandDeck;
 
-            foreach (var card in CardsSelected)
+            foreach (var card in DungeonCardsSelected)
             {
                 card.selected = false;
             }
-            CardsSelected.Clear();
+            DungeonCardsSelected.Clear();
             cardsRevealed = 0;
-            CardUI.selectCardDelegate += CheckCardsSelected;
-            CardUI.revealCardDelegate += AfterSelection;
+            DungeonCardUI.selectCardDelegate += CheckCardsSelected;
+            DungeonCardUI.revealCardDelegate += AfterSelection;
 
             portalToDungeon.gameObject.SetActive(false);
         }
@@ -92,7 +92,7 @@ namespace ZaldensGambit
             cardsClickedOn = 0;
           //  CenterPoint.position = GetCentreForCards(dungeonCard.DrawnCards.Count);
 
-            foreach (var card in CardsSelected)
+            foreach (var card in DungeonCardsSelected)
             {
                 card.chosenCard = drawnCards[cardsClickedOn++];
                 Vector3 parentPos = CenterPoint.position;
@@ -106,10 +106,10 @@ namespace ZaldensGambit
 
             }
 
-            if (CardsSelected.Count == dungeonCard.GlobalAmountCD) //if we drawn the needed cards
+            if (DungeonCardsSelected.Count == dungeonCard.GlobalAmountCD) //if we drawn the needed cards
             {
                 iTween.MoveTo(HandDeck.gameObject, new Vector3(HandDeck.gameObject.transform.position.x, -300, HandDeck.gameObject.transform.position.z), 1f); //Moves the hand out of the way
-                CardUI.selectCardDelegate -= CheckCardsSelected;
+                DungeonCardUI.selectCardDelegate -= CheckCardsSelected;
                 cardsClickedOn = 0;
             }
         }
@@ -178,7 +178,7 @@ namespace ZaldensGambit
             yield return new WaitForSecondsRealtime(delay);
 
             DungeonCardssUIElements.SetActive(false);
-            foreach (var cardSelected in CardsSelected)
+            foreach (var cardSelected in DungeonCardsSelected)
             {
                 Destroy(cardSelected);
             }
@@ -197,9 +197,9 @@ namespace ZaldensGambit
             {
                 for (int y = 0; y < _cards.Count; y++)
                 {
-                    GameObject cardGO = Instantiate(prefabCard, HandDeck);
+                    GameObject cardGO = Instantiate(prefabDungeonCard, HandDeck);
                     cardGO.transform.SetParent(HandDeck);
-                    cardGO.transform.position = start.position; //relocating my card to the Start Position
+                    cardGO.transform.position = GetCentreForCards(_cards.Count); //relocating my card to the Start Position
                     float twistForThisCard = startTwist + (howManyAdded * twistPerCard);
                     float scalingFactor = 1.75f;
                     float nudgeThisCard = Mathf.Abs(twistForThisCard);
@@ -220,7 +220,7 @@ namespace ZaldensGambit
                 howManyAdded = 0;
                 foreach (var cardGO in CardsDealt)
                 {
-                    cardGO.transform.position = start.position; //relocating my card to the Start Position
+                    cardGO.transform.position = GetCentreForCards(CardsDealt.Count); //relocating my card to the Start Position
                     cardGO.transform.SetParent(HandDeck);
                     float twistForThisCard = startTwist + (howManyAdded * twistPerCard);
                     float scalingFactor = 1.75f;
@@ -303,8 +303,8 @@ namespace ZaldensGambit
 
         private void OnDisable()
         {
-            CardUI.selectCardDelegate -= CheckCardsSelected;
-            CardUI.revealCardDelegate -= AfterSelection;
+            DungeonCardUI.selectCardDelegate -= CheckCardsSelected;
+            DungeonCardUI.revealCardDelegate -= AfterSelection;
         }
     }
 }

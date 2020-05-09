@@ -123,6 +123,7 @@ namespace ZaldensGambit
 
         public void UpdateAbilityBar(float abilityCooldown)
         {
+            StopCoroutine(AbilityCooldown(abilityCooldown));
             StartCoroutine(AbilityCooldown(abilityCooldown));
         }
 
