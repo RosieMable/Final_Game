@@ -82,7 +82,7 @@ namespace ZaldensGambit
 
                 if (lookingToDodge && Input.GetMouseButtonDown(0) && IsPlayerWithinRange(3))
                 {
-                    charAnim.CrossFade("dodgeRoll", 0.2f);
+                    charAnim.CrossFade("DodgeRoll", 0.2f);
                     lookingToDodge = false;
                 }
 

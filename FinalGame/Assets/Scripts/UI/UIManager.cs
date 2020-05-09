@@ -15,6 +15,7 @@ namespace ZaldensGambit
         private StateManager player;
         private TextMeshProUGUI dialogueText;
         private GameObject dialoguePanel;
+        private Coroutine abilityCooldownCoroutine;
 
         private Image spiritBar;
 
@@ -123,8 +124,12 @@ namespace ZaldensGambit
 
         public void UpdateAbilityBar(float abilityCooldown)
         {
-            StopCoroutine(AbilityCooldown(abilityCooldown));
-            StartCoroutine(AbilityCooldown(abilityCooldown));
+            if (abilityCooldownCoroutine != null)
+            {
+                StopCoroutine(abilityCooldownCoroutine);
+            }
+
+            abilityCooldownCoroutine = StartCoroutine(AbilityCooldown(abilityCooldown));
         }
 
         IEnumerator AbilityCooldown(float countdownValue)
@@ -137,6 +142,7 @@ namespace ZaldensGambit
                 currentValue++;
                 spiritBar.fillAmount = 1 / countdownValue * currentValue;
             }
+            abilityCooldownCoroutine = null;
         }
 
 

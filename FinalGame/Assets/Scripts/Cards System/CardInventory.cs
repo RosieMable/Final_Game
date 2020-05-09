@@ -26,6 +26,7 @@ public class CardInventory : MonoBehaviour
     public SpiritDeckUpdated spiritDeckCallback;
     public delegate void DungeonDeckUpdated(Card_ScriptableObj dungeonCard);
     public DungeonDeckUpdated dungeonDeckCallback;
+    private int minimum = 0;
 
     private void Awake()
     {
@@ -122,8 +123,6 @@ public class CardInventory : MonoBehaviour
             }
         }
     }
-
-    private int minimum = 0;
 
     public void SortLeft()
     {

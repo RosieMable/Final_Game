@@ -88,13 +88,11 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
 
     protected override void Awake()
     {
-
         if (SceneManager.GetActiveScene().name == mainSceneName)
         {
+            portalDungeon = GameObject.Find("PortalToDungeon");
             portalToDungeon = portalDungeon.GetComponentInChildren<Portal>();
-
         }
-
 
         base.Awake();
         DontDestroyOnLoad(this.gameObject);
