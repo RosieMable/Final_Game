@@ -29,10 +29,20 @@ public class GameManager : MonoBehaviour
         damageEffect.enabled = false;
     }
 
+    private void Update()
+    {
+        //if (Input.GetKeyDown(KeyCode.Escape))
+        //{
+        //    SceneManager.LoadScene("Title Screen");
+        //    Cursor.visible = true;
+        //    Cursor.lockState = CursorLockMode.None;
+        //}
+    }
+
     public void GameOver()
     {
         StartCoroutine(GameOverAfterDelay(3));
-    }    
+    }
 
     public void InstantGameOver()
     {

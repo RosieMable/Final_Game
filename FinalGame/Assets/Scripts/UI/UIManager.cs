@@ -8,7 +8,7 @@ namespace ZaldensGambit
 {
     public class UIManager : Singleton<UIManager>
     {
-        public static UIManager instance;
+        public static UIManager Instance;
 
         private Image healthBar;
         private TextMeshProUGUI healthText;
@@ -29,11 +29,11 @@ namespace ZaldensGambit
 
         private new void Awake()
         {
-            if (instance == null)
+            if (Instance == null)
             {
-                instance = this;
+                Instance = this;
             }
-            else if (instance != this)
+            else if (Instance != this)
             {
                 Destroy(gameObject);
             }
@@ -80,6 +80,22 @@ namespace ZaldensGambit
         {
             dialogueText.text = dialogueToShow;
             dialoguePanel.SetActive(true);
+        }
+
+        public void DisplayDialogue(string[] dialogueToShow, float duration)
+        {
+            StartCoroutine(DisplayTextForDuration(dialogueToShow, duration));
+        }
+
+        private IEnumerator DisplayTextForDuration(string[] text, float duration)
+        {
+            for (int i = 0; i < text.Length; i++)
+            {
+                dialogueText.text = text[i];
+                dialoguePanel.SetActive(true);
+                yield return new WaitForSeconds(duration);
+                HideDialogue();
+            }
         }
 
         public void HideDialogue()
