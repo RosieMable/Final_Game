@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using ZaldensGambit;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,6 +13,11 @@ public class GameManager : MonoBehaviour
     private Image damageEffect;
     private Coroutine damageCoroutine;
 
+    public BaseSpirit spiritToEquipInDungeon;
+
+    SpiritSystem spiritSystem;
+
+    private Scene currentScene;
     private void Awake()
     {
         if (instance == null)
@@ -27,6 +33,8 @@ public class GameManager : MonoBehaviour
 
         damageEffect = GameObject.Find("DamageEffect").GetComponent<Image>();
         damageEffect.enabled = false;
+
+        currentScene = SceneManager.GetActiveScene();
     }
 
     private void Update()
@@ -37,6 +45,19 @@ public class GameManager : MonoBehaviour
         //    Cursor.visible = true;
         //    Cursor.lockState = CursorLockMode.None;
         //}
+
+        if(SceneManager.GetActiveScene() != currentScene)
+        {
+            if(spiritSystem== null)
+            {
+                spiritSystem = FindObjectOfType<SpiritSystem>();
+                if (spiritToEquipInDungeon != null)
+                {
+                    spiritSystem.spiritEquipped = spiritToEquipInDungeon;
+                    spiritSystem.OnEquipSpirit(spiritToEquipInDungeon);
+                }
+            }
+        }
     }
 
     public void GameOver()

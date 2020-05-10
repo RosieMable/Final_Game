@@ -14,6 +14,9 @@ namespace ZaldensGambit
         [SerializeField]
         protected CardUISystem UI;
 
+        [SerializeField]
+        protected SpiritSystem spiritSystem;
+
         public Card_ScriptableObj chosenCard;
 
         public bool selected;
@@ -26,6 +29,8 @@ namespace ZaldensGambit
                 UI = FindObjectOfType<CardUISystem>();
             selected = false;
 
+            if(spiritSystem == null)
+                spiritSystem = FindObjectOfType<SpiritSystem>();
            
             shadow = FindObjectOfType<UIShadow>();
 
@@ -42,7 +47,7 @@ namespace ZaldensGambit
             }
             else
             {
-                iTween.ScaleTo(this.gameObject, new Vector3(2.2f, 2.2f, 2.2f), .2f);
+                iTween.ScaleTo(this.gameObject, new Vector3(1.2f, 1.2f, 1.2f), .2f);
             }
 
             shadow.effectColor = new Color(shadow.effectColor.r, shadow.effectColor.g, shadow.effectColor.b, 1);
@@ -56,7 +61,7 @@ namespace ZaldensGambit
             }
             else
             {
-                iTween.ScaleTo(this.gameObject, new Vector3(2f, 2f, 2f), .2f);
+                iTween.ScaleTo(this.gameObject, new Vector3(1f, 1f, 1f), .2f);
             }
 
             shadow.effectColor = new Color(shadow.effectColor.r, shadow.effectColor.g, shadow.effectColor.b, 0);
