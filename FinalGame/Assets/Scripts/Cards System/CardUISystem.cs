@@ -145,7 +145,7 @@ namespace ZaldensGambit
                 //show spirit choice UI
                 if (spirits.Count != 0)
                 {
-                    for (int i = 0; i <= spirits.Count; i++)
+                    for (int i = 0; i <= spirits.Count -1; i++)
                     {
                         GameObject spiritCard = Instantiate(prefabSpiritCard, SpiritCardsPosition);
                         SpiritCardUI spirit = spiritCard.GetComponent<SpiritCardUI>();

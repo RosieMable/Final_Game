@@ -7,7 +7,7 @@ namespace ZaldensGambit
     public class Portal : MonoBehaviour
     {
         public string sceneToLoad;
-        const string hubScene = "AlpaHub";
+        const string hubScene = "BetaHub";
         public bool isDungeonPortal;
         public bool isHubPortal;
 

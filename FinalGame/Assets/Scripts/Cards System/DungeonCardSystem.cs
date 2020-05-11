@@ -68,7 +68,7 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
     GameObject portalDungeon, portalArena;
 
     [SerializeField]
-    string mainSceneName = "AlpaHub";
+    string mainSceneName = "BetaHub";
 
     bool inHubScene;
 
@@ -91,7 +91,7 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
         if (SceneManager.GetActiveScene().name == mainSceneName)
         {
             portalDungeon = GameObject.Find("PortalToDungeon");
-            portalToDungeon = portalDungeon.GetComponentInChildren<Portal>();
+            portalToDungeon = portalDungeon.GetComponent<Portal>();
         }
 
         base.Awake();
