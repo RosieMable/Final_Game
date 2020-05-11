@@ -7,9 +7,9 @@ namespace ZaldensGambit
     public class FateWeaver : DialogueNPC
     {
         [SerializeField] private GameObject DungeonChoiceUI;
-        [SerializeField] private GameObject DungeonCardSelectionUI;
-        [SerializeField] private GameObject SpiritCardSelectionUI;
         private bool cardsDealt;
+
+        CardUISystem cardUISystem;
 
         // Talk to NPC
         // NPC asks if you want to enter dungeon
@@ -17,6 +17,13 @@ namespace ZaldensGambit
         // Player says no - dialogue ends
         // Player confirms cards dealt - selects spirit to take into dungeon
         // Portal opens
+
+        private void Awake()
+        {
+            cardUISystem = FindObjectOfType<CardUISystem>();
+            DungeonChoiceUI = cardUISystem.DungeonUIChoice;
+            DungeonChoiceUI.SetActive(false);
+        }
 
         protected override void CheckMainDialogue()
         {

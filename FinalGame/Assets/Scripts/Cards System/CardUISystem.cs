@@ -51,6 +51,8 @@ namespace ZaldensGambit
         [SerializeField]
         GameObject SpiritCardsUIElements;
 
+        public GameObject DungeonUIChoice;
+
         public int cardsRevealed;
 
         public bool spiritSelected;

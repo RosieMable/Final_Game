@@ -197,17 +197,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 4537033266528287900}
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 6606439132334951709}
         m_MethodName: SetActive
         m_Mode: 6
@@ -1081,11 +1070,11 @@ RectTransform:
   m_Father: {fileID: 2070388727396364214}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0.000030517578, y: 0}
+  m_SizeDelta: {x: 908, y: 425}
+  m_Pivot: {x: 0, y: 1}
 --- !u!114 &7312588220976448552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1139,7 +1128,7 @@ RectTransform:
   m_GameObject: {fileID: 4962276754663579649}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.89686096, y: 0.89686096, z: 0.89686096}
   m_Children:
   - {fileID: 4758051636018775433}
   - {fileID: 2070388727396364214}
@@ -1245,8 +1234,9 @@ MonoBehaviour:
     type: 3}
   prefabSpiritCard: {fileID: 2158864910168191965, guid: b847a43fb935abb47a097781887c3708,
     type: 3}
-  DungeonCardssUIElements: {fileID: 0}
+  DungeonCardssUIElements: {fileID: 3597534079822068270}
   SpiritCardsUIElements: {fileID: 8455046692755142006}
+  DungeonUIChoice: {fileID: 6606439132334951709}
   cardsRevealed: 0
   spiritSelected: 0
   portalToDungeon: {fileID: 0}
@@ -1515,6 +1505,28 @@ MonoBehaviour:
       - m_Target: {fileID: 4962276754663579648}
         m_MethodName: NewDeal
         m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 4962276755443562772}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 4962276754837984873}
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1944,7 +1956,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 0}
-        m_MethodName: 
+        m_MethodName: SetGlobalAmount
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 4962276755212894677}
@@ -2136,7 +2148,7 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 100, y: 150}
+  m_CellSize: {x: 100, y: 100}
   m_Spacing: {x: 0, y: 0}
   m_Constraint: 2
   m_ConstraintCount: 1
