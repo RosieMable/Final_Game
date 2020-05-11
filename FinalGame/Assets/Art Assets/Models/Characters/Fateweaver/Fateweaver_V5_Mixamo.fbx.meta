@@ -1,9 +1,29 @@
 fileFormatVersion: 2
-guid: ccc1ea50b68a19e408ce374e7973fb39
+guid: fdb169fb55352d64c887caa70af89b50
 ModelImporter:
   serializedVersion: 26
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: FateWeaver_Body_Mat
+    second: {fileID: 2100000, guid: 686f3e0e79bded34abc384e1b7499c6b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Fateweaver_Coat_Mat
+    second: {fileID: 2100000, guid: 7a7704e7f380de140aa3793b9051daad, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Fateweaver_Hat_Mat
+    second: {fileID: 2100000, guid: 67042ab81c6fddf4ab07f597ee11ee2d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Fateweaver_Shorts_Mat
+    second: {fileID: 2100000, guid: c4543ef82e8b65a438414a47d47f1cac, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
