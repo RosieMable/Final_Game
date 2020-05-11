@@ -34,7 +34,7 @@ namespace ZaldensGambit
             NPCs = FindObjectsOfType<DialogueNPC>();
         }       
 
-        private void Update()
+        protected virtual void Update()
         {
             distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
 
@@ -76,7 +76,7 @@ namespace ZaldensGambit
 
             if (audioSource.isPlaying && dialogueIndex != -1)
             {
-                print(mainDialogue[dialogueIndex].dialogue + " should be on screen!");
+                //print(mainDialogue[dialogueIndex].dialogue + " should be on screen!");
             }
         }
 

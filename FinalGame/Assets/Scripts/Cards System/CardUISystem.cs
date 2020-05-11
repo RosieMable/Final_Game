@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 namespace ZaldensGambit
 {
@@ -66,6 +67,7 @@ namespace ZaldensGambit
         void Start()
         {
             Init();
+            DungeonUIChoice.SetActive(false);
         }
 
         void Init()
@@ -90,9 +92,19 @@ namespace ZaldensGambit
 
             spirits = CardInventory.instance.spiritCards;
 
-            portalToDungeon.gameObject.SetActive(false);
+            if (portalToDungeon != null)
+            {
+                portalToDungeon.gameObject.SetActive(false);
+            }
         }
 
+        private void Update()
+        {
+            if (portalToDungeon == null && SceneManager.GetActiveScene().name == "BetaHub")
+            {
+                portalToDungeon = GameObject.Find("PortalToDungeon").GetComponent<Portal>();
+            }
+        }
 
         public void NewDeal()
         {

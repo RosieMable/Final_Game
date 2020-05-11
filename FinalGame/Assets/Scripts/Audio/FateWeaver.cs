@@ -11,18 +11,26 @@ namespace ZaldensGambit
 
         CardUISystem cardUISystem;
 
-        // Talk to NPC
-        // NPC asks if you want to enter dungeon
-        // Player says yes - select cards to be dealt
-        // Player says no - dialogue ends
-        // Player confirms cards dealt - selects spirit to take into dungeon
-        // Portal opens
-
         private void Awake()
         {
             cardUISystem = FindObjectOfType<CardUISystem>();
             DungeonChoiceUI = cardUISystem.DungeonUIChoice;
             DungeonChoiceUI.SetActive(false);
+        }
+
+        protected override void Update()
+        {
+            base.Update();
+
+            if (cardUISystem == null)
+            {
+                cardUISystem = FindObjectOfType<CardUISystem>();
+            }
+
+            if (DungeonChoiceUI == null)
+            {
+                DungeonChoiceUI = cardUISystem.DungeonUIChoice;
+            }
         }
 
         protected override void CheckMainDialogue()

@@ -67,7 +67,6 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
     [SerializeField]
     GameObject portalDungeon, portalArena;
 
-    [SerializeField]
     string mainSceneName = "BetaHub";
 
     bool inHubScene;
@@ -104,12 +103,14 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
 
         string temp = "";
 
-        portalDungeon.SetActive(false);
-
+        if (portalDungeon != null)
+        {
+            //portalDungeon.SetActive(false);
+        }
 
         foreach (var item in cardInventory.dungeonCards)
         {
-            Debug.Log(item.CardName);
+            //Debug.Log(item.CardName);
             temp += item.CardName + "\n";
         }
         if (isDebug)
@@ -119,7 +120,7 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
 
         foreach (var item in allDungeonCards)
         {
-            Debug.Log(item.CardName);
+           // Debug.Log(item.CardName);
             temp02 += item.CardName + "\n";
         }
 
@@ -133,6 +134,16 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
         if (SceneManager.GetActiveScene().name == mainSceneName)
         {
             inHubScene = true;
+
+            if (!portalDungeon)
+            {
+                portalDungeon = GameObject.Find("PortalToDungeon");
+            }
+
+            if (!portalToDungeon)
+            {
+                portalToDungeon = portalDungeon.GetComponent<Portal>();
+            }
         }
         else
         {
@@ -142,11 +153,9 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
 
     public void SetGlobalAmount(Text text)
     {
-
-
         nClick++;
 
-        print(nClick);
+        //print(nClick);
 
         
         if (nClick >= 0)

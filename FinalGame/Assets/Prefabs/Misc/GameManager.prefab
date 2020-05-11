@@ -68,6 +68,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7d2dcdf5987abc947ad1f87ff16ea282, type: 2}
   - {fileID: 11400000, guid: 2ab84199831a9eb4485fd9cc28e004f0, type: 2}
   - {fileID: 11400000, guid: b2d4ebb9fb9a8094a8a8e61635da88a6, type: 2}
+  - {fileID: 11400000, guid: cd133860e1738e34fb39aa34928de237, type: 2}
+  - {fileID: 11400000, guid: 0c430a293e574bd4ab4691430f0a680d, type: 2}
+  - {fileID: 11400000, guid: 2e21c12db7b1a65418a23e6f62e98d88, type: 2}
+  - {fileID: 11400000, guid: 0dc7d36d1d4f65842ab2e00aaac45f69, type: 2}
 --- !u!114 &3805914309176986483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -86,3 +90,4 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 11fb6e1bd960c28499231d8e3344b35f, type: 3}
   - {fileID: 21300000, guid: a151c72301595a644bfe6bca246a7a78, type: 3}
   - {fileID: 21300000, guid: 45b24bc1dbf1f6d448da24d666cf6a3f, type: 3}
+  spiritToEquipInDungeon: {fileID: 0}

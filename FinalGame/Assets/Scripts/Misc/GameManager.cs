@@ -16,6 +16,7 @@ public class GameManager : MonoBehaviour
     public BaseSpirit spiritToEquipInDungeon;
 
     SpiritSystem spiritSystem;
+    CardUISystem cardUISystem;
 
     private Scene currentScene;
     private void Awake()
@@ -45,6 +46,11 @@ public class GameManager : MonoBehaviour
         //    Cursor.visible = true;
         //    Cursor.lockState = CursorLockMode.None;
         //}
+
+        if (cardUISystem == null)
+        {
+            cardUISystem = FindObjectOfType<CardUISystem>();
+        }
 
         if(SceneManager.GetActiveScene() != currentScene)
         {
