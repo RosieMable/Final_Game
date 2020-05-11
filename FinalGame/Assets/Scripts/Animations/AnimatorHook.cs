@@ -65,7 +65,7 @@ namespace ZaldensGambit
                     delta.y = 0;
                     Vector3 velocity = (delta * multiplier) / states.delta;
                     rigidBody.velocity = velocity;
-                }                
+                }    
             }
 
             if (enemyStates != null)

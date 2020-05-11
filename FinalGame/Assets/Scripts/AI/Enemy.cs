@@ -197,7 +197,6 @@ namespace ZaldensGambit
                 player = FindObjectOfType<StateManager>().gameObject;
             }
 
-
             CheckHealth();
 
             if (!stunned)
