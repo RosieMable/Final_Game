@@ -238,7 +238,7 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
     }
 
     public void CalculateRewards()
-    {
+    {        
         //Based on drawn cards, spawn the corrisponding dungeon prefab
         if (_drawnCards.Count != 0 && allSpirits.Count != 0)
         {
