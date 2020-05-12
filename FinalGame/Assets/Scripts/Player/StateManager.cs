@@ -382,7 +382,7 @@ namespace ZaldensGambit
             }
             else
             {
-                rigidBody.drag = 999;                
+                rigidBody.drag = 4;                
             }
 
             if (grounded)
