@@ -62,14 +62,18 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
     public AsyncOperation asyncHubScene {  get { return asyncHub; } private set { asyncHubScene = asyncHub; } }
 
     [SerializeField]
-    Portal portalToDungeon;
-
-    [SerializeField]
-    GameObject portalDungeon, portalArena;
+    Portal _portalToDungeon;
+    public Portal PortalToDungeon {
+        get {
+            if (_portalToDungeon == null)
+                _portalToDungeon = GameObject.Find("PortalToDungeon")?.GetComponent<Portal>();
+            return _portalToDungeon;
+        }
+    }
 
     string mainSceneName = "BetaHub";
 
-    bool inHubScene;
+    bool InHubScene => SceneManager.GetActiveScene().name == mainSceneName;
 
     [Header("Temp Debug")]
     #region Temp for debug
@@ -87,12 +91,6 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
 
     protected override void Awake()
     {
-        if (SceneManager.GetActiveScene().name == mainSceneName)
-        {
-            portalDungeon = GameObject.Find("PortalToDungeon");
-            portalToDungeon = portalDungeon.GetComponent<Portal>();
-        }
-
         base.Awake();
         DontDestroyOnLoad(this.gameObject);
     }
@@ -103,9 +101,9 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
 
         string temp = "";
 
-        if (portalDungeon != null)
+        if (PortalToDungeon != null)
         {
-            //portalDungeon.SetActive(false);
+            PortalToDungeon.DeactivatePortal();
         }
 
         foreach (var item in cardInventory.dungeonCards)
@@ -129,27 +127,6 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
 
     }
 
-    private void Update()
-    {
-        if (SceneManager.GetActiveScene().name == mainSceneName)
-        {
-            inHubScene = true;
-
-            if (!portalDungeon)
-            {
-                portalDungeon = GameObject.Find("PortalToDungeon");
-            }
-
-            if (!portalToDungeon)
-            {
-                portalToDungeon = portalDungeon.GetComponent<Portal>();
-            }
-        }
-        else
-        {
-            inHubScene = false;
-        }
-    }
 
     public void SetGlobalAmount(Text text)
     {
@@ -163,11 +140,6 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
             GlobalAmountCD = 3;
             DrawCards(3);
             text.text = "x3";
-            if (inHubScene)
-            {
-                portalDungeon.SetActive(true);
-                portalToDungeon.sceneToLoad = "3_Room_Dungeon";
-            }
         }
         if (nClick > 3)
         {
@@ -175,33 +147,18 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
             GlobalAmountCD = 3;
             DrawCards(3);
             text.text = "x3";
-            if (inHubScene)
-            {
-                portalDungeon.SetActive(true);
-                portalToDungeon.sceneToLoad = "3_Room_Dungeon";
-            }
         }
         if (nClick == 2)
         {
             GlobalAmountCD = 6;
             DrawCards(6);
             text.text = "x6";
-            if (inHubScene)
-            {
-                portalDungeon.SetActive(true);
-                portalToDungeon.sceneToLoad = "6_Room_Dungeon";
-            }
         }
         if (nClick == 3)
         {
             GlobalAmountCD = 9;
             DrawCards(9);
             text.text = "x9";
-            if (inHubScene)
-            {
-                portalDungeon.SetActive(true);
-                portalToDungeon.sceneToLoad = "9_Room_Dungeon";
-            }
         }
 
 
@@ -222,6 +179,22 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
         }
         if(isDebug)
         debugCardsDrawn.text = "Cards drawn: \n\n" + temp;
+    }
+
+    public void LoadDungeonAsync()
+    {
+        switch(GlobalAmountCD)
+        {
+            case 3:
+                PortalToDungeon.LoadAsync("3_Room_Dungeon");
+                break;
+            case 6:
+                PortalToDungeon.LoadAsync("6_Room_Dungeon");
+                break;
+            case 9:
+                PortalToDungeon.LoadAsync("9_Room_Dungeon");
+                break;
+        }
     }
 
     public void CreateDungeon()
@@ -311,8 +284,8 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
         _cardReward = GetRandomItemsFromList(_possibleDungeonCardsReward, rewardAmount);
     }
 
-        public static List<T> GetRandomItemsFromList<T>(List<T> list, int number)
-        {
+    public static List<T> GetRandomItemsFromList<T>(List<T> list, int number)
+    {
         //temp list from which we are taking the element
             List<T> tmp = new List<T>(list);
 
@@ -329,19 +302,8 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
 
         return newList;
 
-        }
-
-    public void LoadSceneAsync(string sceneName)
-    {
-        StartCoroutine(LoadAsync(sceneName));
-        async.allowSceneActivation = false;
     }
 
-    public void LoadHubAsync()
-    {
-        StartCoroutine(LoadAsyncHub());
-
-    }
 
     IEnumerator LoadAsyncHub()
     {

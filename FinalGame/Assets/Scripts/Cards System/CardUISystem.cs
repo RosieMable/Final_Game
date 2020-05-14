@@ -9,14 +9,8 @@ namespace ZaldensGambit
     public class CardUISystem : MonoBehaviour
     {
         [SerializeField]
-        private DungeonCardSystem dungeonCard;
-
-        [SerializeField]
         List<Card_ScriptableObj> currentDeck;
-
-        [SerializeField]
-        List<Card_ScriptableObj> drawnCards;
-
+        
         public List<DungeonCardUI> DungeonCardsSelected;
 
         [SerializeField]
@@ -58,8 +52,6 @@ namespace ZaldensGambit
 
         public bool spiritSelected;
 
-        [SerializeField]
-        Portal portalToDungeon;
         private void OnEnable()
         {
             //CardUI.selectCardDelegate += CheckCardsSelected;
@@ -72,9 +64,6 @@ namespace ZaldensGambit
 
         void Init()
         {
-            if (dungeonCard == null)
-                dungeonCard = FindObjectOfType<DungeonCardSystem>();
-
             howManyAdded = 0.0f;
             currentDeck = CardInventory.instance.dungeonCards;
             HandDeckPos = HandDeck;
@@ -91,23 +80,12 @@ namespace ZaldensGambit
             SpiritCardUI.selectCardDelegate += AfterSpiritSelection;
 
             spirits = CardInventory.instance.spiritCards;
-
-            if (portalToDungeon != null)
-            {
-                portalToDungeon.gameObject.SetActive(false);
-            }
         }
-
-        private void Update()
-        {
-            if (portalToDungeon == null && SceneManager.GetActiveScene().name == "BetaHub")
-            {
-                portalToDungeon = GameObject.Find("PortalToDungeon").GetComponent<Portal>();
-            }
-        }
-
+        
         public void NewDeal()
         {
+            DungeonCardSystem.Instance.LoadDungeonAsync();
+
             Init();
             FitCards();
         }
@@ -121,14 +99,14 @@ namespace ZaldensGambit
             {
                 card.gameObject.transform.SetParent(CenterPoint);
                 iTween.RotateTo(card.gameObject, Vector3.zero, 0.25f);
-                iTween.ScaleTo(card.gameObject, ScaleBasedNumberOfCards(dungeonCard.DrawnCards.Count), 0.2f);
-                card.chosenCard = drawnCards[cardsClickedOn++];
+                iTween.ScaleTo(card.gameObject, ScaleBasedNumberOfCards(DungeonCardSystem.Instance.DrawnCards.Count), 0.2f);
+                card.chosenCard = DungeonCardSystem.Instance.DrawnCards[cardsClickedOn++];
                 card.selected = true;
                 // print(cardsClickedOn);
 
             }
 
-            if (DungeonCardsSelected.Count == dungeonCard.GlobalAmountCD) //if we drawn the needed cards
+            if (DungeonCardsSelected.Count == DungeonCardSystem.Instance.GlobalAmountCD) //if we drawn the needed cards
             {
 
                 iTween.MoveTo(HandDeck.gameObject, new Vector3(HandDeck.gameObject.transform.position.x, -300, HandDeck.gameObject.transform.position.z), 1f); //Moves the hand out of the way
@@ -180,7 +158,7 @@ namespace ZaldensGambit
             //input player system active again
             //portal active
 
-            if (cardsRevealed >= dungeonCard.GlobalAmountCD)
+            if (cardsRevealed >= DungeonCardSystem.Instance.GlobalAmountCD)
             {
                 //close UI
                 //after a delay
@@ -207,7 +185,7 @@ namespace ZaldensGambit
             cardsRevealed = 0;
 
             //activate portal
-            portalToDungeon.gameObject.SetActive(true);
+            DungeonCardSystem.Instance.PortalToDungeon.ActivatePortal();
         }
 
         private void FitCards()
@@ -240,8 +218,6 @@ namespace ZaldensGambit
 
         IEnumerator AnimateCardFanning(float _animSpeed, List<Card_ScriptableObj> _cards)
         {
-            drawnCards = dungeonCard.DrawnCards;
-
             numberOfCards = _cards.Count;
             float twistPerCard = totalTwist / numberOfCards;
             gapFromOneItemToTheNextOne = 450f / numberOfCards;
