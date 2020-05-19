@@ -427,7 +427,7 @@ MonoBehaviour:
   damage: 10
   critDamage: 15
   critChance: 5
-  attackRange: 1
+  attackRange: 1.3
   aggroRange: 15
   speed: 4
   rotationSpeed: 10

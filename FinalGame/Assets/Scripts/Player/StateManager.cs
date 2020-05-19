@@ -154,7 +154,7 @@ namespace ZaldensGambit
 
                         if (enemy)
                         {
-                            enemy.attackDelay = Time.time + enemy.attackCooldown * 2f;
+                            enemy.attackDelay = Time.time + (enemy.attackCooldown * 2f);
                         }
                         return;
                     }
