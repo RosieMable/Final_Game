@@ -37,6 +37,7 @@ namespace ZaldensGambit
                     GameManager.instance.LoadScene(sceneToLoad);
                 }
             }
+            UIManager.Instance.HideDialogue();
         }
     }
 

@@ -550,6 +550,7 @@ namespace ZaldensGambit
                     break;
                 case Action.Teleport:
                     // Teleport to a random position nearby the player, or maybe always behind
+                    player.GetComponent<InputHandler>().ClearLockOn();
                     teleportTimer = Time.time + teleportCooldown;
                     print("Perform teleport");
                     transform.position = player.transform.position + -player.transform.forward * 2;

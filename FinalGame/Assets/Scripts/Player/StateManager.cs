@@ -235,7 +235,14 @@ namespace ZaldensGambit
 
         public void RestoreHealth(float amountToRestore)
         {
-            currentHealth = Mathf.Lerp(currentHealth, currentHealth + amountToRestore, 1f);
+            if (currentHealth + amountToRestore >= maximumHealth)
+            {
+                currentHealth = Mathf.Lerp(currentHealth, maximumHealth, 1f);
+            }
+            else
+            {
+                currentHealth = Mathf.Lerp(currentHealth, currentHealth + amountToRestore, 1f);
+            }
         }
 
         /// <summary>

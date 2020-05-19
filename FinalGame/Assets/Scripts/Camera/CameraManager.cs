@@ -11,6 +11,7 @@ namespace ZaldensGambit
         public static CameraManager instance; // Singleton
         
         public bool lockedOn;
+        private StateManager player;
 
         [SerializeField] private float followSpeed = 10;
         [SerializeField] private float mouseSpeed = 4;
@@ -69,7 +70,7 @@ namespace ZaldensGambit
             lockOnPrefab.transform.SetParent(this.transform);
             lockOnPrefab.transform.position = Vector3.zero;
             lockOnPrefab.SetActive(false);
-
+            player = FindObjectOfType<StateManager>();
         }
 
         /// <summary>
@@ -85,7 +86,7 @@ namespace ZaldensGambit
 
             FollowTarget(deltaTime);
 
-            if (CardInventory.instance.inventoryOpen)
+            if (CardInventory.instance.inventoryOpen || player.interacting)
             {
                 return;
             }
