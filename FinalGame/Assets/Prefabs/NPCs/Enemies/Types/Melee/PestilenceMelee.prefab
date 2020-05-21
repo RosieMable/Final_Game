@@ -2583,10 +2583,16 @@ MonoBehaviour:
   deathAudioClips:
   - {fileID: 8300000, guid: 124dd35532d4d0f46ba5cf6326592140, type: 3}
   - {fileID: 8300000, guid: d910c6baf2ffccf4195f65122a7621a8, type: 3}
+  - {fileID: 8300000, guid: 00aefdcaa1f347c49b1abe4a6991ef00, type: 3}
+  - {fileID: 8300000, guid: 72e63c671beee4c48900c76c6603dddb, type: 3}
   hurtAudioClips:
   - {fileID: 8300000, guid: 1f74de3eff4a35049b87456ae53a7205, type: 3}
   - {fileID: 8300000, guid: b6b53eec3a3c1a94da10b2524749a241, type: 3}
   - {fileID: 8300000, guid: 5c50cef9a3494674ab64291e0e785e75, type: 3}
+  - {fileID: 8300000, guid: ccf7449698990474a8d958be7b5e6466, type: 3}
+  - {fileID: 8300000, guid: 6c68c6adf54d4df4ea2fecfca57fb58e, type: 3}
+  - {fileID: 8300000, guid: 51f68a5c1e55885438671f891760781a, type: 3}
+  - {fileID: 8300000, guid: e93dbd79cdc4a2942a9731e22ee53ef9, type: 3}
   isDead: 0
   combatPattern: 0
 --- !u!82 &4928872685063479252
