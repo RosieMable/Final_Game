@@ -19010,10 +19010,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damageCollider: {fileID: 1741325847707641552}
   attackClips:
-  - {fileID: 8300000, guid: 3faa1ce02e10f394d85e439fd7677b8f, type: 3}
-  - {fileID: 8300000, guid: 8c0ff1e28ebecec45aabfe3ece977436, type: 3}
-  - {fileID: 8300000, guid: 26bea46b637a8754a840cfa7271f062c, type: 3}
-  - {fileID: 8300000, guid: 263bbcd360d894a45949b3a77af566e2, type: 3}
+  - {fileID: 8300000, guid: 7a665922222c3d340aabcb068c1d5c87, type: 3}
+  - {fileID: 8300000, guid: 925d9ca49ef3ff049965d7b22f67daef, type: 3}
+  - {fileID: 8300000, guid: 710f1dbf4555be8449f048ccad7af3db, type: 3}
+  - {fileID: 8300000, guid: 8753b54196d72ac429cad380996f037b, type: 3}
+  - {fileID: 8300000, guid: 8b1c116212f14d745a45357839668db3, type: 3}
+  - {fileID: 8300000, guid: 1c148e66309e9d84fbfed809db4c8c1b, type: 3}
 --- !u!114 &1741325847707487925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23779,6 +23781,7 @@ MonoBehaviour:
   rotateSpeed: 60
   maxStepHeight: 0.4
   stepSearchOvershoot: 0.001
+  maxSlopeAngle: 45
   maximumHealth: 100
   currentHealth: 100
   damage: 10
@@ -23886,6 +23889,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d937aade88fb2fe498ad6a6d733d7e20, type: 2}
   - {fileID: 11400000, guid: 703a8cc3b42bed44e9798731ea5c478c, type: 2}
   - {fileID: 11400000, guid: 2258e813c12c32643a5259e83b33535e, type: 2}
+  DebugTesting: 0
 --- !u!82 &1718750227
 AudioSource:
   m_ObjectHideFlags: 0
@@ -28875,11 +28879,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1769505576146183954}
     m_Modifications:
-    - target: {fileID: -927199367670048503, guid: aa83cbdacb708e5449be2451c47ef6ab,
-        type: 3}
-      propertyPath: m_Name
-      value: CharacterWithSouls
-      objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: aa83cbdacb708e5449be2451c47ef6ab,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -28934,6 +28933,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -927199367670048503, guid: aa83cbdacb708e5449be2451c47ef6ab,
+        type: 3}
+      propertyPath: m_Name
+      value: CharacterWithSouls
       objectReference: {fileID: 0}
     - target: {fileID: -6057140222963153312, guid: aa83cbdacb708e5449be2451c47ef6ab,
         type: 3}
