@@ -676,6 +676,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2017484478}
     m_Modifications:
+    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
+        type: 3}
+      propertyPath: m_Name
+      value: Cliff2_Prefab (14)
+      objectReference: {fileID: 0}
     - target: {fileID: 8764496637399032965, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -745,11 +750,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.5111009
-      objectReference: {fileID: 0}
-    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
-        type: 3}
-      propertyPath: m_Name
-      value: Cliff2_Prefab (14)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec, type: 3}
@@ -1677,6 +1677,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2017484478}
     m_Modifications:
+    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
+        type: 3}
+      propertyPath: m_Name
+      value: Cliff2_Prefab (1)
+      objectReference: {fileID: 0}
     - target: {fileID: 8764496637399032965, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1746,11 +1751,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.511101
-      objectReference: {fileID: 0}
-    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
-        type: 3}
-      propertyPath: m_Name
-      value: Cliff2_Prefab (1)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec, type: 3}
@@ -5476,6 +5476,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2017484478}
     m_Modifications:
+    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
+        type: 3}
+      propertyPath: m_Name
+      value: Cliff2_Prefab (5)
+      objectReference: {fileID: 0}
     - target: {fileID: 8764496637399032965, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -5545,11 +5550,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.5111
-      objectReference: {fileID: 0}
-    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
-        type: 3}
-      propertyPath: m_Name
-      value: Cliff2_Prefab (5)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec, type: 3}
@@ -6123,6 +6123,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2128388923}
     m_Modifications:
+    - target: {fileID: 4686100150104088519, guid: 485c6d4fef645ce409d7a3e6342159c9,
+        type: 3}
+      propertyPath: m_Name
+      value: BrazierPink
+      objectReference: {fileID: 0}
     - target: {fileID: 4686100150104168313, guid: 485c6d4fef645ce409d7a3e6342159c9,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -6177,11 +6182,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4686100150104088519, guid: 485c6d4fef645ce409d7a3e6342159c9,
-        type: 3}
-      propertyPath: m_Name
-      value: BrazierPink
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 485c6d4fef645ce409d7a3e6342159c9, type: 3}
@@ -6845,6 +6845,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2017484478}
     m_Modifications:
+    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
+        type: 3}
+      propertyPath: m_Name
+      value: Cliff2_Prefab (4)
+      objectReference: {fileID: 0}
     - target: {fileID: 8764496637399032965, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -6914,11 +6919,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.511101
-      objectReference: {fileID: 0}
-    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
-        type: 3}
-      propertyPath: m_Name
-      value: Cliff2_Prefab (4)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec, type: 3}
@@ -8430,6 +8430,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2017484478}
     m_Modifications:
+    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
+        type: 3}
+      propertyPath: m_Name
+      value: Cliff2_Prefab (10)
+      objectReference: {fileID: 0}
     - target: {fileID: 8764496637399032965, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -8499,11 +8504,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.5111009
-      objectReference: {fileID: 0}
-    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
-        type: 3}
-      propertyPath: m_Name
-      value: Cliff2_Prefab (10)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec, type: 3}
@@ -9234,6 +9234,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2128388923}
     m_Modifications:
+    - target: {fileID: 7591112310696184112, guid: 9b088c775b2090242be1db9197d7ba28,
+        type: 3}
+      propertyPath: m_Name
+      value: BrazierGreen (3)
+      objectReference: {fileID: 0}
     - target: {fileID: 7591112310696100238, guid: 9b088c775b2090242be1db9197d7ba28,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -9288,11 +9293,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7591112310696184112, guid: 9b088c775b2090242be1db9197d7ba28,
-        type: 3}
-      propertyPath: m_Name
-      value: BrazierGreen (3)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9b088c775b2090242be1db9197d7ba28, type: 3}
@@ -16524,7 +16524,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 452c4a99e8edeb24492625a17bb8472c, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.05
+  m_Volume: 0.02
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -21639,6 +21639,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2017484478}
     m_Modifications:
+    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
+        type: 3}
+      propertyPath: m_Name
+      value: Cliff2_Prefab
+      objectReference: {fileID: 0}
     - target: {fileID: 8764496637399032965, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -21708,11 +21713,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.511101
-      objectReference: {fileID: 0}
-    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
-        type: 3}
-      propertyPath: m_Name
-      value: Cliff2_Prefab
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec, type: 3}
@@ -23047,6 +23047,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2128388923}
     m_Modifications:
+    - target: {fileID: 7591112310696184112, guid: 9b088c775b2090242be1db9197d7ba28,
+        type: 3}
+      propertyPath: m_Name
+      value: BrazierGreen
+      objectReference: {fileID: 0}
     - target: {fileID: 7591112310696100238, guid: 9b088c775b2090242be1db9197d7ba28,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -23102,11 +23107,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7591112310696184112, guid: 9b088c775b2090242be1db9197d7ba28,
-        type: 3}
-      propertyPath: m_Name
-      value: BrazierGreen
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9b088c775b2090242be1db9197d7ba28, type: 3}
 --- !u!1001 &680019536
@@ -23116,6 +23116,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2017484478}
     m_Modifications:
+    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
+        type: 3}
+      propertyPath: m_Name
+      value: Cliff2_Prefab (6)
+      objectReference: {fileID: 0}
     - target: {fileID: 8764496637399032965, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -23185,11 +23190,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.511101
-      objectReference: {fileID: 0}
-    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
-        type: 3}
-      propertyPath: m_Name
-      value: Cliff2_Prefab (6)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec, type: 3}
@@ -25326,6 +25326,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2017484478}
     m_Modifications:
+    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
+        type: 3}
+      propertyPath: m_Name
+      value: Cliff2_Prefab (13)
+      objectReference: {fileID: 0}
     - target: {fileID: 8764496637399032965, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -25395,11 +25400,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.5111009
-      objectReference: {fileID: 0}
-    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
-        type: 3}
-      propertyPath: m_Name
-      value: Cliff2_Prefab (13)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec, type: 3}
@@ -28621,6 +28621,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2128388923}
     m_Modifications:
+    - target: {fileID: 4686100150104088519, guid: 485c6d4fef645ce409d7a3e6342159c9,
+        type: 3}
+      propertyPath: m_Name
+      value: BrazierPink (3)
+      objectReference: {fileID: 0}
     - target: {fileID: 4686100150104168313, guid: 485c6d4fef645ce409d7a3e6342159c9,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -28675,11 +28680,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4686100150104088519, guid: 485c6d4fef645ce409d7a3e6342159c9,
-        type: 3}
-      propertyPath: m_Name
-      value: BrazierPink (3)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 485c6d4fef645ce409d7a3e6342159c9, type: 3}
@@ -29749,6 +29749,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2017484478}
     m_Modifications:
+    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
+        type: 3}
+      propertyPath: m_Name
+      value: Cliff2_Prefab (2)
+      objectReference: {fileID: 0}
     - target: {fileID: 8764496637399032965, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -29818,11 +29823,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.511101
-      objectReference: {fileID: 0}
-    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
-        type: 3}
-      propertyPath: m_Name
-      value: Cliff2_Prefab (2)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec, type: 3}
@@ -37097,6 +37097,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2017484478}
     m_Modifications:
+    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
+        type: 3}
+      propertyPath: m_Name
+      value: Cliff2_Prefab (7)
+      objectReference: {fileID: 0}
     - target: {fileID: 8764496637399032965, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -37166,11 +37171,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.511101
-      objectReference: {fileID: 0}
-    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
-        type: 3}
-      propertyPath: m_Name
-      value: Cliff2_Prefab (7)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec, type: 3}
@@ -38485,6 +38485,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2128388923}
     m_Modifications:
+    - target: {fileID: 7591112310696184112, guid: 9b088c775b2090242be1db9197d7ba28,
+        type: 3}
+      propertyPath: m_Name
+      value: BrazierGreen (4)
+      objectReference: {fileID: 0}
     - target: {fileID: 7591112310696100238, guid: 9b088c775b2090242be1db9197d7ba28,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -38539,11 +38544,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7591112310696184112, guid: 9b088c775b2090242be1db9197d7ba28,
-        type: 3}
-      propertyPath: m_Name
-      value: BrazierGreen (4)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9b088c775b2090242be1db9197d7ba28, type: 3}
@@ -40916,6 +40916,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3805914309176986446, guid: 6750f9ae6257623468e6ce260e40a940,
+        type: 3}
+      propertyPath: m_Name
+      value: GameManager
+      objectReference: {fileID: 0}
     - target: {fileID: 3805914309176986444, guid: 6750f9ae6257623468e6ce260e40a940,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -40970,11 +40975,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3805914309176986446, guid: 6750f9ae6257623468e6ce260e40a940,
-        type: 3}
-      propertyPath: m_Name
-      value: GameManager
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6750f9ae6257623468e6ce260e40a940, type: 3}
@@ -41148,6 +41148,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2017484478}
     m_Modifications:
+    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
+        type: 3}
+      propertyPath: m_Name
+      value: Cliff2_Prefab (12)
+      objectReference: {fileID: 0}
     - target: {fileID: 8764496637399032965, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -41217,11 +41222,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.5111009
-      objectReference: {fileID: 0}
-    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
-        type: 3}
-      propertyPath: m_Name
-      value: Cliff2_Prefab (12)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec, type: 3}
@@ -44546,6 +44546,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2128388923}
     m_Modifications:
+    - target: {fileID: 7591112310696184112, guid: 9b088c775b2090242be1db9197d7ba28,
+        type: 3}
+      propertyPath: m_Name
+      value: BrazierGreen (1)
+      objectReference: {fileID: 0}
     - target: {fileID: 7591112310696100238, guid: 9b088c775b2090242be1db9197d7ba28,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -44600,11 +44605,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7591112310696184112, guid: 9b088c775b2090242be1db9197d7ba28,
-        type: 3}
-      propertyPath: m_Name
-      value: BrazierGreen (1)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9b088c775b2090242be1db9197d7ba28, type: 3}
@@ -46083,6 +46083,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2017484478}
     m_Modifications:
+    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
+        type: 3}
+      propertyPath: m_Name
+      value: Cliff2_Prefab (9)
+      objectReference: {fileID: 0}
     - target: {fileID: 8764496637399032965, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -46152,11 +46157,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.5111009
-      objectReference: {fileID: 0}
-    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
-        type: 3}
-      propertyPath: m_Name
-      value: Cliff2_Prefab (9)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec, type: 3}
@@ -47173,6 +47173,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2017484478}
     m_Modifications:
+    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
+        type: 3}
+      propertyPath: m_Name
+      value: Cliff2_Prefab (15)
+      objectReference: {fileID: 0}
     - target: {fileID: 8764496637399032965, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -47242,11 +47247,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.5111009
-      objectReference: {fileID: 0}
-    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
-        type: 3}
-      propertyPath: m_Name
-      value: Cliff2_Prefab (15)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec, type: 3}
@@ -49530,6 +49530,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2128388923}
     m_Modifications:
+    - target: {fileID: 4686100150104088519, guid: 485c6d4fef645ce409d7a3e6342159c9,
+        type: 3}
+      propertyPath: m_Name
+      value: BrazierPink (1)
+      objectReference: {fileID: 0}
     - target: {fileID: 4686100150104168313, guid: 485c6d4fef645ce409d7a3e6342159c9,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -49584,11 +49589,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4686100150104088519, guid: 485c6d4fef645ce409d7a3e6342159c9,
-        type: 3}
-      propertyPath: m_Name
-      value: BrazierPink (1)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 485c6d4fef645ce409d7a3e6342159c9, type: 3}
@@ -50719,6 +50719,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2017484478}
     m_Modifications:
+    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
+        type: 3}
+      propertyPath: m_Name
+      value: Cliff2_Prefab (3)
+      objectReference: {fileID: 0}
     - target: {fileID: 8764496637399032965, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -50788,11 +50793,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.511101
-      objectReference: {fileID: 0}
-    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
-        type: 3}
-      propertyPath: m_Name
-      value: Cliff2_Prefab (3)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec, type: 3}
@@ -54829,6 +54829,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2017484478}
     m_Modifications:
+    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
+        type: 3}
+      propertyPath: m_Name
+      value: Cliff2_Prefab (11)
+      objectReference: {fileID: 0}
     - target: {fileID: 8764496637399032965, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -54898,11 +54903,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.5111009
-      objectReference: {fileID: 0}
-    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
-        type: 3}
-      propertyPath: m_Name
-      value: Cliff2_Prefab (11)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec, type: 3}
@@ -56737,6 +56737,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2128388923}
     m_Modifications:
+    - target: {fileID: 4686100150104088519, guid: 485c6d4fef645ce409d7a3e6342159c9,
+        type: 3}
+      propertyPath: m_Name
+      value: BrazierPink (2)
+      objectReference: {fileID: 0}
     - target: {fileID: 4686100150104168313, guid: 485c6d4fef645ce409d7a3e6342159c9,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -56791,11 +56796,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4686100150104088519, guid: 485c6d4fef645ce409d7a3e6342159c9,
-        type: 3}
-      propertyPath: m_Name
-      value: BrazierPink (2)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 485c6d4fef645ce409d7a3e6342159c9, type: 3}
@@ -59072,6 +59072,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1700157617}
     m_Modifications:
+    - target: {fileID: 4962276754663579649, guid: 381eafc34971c4f4199f684dc8e978c8,
+        type: 3}
+      propertyPath: m_Name
+      value: CanvasForCardsDealing
+      objectReference: {fileID: 0}
     - target: {fileID: 4962276754663579772, guid: 381eafc34971c4f4199f684dc8e978c8,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -59177,25 +59182,15 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 4962276754663579649, guid: 381eafc34971c4f4199f684dc8e978c8,
-        type: 3}
-      propertyPath: m_Name
-      value: CanvasForCardsDealing
-      objectReference: {fileID: 0}
-    - target: {fileID: 4962276754663579648, guid: 381eafc34971c4f4199f684dc8e978c8,
-        type: 3}
-      propertyPath: portalToDungeon
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 6606439132334951709, guid: 381eafc34971c4f4199f684dc8e978c8,
         type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 4481250172747073985, guid: 381eafc34971c4f4199f684dc8e978c8,
+    - target: {fileID: 4962276754663579648, guid: 381eafc34971c4f4199f684dc8e978c8,
         type: 3}
-      propertyPath: m_IsActive
-      value: 0
+      propertyPath: portalToDungeon
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 4962276755443562770, guid: 381eafc34971c4f4199f684dc8e978c8,
         type: 3}
@@ -59206,6 +59201,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: SetGlobalAmount
+      objectReference: {fileID: 0}
+    - target: {fileID: 4481250172747073985, guid: 381eafc34971c4f4199f684dc8e978c8,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 381eafc34971c4f4199f684dc8e978c8, type: 3}
@@ -60183,6 +60183,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2128388923}
     m_Modifications:
+    - target: {fileID: 7591112310696184112, guid: 9b088c775b2090242be1db9197d7ba28,
+        type: 3}
+      propertyPath: m_Name
+      value: BrazierGreen (2)
+      objectReference: {fileID: 0}
     - target: {fileID: 7591112310696100238, guid: 9b088c775b2090242be1db9197d7ba28,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -60238,11 +60243,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7591112310696184112, guid: 9b088c775b2090242be1db9197d7ba28,
-        type: 3}
-      propertyPath: m_Name
-      value: BrazierGreen (2)
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9b088c775b2090242be1db9197d7ba28, type: 3}
 --- !u!1001 &2111335843
@@ -60252,6 +60252,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2017484478}
     m_Modifications:
+    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
+        type: 3}
+      propertyPath: m_Name
+      value: Cliff2_Prefab (8)
+      objectReference: {fileID: 0}
     - target: {fileID: 8764496637399032965, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -60321,11 +60326,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 1.5111009
-      objectReference: {fileID: 0}
-    - target: {fileID: 5763172220340835990, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec,
-        type: 3}
-      propertyPath: m_Name
-      value: Cliff2_Prefab (8)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0ba23cabb6c17d248a6c9f1023a4d3ec, type: 3}

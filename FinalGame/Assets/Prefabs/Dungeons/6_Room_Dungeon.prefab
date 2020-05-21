@@ -406,6 +406,7 @@ MonoBehaviour:
     type: 3}
   CameraHolder: {fileID: 2998661211929705143, guid: da1feb6f3797f3540adcde34ba455aa4,
     type: 3}
+  BattleMusic: {fileID: 8300000, guid: 2c4e6cb3f8a6ed648bf4fbe13c7cebe7, type: 3}
 --- !u!1001 &889263513519571227
 PrefabInstance:
   m_ObjectHideFlags: 0

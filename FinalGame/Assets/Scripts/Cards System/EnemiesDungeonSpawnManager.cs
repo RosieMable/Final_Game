@@ -16,6 +16,9 @@ public class EnemiesDungeonSpawnManager : MonoBehaviour
     [SerializeField]
     GameObject PlayerPrefab, CameraHolder;
 
+    [SerializeField]
+    AudioClip BattleMusic;
+
     private void Awake()
     {
         if (dungeonSystem == null)
@@ -35,6 +38,8 @@ public class EnemiesDungeonSpawnManager : MonoBehaviour
 
         GameObject player = GameObject.Instantiate(PlayerPrefab);
         GameObject camera = Instantiate(CameraHolder);
+        camera.GetComponentInChildren<AudioSource>().clip = BattleMusic;
+        camera.GetComponentInChildren<AudioSource>().Play();
         player.transform.position = playerSpawnPoint.position;
         camera.transform.position = playerSpawnPoint.position;
         

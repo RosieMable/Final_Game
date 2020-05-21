@@ -298,6 +298,7 @@ MonoBehaviour:
     type: 3}
   CameraHolder: {fileID: 2998661211929705143, guid: da1feb6f3797f3540adcde34ba455aa4,
     type: 3}
+  BattleMusic: {fileID: 8300000, guid: 2c4e6cb3f8a6ed648bf4fbe13c7cebe7, type: 3}
 --- !u!1 &8879419860910575977
 GameObject:
   m_ObjectHideFlags: 0
@@ -4051,6 +4052,11 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -0.005477
       objectReference: {fileID: 0}
+    - target: {fileID: 8546533896551713601, guid: 57efe5acd0dc3674bb337d518928d796,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: e582c6276c05b3b4396d53c791e6aeb4, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 57efe5acd0dc3674bb337d518928d796, type: 3}
 --- !u!4 &1241879124590410235 stripped

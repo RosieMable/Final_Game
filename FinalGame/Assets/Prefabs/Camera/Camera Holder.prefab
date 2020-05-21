@@ -159,7 +159,10 @@ MonoBehaviour:
   lockOnMaxAngle: 40
   defaultZDistance: -5
   zSpeed: 5
-  minimumZDistance: -1.5
+  minimumZDistance: 0
+  cameraCollisionLayers:
+    serializedVersion: 2
+    m_Bits: 19
 --- !u!1 &2998661212377056750
 GameObject:
   m_ObjectHideFlags: 0
