@@ -3376,6 +3376,32 @@ MonoBehaviour:
   - {fileID: 5431157800810194069, guid: fa52aec3026e743429f865ed14754913, type: 3}
   - {fileID: 4928872685063479259, guid: 07bf8f481ccce2245a9737ef2008eb36, type: 3}
   - {fileID: 1000189985177131491, guid: 79c8e70748356c748a289edf43c47796, type: 3}
+  HealthBreakPointClips: []
+  ChargeClips:
+  - {fileID: 8300000, guid: 5be06ff443057184f8123c1b4c21ac2d, type: 3}
+  - {fileID: 8300000, guid: ead91215ea653864bba84181b9252185, type: 3}
+  - {fileID: 8300000, guid: 74e7e26b0858d644e84e9c80474fd092, type: 3}
+  CloneClips:
+  - {fileID: 8300000, guid: 82f920d00c3ec9b41b5b4e774583affb, type: 3}
+  - {fileID: 8300000, guid: 98118e0221e21dc4fa92ac9721df53dd, type: 3}
+  LaserClips:
+  - {fileID: 8300000, guid: cbc8ce5f61918014094ed19424b9a027, type: 3}
+  - {fileID: 8300000, guid: aa1c204e1b4aa6749b307071e87a57fd, type: 3}
+  - {fileID: 8300000, guid: 18ad027da03e7354e9465d77edf5448c, type: 3}
+  TeleportClips:
+  - {fileID: 8300000, guid: 48816ed681d7fb447885350b567252be, type: 3}
+  - {fileID: 8300000, guid: c235eafb5b7276e41a0c717e7443df18, type: 3}
+  - {fileID: 8300000, guid: a7eba4f3af3231249b68bb61bf1fe599, type: 3}
+  SpiritRipClips:
+  - {fileID: 8300000, guid: 8e31cd5d9b8e5da4b9a0bb4f6d3ce58f, type: 3}
+  - {fileID: 8300000, guid: a9a77c991ad20c5458708f749ba1752d, type: 3}
+  - {fileID: 8300000, guid: 37609a3fa3380de498314e252b0cfb74, type: 3}
+  SummonClips:
+  - {fileID: 8300000, guid: 370199d47fe25e74f9c3608c862c568b, type: 3}
+  - {fileID: 8300000, guid: 23c74438686b9664ab098377e24687f6, type: 3}
+  - {fileID: 8300000, guid: 543d54cc3abc4654d87498b1110319ef, type: 3}
+  StartClip: {fileID: 0}
+  EndClip: {fileID: 0}
 --- !u!1 &1188148226412746092
 GameObject:
   m_ObjectHideFlags: 0

@@ -50,6 +50,17 @@ namespace ZaldensGambit
         private List<GameObject> activeSummons = new List<GameObject>();
         private bool summonsActive;
 
+        // Audio Variables
+        [SerializeField] private AudioClip[] HealthBreakPointClips;
+        [SerializeField] private AudioClip[] ChargeClips;
+        [SerializeField] private AudioClip[] CloneClips;
+        [SerializeField] private AudioClip[] LaserClips;
+        [SerializeField] private AudioClip[] TeleportClips;
+        [SerializeField] private AudioClip[] SpiritRipClips;
+        [SerializeField] private AudioClip[] SummonClips;
+        [SerializeField] private AudioClip StartClip;
+        [SerializeField] private AudioClip EndClip;
+
         protected override void Awake()
         {
             base.Awake();
@@ -59,6 +70,7 @@ namespace ZaldensGambit
             chargeSpeed = speed * 2;
             originalAcceleration = agent.acceleration;
             chargeAcceleration = originalAcceleration * 2;
+            characterAudioSource = GetComponent<AudioSource>();
         }
 
         protected override void Update()
@@ -117,10 +129,11 @@ namespace ZaldensGambit
             if (abilityCasting)
             {
                 RotateTowardsTarget(player.transform);
-                agent.Stop();
+                agent.isStopped = true;
             }
             else if (charging)
             {
+                agent.isStopped = false;
                 RotateTowardsTarget(chargePosition);
                 agent.speed = chargeSpeed;
                 agent.acceleration = chargeAcceleration;
@@ -129,11 +142,13 @@ namespace ZaldensGambit
             }
             else if (movingToAttack)
             {
+                agent.isStopped = false;
                 MoveToTarget();
             }
 
             if (Vector3.Distance(transform.position, chargePosition) <= 2)
             {
+                agent.isStopped = false;
                 agent.speed = originalSpeed;
                 agent.acceleration = originalAcceleration;
                 agent.stoppingDistance = 1;
@@ -257,8 +272,8 @@ namespace ZaldensGambit
             charAnim.applyRootMotion = true;
 
             int clipToPlay = Random.Range(0, hurtAudioClips.Length);
-            characterAudioSource.clip = hurtAudioClips[clipToPlay];
-            characterAudioSource.Play();
+            base.characterAudioSource.clip = hurtAudioClips[clipToPlay];
+            base.characterAudioSource.Play();
         }
 
         private void PlayVoiceLines(float currentHealth)
@@ -447,29 +462,35 @@ namespace ZaldensGambit
                 case Action.SpiritRip:
                     // Animation cast + voiceline
                     charAnim.CrossFade("SpiritRip", 0.2f);
+                    PlayRandomClip(SpiritRipClips);
                     abilityCasting = true;
                     break;
                 case Action.Teleport:
                     // Animation cast + voiceline
+                    PlayRandomClip(TeleportClips);
                     abilityCasting = true;
                     break;
                 case Action.Clone:
                     // Animation cast + voiceline
                     charAnim.CrossFade("Clone", 0.2f);
+                    PlayRandomClip(CloneClips);
                     abilityCasting = true;
                     break;
                 case Action.Summon:
                     // Animation cast + voiceline
                     charAnim.CrossFade("Summon", 0.2f);
+                    PlayRandomClip(SummonClips);
                     abilityCasting = true;
                     break;
                 case Action.Charge:
                     // Animation cast + voiceline
+                    PlayRandomClip(ChargeClips);
                     abilityCasting = true;
                     break;
                 case Action.Laser:
                     // Animation cast + voiceline
                     charAnim.CrossFade("Cast Forward", 0.2f);
+                    PlayRandomClip(LaserClips);
                     abilityCasting = true;
                     break;
                 case Action.Dodge:
@@ -638,6 +659,13 @@ namespace ZaldensGambit
             }
             yield return new WaitForSeconds(delayBeforeCast / 2);
             abilityCasting = false;
+        }
+
+        private void PlayRandomClip(AudioClip[] audioClips)
+        {
+            int clipToPlay = Random.Range(0, audioClips.Length);
+            characterAudioSource.clip = audioClips[clipToPlay];
+            characterAudioSource.Play();
         }
 
         private void OnCollisionEnter(Collision collision)
