@@ -60,6 +60,12 @@ namespace ZaldensGambit
         [SerializeField] private AudioClip[] SummonClips;
         [SerializeField] private AudioClip StartClip;
         [SerializeField] private AudioClip EndClip;
+        [SerializeField] private AudioClip[] HealthBreakpointClips;
+        private bool breakpointOne;
+        private bool breakpointTwo;
+        private bool breakpointThree;
+        private bool startAudioPlayed;
+        private AudioSource bossVoicelineAudioSource;
 
         protected override void Awake()
         {
@@ -71,6 +77,7 @@ namespace ZaldensGambit
             originalAcceleration = agent.acceleration;
             chargeAcceleration = originalAcceleration * 2;
             characterAudioSource = GetComponent<AudioSource>();
+            bossVoicelineAudioSource = GameObject.Find("BossVA").GetComponent<AudioSource>();
         }
 
         protected override void Update()
@@ -80,7 +87,6 @@ namespace ZaldensGambit
             if (!stunned)
             {
                 CalculatePossibleActions();
-                //PlayVoiceLines(currentHealth); // Needs further work to function correctly
 
                 if (activeClones.Count == 0)
                 {
@@ -176,6 +182,13 @@ namespace ZaldensGambit
 
             if (isInAggroRange)
             {
+                if (!startAudioPlayed)
+                {
+                    startAudioPlayed = true;
+                    bossVoicelineAudioSource.clip = StartClip;
+                    bossVoicelineAudioSource.Play();
+                }
+
                 return State.Pursuing;
             }
 
@@ -195,7 +208,18 @@ namespace ZaldensGambit
                     if (!isInvulnerable && !inAction && Time.time > attackDelay && !abilityCasting)
                     {
                         agent.isStopped = true;
-                        bool playerInFront = Physics.Raycast(transform.position, transform.forward, 2, playerLayer);
+                        RaycastHit hit;
+                        bool playerInFront = false;
+
+                        Physics.Raycast(transform.position + transform.up, transform.forward, out hit, 2, playerLayer);
+
+                        if (hit.collider!= null)
+                        {
+                            if (hit.collider.gameObject.GetComponent<StateManager>() || hit.collider.gameObject.GetComponentInParent<StateManager>())
+                            {
+                                playerInFront = true;
+                            }
+                        }
 
                         if (playerInFront)
                         {
@@ -274,23 +298,39 @@ namespace ZaldensGambit
             int clipToPlay = Random.Range(0, hurtAudioClips.Length);
             base.characterAudioSource.clip = hurtAudioClips[clipToPlay];
             base.characterAudioSource.Play();
+
+            PlayVoiceLines(currentHealth);
         }
 
         private void PlayVoiceLines(float currentHealth)
         {
             // Needs to flag when a voiceline has been played so as to not repeat.
 
-            if (currentHealth < maximumHealth / 4) // 25% health
+            if (currentHealth <= 0)
             {
-                // Play Voiceline
+                bossVoicelineAudioSource.clip = EndClip;
+                bossVoicelineAudioSource.Play();
             }
-            else if (currentHealth < maximumHealth / 2) // 50% health
+            else if (currentHealth < maximumHealth / 4 && !breakpointThree) // 25% health
             {
                 // Play Voiceline
+                breakpointThree = true;
+                bossVoicelineAudioSource.clip = HealthBreakpointClips[2];
+                bossVoicelineAudioSource.Play();
             }
-            else if (currentHealth < maximumHealth / 1.3) // 75% health
+            else if (currentHealth < maximumHealth / 2 && !breakpointTwo) // 50% health
             {
                 // Play Voiceline
+                breakpointTwo = true;
+                bossVoicelineAudioSource.clip = HealthBreakpointClips[1];
+                bossVoicelineAudioSource.Play();
+            }
+            else if (currentHealth < maximumHealth / 1.3 && !breakpointOne) // 75% health
+            {
+                // Play Voiceline
+                breakpointOne = true;
+                bossVoicelineAudioSource.clip = HealthBreakpointClips[0];
+                bossVoicelineAudioSource.Play();
             }
         }
 
@@ -663,9 +703,12 @@ namespace ZaldensGambit
 
         private void PlayRandomClip(AudioClip[] audioClips)
         {
-            int clipToPlay = Random.Range(0, audioClips.Length);
-            characterAudioSource.clip = audioClips[clipToPlay];
-            characterAudioSource.Play();
+            if (!bossVoicelineAudioSource.isPlaying)
+            {
+                int clipToPlay = Random.Range(0, audioClips.Length);
+                bossVoicelineAudioSource.clip = audioClips[clipToPlay];
+                bossVoicelineAudioSource.Play();
+            }
         }
 
         private void OnCollisionEnter(Collision collision)

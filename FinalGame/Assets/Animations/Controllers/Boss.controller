@@ -140,8 +140,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: 884c9fcca31ef844981c38e2ba8872bc,
-    type: 3}
+  m_Motion: {fileID: 7400000, guid: 81eb7618bfcd1c64aa7e333bed0adca5, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -728,7 +727,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Two Handed
+  m_Name: Boss
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: speed
@@ -1002,7 +1001,7 @@ AnimatorStateMachine:
     m_Position: {x: -230, y: -70, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 627418113590199158}
-    m_Position: {x: 370, y: 200, z: 0}
+    m_Position: {x: 440, y: 210, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 3925330645493594846}
     m_Position: {x: -230, y: -20, z: 0}
@@ -1133,8 +1132,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -203655887218126122, guid: 482e561f78822044ca107eafbc0603da,
-    type: 3}
+  m_Motion: {fileID: 7400000, guid: 3de973dcf2e45ce42bccfd00cc71d3f4, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
