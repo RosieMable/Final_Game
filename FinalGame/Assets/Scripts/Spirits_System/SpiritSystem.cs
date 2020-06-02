@@ -119,6 +119,7 @@ namespace ZaldensGambit
         {
             if (canUseAbility)
             {
+                PlayAbilitySound(_CurrentSpirit);
                 //Active Ability logic
                 UpdateVFXScript(_CurrentSpirit);
                 AbilityCooldown(_CurrentSpirit);
@@ -275,6 +276,15 @@ namespace ZaldensGambit
             enemy.ApplyStun(spiritEquipped.StunModifier);
 
             print("Deal Damage Ranger!");
+        }
+
+        private void PlayAbilitySound(BaseSpirit spirit)
+        {
+            if(spirit.AbilitySound != null)
+            {
+                AudioSource source = GetComponentInChildren<AudioSource>();
+                source.PlayOneShot(spirit.AbilitySound);
+            }
         }
         private void OnDisable()
         {

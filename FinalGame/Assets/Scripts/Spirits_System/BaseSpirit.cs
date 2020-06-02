@@ -80,5 +80,8 @@ public class BaseSpirit : ScriptableObject
 
     public bool abilityEvoked;
 
-    
+    [SerializeField]
+    private AudioClip _abilitySound;
+
+    public AudioClip AbilitySound { get { return _abilitySound; } private set { AbilitySound = _abilitySound; } }
 }
