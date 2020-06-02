@@ -334,7 +334,7 @@ namespace ZaldensGambit
             ContactPoint groundCP;
             grounded = FindGround(out groundCP, contactPoints);
 
-            if (!grounded) print("Not grounded!");
+            //if (!grounded) print("Not grounded!");
 
             /*bool stepUp = false;
             Vector3 stepUpOffset = Vector3.zero;*/
