@@ -2920,7 +2920,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1188148226383532063}
-  - component: {fileID: 1188148226383532056}
   - component: {fileID: 1188148226383532057}
   - component: {fileID: 1188148226383532062}
   m_Layer: 0
@@ -2946,28 +2945,6 @@ Transform:
   m_Father: {fileID: 1188148226400600696}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!111 &1188148226383532056
-Animation:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1188148226383532060}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Animation: {fileID: 7400000, guid: cd93d4779680ed741a711e6e99ca86f2, type: 2}
-  m_Animations:
-  - {fileID: 7400008, guid: 86c591ebd74142c4d93243d9fa9544da, type: 3}
-  - {fileID: 7400002, guid: 86c591ebd74142c4d93243d9fa9544da, type: 3}
-  - {fileID: 7400004, guid: 86c591ebd74142c4d93243d9fa9544da, type: 3}
-  - {fileID: 7400006, guid: 86c591ebd74142c4d93243d9fa9544da, type: 3}
-  - {fileID: 7400010, guid: 86c591ebd74142c4d93243d9fa9544da, type: 3}
-  - {fileID: 7400012, guid: 86c591ebd74142c4d93243d9fa9544da, type: 3}
-  - {fileID: 7400014, guid: 86c591ebd74142c4d93243d9fa9544da, type: 3}
-  m_WrapMode: 0
-  m_PlayAutomatically: 1
-  m_AnimatePhysics: 0
-  m_CullingType: 0
 --- !u!95 &1188148226383532057
 Animator:
   serializedVersion: 3
@@ -3138,7 +3115,7 @@ Transform:
   m_GameObject: {fileID: 1188148226400600690}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 17.56}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
   m_Children:
   - {fileID: 1188148226062813281}
   - {fileID: 1188148226362727011}
@@ -3315,15 +3292,15 @@ MonoBehaviour:
   rigidBody: {fileID: 0}
   agent: {fileID: 0}
   lockedOnto: 0
-  attackDelay: 0
-  attackCooldown: 0.5
-  damage: 10
-  critDamage: 15
-  critChance: 5
+  attackDelay: -1
+  attackCooldown: 0.1
+  damage: 20
+  critDamage: 40
+  critChance: 10
   attackRange: 1.5
-  aggroRange: 20
-  speed: 4
-  rotationSpeed: 2
+  aggroRange: 30
+  speed: 5
+  rotationSpeed: 5
   isTrainingDummy: 0
   weaponHook: {fileID: 0}
   inAction: 0
@@ -3357,17 +3334,17 @@ MonoBehaviour:
   canDodge: 1
   canSpin: 1
   spiritRipCooldown: 60
-  teleportCooldown: 5
-  cloneCooldown: 30
+  teleportCooldown: 2
+  cloneCooldown: 2
   summonCooldown: 30
   chargeCooldown: 15
-  laserCooldown: 30
-  dodgeCooldown: 5
+  laserCooldown: 60
+  dodgeCooldown: 2
   spinCooldown: 15
   globalActionCooldown: 10
   abilityChargingParticleEffect: {fileID: 1208223779504284840, guid: 5ac25002166c8d346ab144470dee61f9,
     type: 3}
-  spiritPickUp: {fileID: 7856674861301851170, guid: 66753e54156577040b20daf802813f62,
+  spiritPickUp: {fileID: 5967407129468800366, guid: ae0e253fbf88fcd4ebff9d0bb769ba10,
     type: 3}
   clonePrefab: {fileID: 845128348363062440, guid: 543d02037c62dc54c943db1b32f80c37,
     type: 3}
@@ -3398,10 +3375,14 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 37609a3fa3380de498314e252b0cfb74, type: 3}
   SummonClips:
   - {fileID: 8300000, guid: 370199d47fe25e74f9c3608c862c568b, type: 3}
-  - {fileID: 8300000, guid: 23c74438686b9664ab098377e24687f6, type: 3}
-  - {fileID: 8300000, guid: 543d54cc3abc4654d87498b1110319ef, type: 3}
-  StartClip: {fileID: 0}
-  EndClip: {fileID: 0}
+  - {fileID: 8300000, guid: d9863da6387665f48a759c10d58e2a92, type: 3}
+  - {fileID: 8300000, guid: ed423860357790242871d0df5948dbbf, type: 3}
+  StartClip: {fileID: 8300000, guid: 6364a6c737fefd9418a1e87a5446198c, type: 3}
+  EndClip: {fileID: 8300000, guid: 343f04c51cbf92449b2ce1898e42e2ae, type: 3}
+  HealthBreakpointClips:
+  - {fileID: 8300000, guid: 9ad8f7abc0dcfc54588e42bc81847dc3, type: 3}
+  - {fileID: 8300000, guid: ee68444c1ac18274eae10dc17bf26c6b, type: 3}
+  - {fileID: 8300000, guid: 83a991c6dba8cda4ebd2c4baab405fa8, type: 3}
 --- !u!1 &1188148226412746092
 GameObject:
   m_ObjectHideFlags: 0

@@ -23,6 +23,7 @@ namespace ZaldensGambit
 
         // Spirit Rip Variables
         [SerializeField] private GameObject spiritPickUp;
+        [SerializeField] private AudioClip spiritRipAudio;
 
         // Laser Variables
         private bool lasering;
@@ -40,17 +41,22 @@ namespace ZaldensGambit
         // Dodging Variables
         private bool lookingToDodge;
 
+        // Teleport Variables
+        [SerializeField] private AudioClip teleportAudio;
+
         // Cloning Variables
         [SerializeField] private GameObject clonePrefab;
         private List<GameObject> activeClones = new List<GameObject>();
         private bool clonesActive;
+        [SerializeField] private AudioClip cloneAudio;
 
         // Summon Variables
         [SerializeField] private GameObject[] summonPrefabs = new GameObject[4];
         private List<GameObject> activeSummons = new List<GameObject>();
         private bool summonsActive;
+        [SerializeField] private AudioClip summonAudio;
 
-        // Audio Variables
+        // Voice Audio Variables
         [SerializeField] private AudioClip[] HealthBreakPointClips;
         [SerializeField] private AudioClip[] ChargeClips;
         [SerializeField] private AudioClip[] CloneClips;
@@ -608,6 +614,8 @@ namespace ZaldensGambit
                         player.GetComponent<SpiritSystem>().spiritEquipped = null;
                         player.GetComponent<SpiritSystem>().OnEquipSpirit(null);
                     }
+                    characterAudioSource.clip = cloneAudio;
+                    characterAudioSource.Play();
                     break;
                 case Action.Teleport:
                     // Teleport to a random position nearby the player, or maybe always behind
@@ -615,6 +623,8 @@ namespace ZaldensGambit
                     teleportTimer = Time.time + teleportCooldown;
                     print("Perform teleport");
                     transform.position = player.transform.position + -player.transform.forward * 2;
+                    characterAudioSource.clip = teleportAudio;
+                    characterAudioSource.Play();
                     break;
                 case Action.Clone:
                     // Summon two duplicates with lower health values and no boss actions
@@ -636,6 +646,8 @@ namespace ZaldensGambit
                         }
                     }
                     clonesActive = true;
+                    characterAudioSource.clip = cloneAudio;
+                    characterAudioSource.Play();
                     break;
                 case Action.Summon:
                     // Summon a group of minions, remain stationary and invulnerable to damage unless shieldbashed
@@ -664,6 +676,8 @@ namespace ZaldensGambit
                                 break;
                         }
                     }
+                    characterAudioSource.clip = summonAudio;
+                    characterAudioSource.Play();
                     summonsActive = true;
                     break;
                 case Action.Charge:
