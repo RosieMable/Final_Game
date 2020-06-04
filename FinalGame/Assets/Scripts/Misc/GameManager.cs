@@ -57,7 +57,7 @@ public class GameManager : MonoBehaviour
             if(spiritSystem== null)
             {
                 spiritSystem = FindObjectOfType<SpiritSystem>();
-                if (spiritToEquipInDungeon != null)
+                if (spiritToEquipInDungeon != null && FindObjectOfType<StateManager>())
                 {
                     spiritSystem.spiritEquipped = spiritToEquipInDungeon;
                     spiritSystem.OnEquipSpirit(spiritToEquipInDungeon);
@@ -66,9 +66,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void GameOver()
+    public void GameOver(float delay)
     {
-        StartCoroutine(GameOverAfterDelay(3));
+        StartCoroutine(GameOverAfterDelay(delay));
     }
 
     public void InstantGameOver()
@@ -104,6 +104,16 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         SceneManager.LoadScene("Title Screen");
+        if (Cursor.lockState == CursorLockMode.Locked)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
         //CardInventory.instance.Init();
         //CardInventory.instance.ToggleInventory();
     }

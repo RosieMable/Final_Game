@@ -217,7 +217,7 @@ namespace ZaldensGambit
                 collider.enabled = false;
                 rigidBody.isKinematic = true;
                 charAnim.Play("Death");
-                GameManager.instance.GameOver();
+                GameManager.instance.GameOver(3);
             }
 
             int audioClipToPlay = Random.Range(0, hurtAudioClips.Length);
@@ -456,7 +456,7 @@ namespace ZaldensGambit
                 collider.enabled = false;
                 rigidBody.isKinematic = true;
                 charAnim.Play("Death");
-                GameManager.instance.GameOver();
+                GameManager.instance.GameOver(3);
             }
         }
 
