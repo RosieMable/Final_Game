@@ -651,7 +651,7 @@ namespace ZaldensGambit
                 desiredAnimation = slot.desiredAnimation;
             }
 
-            if (specialAttack)
+            if (specialAttack && !inAction)
             {
                 SpiritSystem spiritSystem = GetComponent<SpiritSystem>();
                 if (!spiritSystem.CheckAbilityCooldown())
