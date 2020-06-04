@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour
     public void InstantGameOver()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        CardInventory.instance.Init();
+        //CardInventory.instance.Init();
         //CardInventory.instance.ToggleInventory();
     }
 
@@ -103,8 +103,8 @@ public class GameManager : MonoBehaviour
     private IEnumerator GameOverAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        CardInventory.instance.Init();
+        SceneManager.LoadScene("Title Screen");
+        //CardInventory.instance.Init();
         //CardInventory.instance.ToggleInventory();
     }
 

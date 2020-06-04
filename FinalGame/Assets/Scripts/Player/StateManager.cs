@@ -573,7 +573,7 @@ namespace ZaldensGambit
                     desiredAnimation = slot.desiredAnimation;           
                 }
 
-                if (specialAttack)
+                if (specialAttack && !inAction)
                 {
                     listenForCombos = false;
                     SpiritSystem spiritSystem = GetComponent<SpiritSystem>();
@@ -582,6 +582,7 @@ namespace ZaldensGambit
                         return;
                     }
                     spiritSystem.ActiveAbility(spiritSystem.spiritEquipped);
+                    animationClipIndex = 0;
                 }
 
                 // Light Attack Combo
