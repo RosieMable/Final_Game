@@ -54,6 +54,8 @@ namespace ZaldensGambit
 
         public GameObject DungeonUIChoice;
 
+        public GameObject SpiritCardsUIArena;
+
         public int cardsRevealed;
 
         public bool spiritSelected;
@@ -151,14 +153,12 @@ namespace ZaldensGambit
                  AfterSelection();
         }
 
-        private void SpiritSelection()
+        public void SpiritSelection()
         {
-            if (CardInventory.instance.spiritCards.Count != 0) //if we have spirit cards
+            if (spirits.Count != 0) //if we have spirit cards
             {
                 SpiritCardsUIElements.SetActive(true);
                 //show spirit choice UI
-                if (spirits.Count != 0)
-                {
                     for (int i = 0; i <= spirits.Count -1; i++)
                     {
                         GameObject spiritCard = Instantiate(prefabSpiritCard, SpiritCardsPosition);
@@ -167,7 +167,6 @@ namespace ZaldensGambit
                         spirit.chosenSpirit = spirits[i];
 
                     }
-                }
             }
             else //we don't have any spirit cards
                 CloseSystem();
