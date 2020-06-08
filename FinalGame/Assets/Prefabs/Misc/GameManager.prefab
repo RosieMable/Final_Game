@@ -54,24 +54,17 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   cardSelected: {fileID: 0}
-  spiritCards:
-  - {fileID: 11400000, guid: 703a8cc3b42bed44e9798731ea5c478c, type: 2}
-  - {fileID: 11400000, guid: 1b3f88a16635f86458a2d1f83512b24e, type: 2}
-  - {fileID: 11400000, guid: 3f53607d5f41b0f4fa4c903677fe7014, type: 2}
-  - {fileID: 11400000, guid: d937aade88fb2fe498ad6a6d733d7e20, type: 2}
-  - {fileID: 11400000, guid: f85849c956879814f96f45057632dca2, type: 2}
-  - {fileID: 11400000, guid: d937aade88fb2fe498ad6a6d733d7e20, type: 2}
-  - {fileID: 11400000, guid: 2258e813c12c32643a5259e83b33535e, type: 2}
+  spiritCards: []
   dungeonCards:
   - {fileID: 11400000, guid: 72a8c1d4642177b409aeeb14a10ff723, type: 2}
-  - {fileID: 11400000, guid: cd133860e1738e34fb39aa34928de237, type: 2}
-  - {fileID: 11400000, guid: 7d2dcdf5987abc947ad1f87ff16ea282, type: 2}
-  - {fileID: 11400000, guid: 2ab84199831a9eb4485fd9cc28e004f0, type: 2}
+  - {fileID: 11400000, guid: 2dee5e7ebfded7749b99ff8362fd7c9d, type: 2}
+  - {fileID: 11400000, guid: 562a3174af75a5f4191602fb2a0cbfa6, type: 2}
+  - {fileID: 11400000, guid: 0f8826f83618e8a40a08c41d1d0eb44c, type: 2}
   - {fileID: 11400000, guid: b2d4ebb9fb9a8094a8a8e61635da88a6, type: 2}
-  - {fileID: 11400000, guid: cd133860e1738e34fb39aa34928de237, type: 2}
-  - {fileID: 11400000, guid: 0c430a293e574bd4ab4691430f0a680d, type: 2}
-  - {fileID: 11400000, guid: 2e21c12db7b1a65418a23e6f62e98d88, type: 2}
-  - {fileID: 11400000, guid: 0dc7d36d1d4f65842ab2e00aaac45f69, type: 2}
+  - {fileID: 11400000, guid: d059782902d048a418bc6517066b686f, type: 2}
+  - {fileID: 11400000, guid: 72a8c1d4642177b409aeeb14a10ff723, type: 2}
+  - {fileID: 11400000, guid: 2dee5e7ebfded7749b99ff8362fd7c9d, type: 2}
+  - {fileID: 11400000, guid: 562a3174af75a5f4191602fb2a0cbfa6, type: 2}
 --- !u!114 &3805914309176986483
 MonoBehaviour:
   m_ObjectHideFlags: 0

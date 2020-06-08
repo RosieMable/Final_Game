@@ -6,7 +6,7 @@ using System.Linq;
 using UnityEngine.SceneManagement;
 using ZaldensGambit;
 
-public class DungeonCardSystem : Singleton<DungeonCardSystem>
+public class DungeonCardSystem : MonoBehaviour
 {
     [Header("Dungeon Cards Section")]
     //public List<Card_ScriptableObj> ownedDungeonCards; //reference to the dungeoncards that the player owns (inventory system ref)
@@ -71,6 +71,8 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
 
     bool inHubScene;
 
+    public static DungeonCardSystem Instance;
+
     [Header("Temp Debug")]
     #region Temp for debug
 
@@ -85,7 +87,7 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
     public Text debugAllCards;
     #endregion
 
-    protected override void Awake()
+    protected void Awake()
     {
         if (SceneManager.GetActiveScene().name == mainSceneName)
         {
@@ -93,7 +95,15 @@ public class DungeonCardSystem : Singleton<DungeonCardSystem>
             portalToDungeon = portalDungeon.GetComponent<Portal>();
         }
 
-        base.Awake();
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else if (Instance != this)
+        {
+            Destroy(this);
+        }
+
         DontDestroyOnLoad(this.gameObject);
     }
 

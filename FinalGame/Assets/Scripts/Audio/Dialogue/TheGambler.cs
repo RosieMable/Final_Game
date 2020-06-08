@@ -48,7 +48,7 @@ namespace ZaldensGambit
                 }
                 else // When dialogue is exhausted...
                 {
-                    SpiritCardsArena.SetActive(true);
+                    //SpiritCardsArena.SetActive(true);
                     cardUISystem.SpiritSelection();
                     print("End of main dialogue, looping back to start!");
                     dialogueIndex = -1;

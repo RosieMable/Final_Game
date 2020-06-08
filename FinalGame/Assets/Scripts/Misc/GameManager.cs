@@ -12,13 +12,12 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Sprite[] damageEffects;
     private Image damageEffect;
     private Coroutine damageCoroutine;
-
     public BaseSpirit spiritToEquipInDungeon;
-
     SpiritSystem spiritSystem;
     CardUISystem cardUISystem;
-
     private Scene currentScene;
+    private GameObject menuPanel;
+
     private void Awake()
     {
         if (instance == null)
@@ -34,18 +33,20 @@ public class GameManager : MonoBehaviour
 
         damageEffect = GameObject.Find("DamageEffect").GetComponent<Image>();
         damageEffect.enabled = false;
-
         currentScene = SceneManager.GetActiveScene();
+        menuPanel = GameObject.Find("MenuPanel");
+        menuPanel.SetActive(false);
     }
 
     private void Update()
     {
-        //if (Input.GetKeyDown(KeyCode.Escape))
-        //{
-        //    SceneManager.LoadScene("Title Screen");
-        //    Cursor.visible = true;
-        //    Cursor.lockState = CursorLockMode.None;
-        //}
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Time.timeScale = 0;
+            menuPanel.SetActive(true);
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
 
         if (cardUISystem == null)
         {
@@ -103,7 +104,16 @@ public class GameManager : MonoBehaviour
     private IEnumerator GameOverAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        SceneManager.LoadScene("Title Screen");
+
+        if (SceneManager.GetActiveScene().name == "Tutorial")
+        {
+            SceneManager.LoadScene("Tutorial");
+        }
+        else
+        {
+            SceneManager.LoadScene("BetaHub");
+        }
+
         if (Cursor.lockState == CursorLockMode.Locked)
         {
             Cursor.lockState = CursorLockMode.None;
