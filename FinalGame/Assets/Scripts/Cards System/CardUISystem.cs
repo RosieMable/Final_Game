@@ -72,20 +72,36 @@ namespace ZaldensGambit
             DungeonUIChoice.SetActive(false);
         }
 
+        public void ResetCardDungeonUI()
+        {
+            foreach (var card in DungeonCardsSelected)
+            {
+                Destroy(card);
+            }
+
+            foreach (var card in CardsDealt)
+            {
+                Destroy(card);
+            }
+        }
+
         void Init()
         {
+
+                 
             if (dungeonCard == null)
                 dungeonCard = FindObjectOfType<DungeonCardSystem>();
+
+            CardsDealt.Clear();
+            drawnCards.Clear();
 
             howManyAdded = 0.0f;
             currentDeck = CardInventory.instance.dungeonCards;
             HandDeckPos = HandDeck;
 
-            foreach (var card in DungeonCardsSelected)
-            {
-                card.selected = false;
-            }
+
             DungeonCardsSelected.Clear();
+
             cardsRevealed = 0;
             DungeonCardUI.selectCardDelegate += CheckCardsSelected;
             DungeonCardUI.revealCardDelegate += AfterSelection;
@@ -139,20 +155,6 @@ namespace ZaldensGambit
 
         }
 
-        private void AddToRevealedCards()
-        {
-           cardsRevealed += 1;
-
-           print(cardsRevealed);
-
-
-                //close ui system
-                //open spirit selection ui
-                //saves all selected options to be carried over
-                //SpiritSelection();
-                 AfterSelection();
-        }
-
         public void SpiritSelection()
         {
             if (spirits.Count != 0) //if we have spirit cards
@@ -184,7 +186,7 @@ namespace ZaldensGambit
                 //close UI
                 //after a delay
                 //possible animations?
-                StartCoroutine(CloseDungeonCardsUI(2f));
+                StartCoroutine(CloseDungeonCardsUI(5f));
 
                 SpiritSelection();
             }
@@ -235,6 +237,7 @@ namespace ZaldensGambit
             yield return new WaitForSecondsRealtime(delay);
 
             SpiritCardsUIElements.SetActive(false);
+            SpiritCardsUIArena.SetActive(false);
         }
 
         IEnumerator AnimateCardFanning(float _animSpeed, List<Card_ScriptableObj> _cards)

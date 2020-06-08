@@ -188,8 +188,19 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 598098901193504654, guid: 5c35c16d1b5c2e944aa09dc972f637ec,
+        type: 3}
+      propertyPath: PortalToHub
+      value: 
+      objectReference: {fileID: 80177505}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5c35c16d1b5c2e944aa09dc972f637ec, type: 3}
+--- !u!1 &80177505 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7037240179705208015, guid: 5c35c16d1b5c2e944aa09dc972f637ec,
+    type: 3}
+  m_PrefabInstance: {fileID: 80177504}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &252224445
 PrefabInstance:
   m_ObjectHideFlags: 0
