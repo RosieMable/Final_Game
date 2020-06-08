@@ -193,6 +193,11 @@ PrefabInstance:
       propertyPath: PortalToHub
       value: 
       objectReference: {fileID: 55908149}
+    - target: {fileID: 4325935694144420260, guid: be7076194b11e8b4fa902fc20e7183b9,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be7076194b11e8b4fa902fc20e7183b9, type: 3}
 --- !u!1 &55908149 stripped
