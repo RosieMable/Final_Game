@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using ZaldensGambit;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,6 +12,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Sprite[] damageEffects;
     private Image damageEffect;
     private Coroutine damageCoroutine;
+    public BaseSpirit spiritToEquipInDungeon;
+    SpiritSystem spiritSystem;
+    CardUISystem cardUISystem;
+    private Scene currentScene;
+    private GameObject menuPanel;
 
     private void Awake()
     {
@@ -27,17 +33,49 @@ public class GameManager : MonoBehaviour
 
         damageEffect = GameObject.Find("DamageEffect").GetComponent<Image>();
         damageEffect.enabled = false;
+        currentScene = SceneManager.GetActiveScene();
+        menuPanel = GameObject.Find("MenuPanel");
+        menuPanel.SetActive(false);
     }
 
-    public void GameOver()
+    private void Update()
     {
-        StartCoroutine(GameOverAfterDelay(3));
-    }    
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Time.timeScale = 0;
+            menuPanel.SetActive(true);
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+
+        if (cardUISystem == null)
+        {
+            cardUISystem = FindObjectOfType<CardUISystem>();
+        }
+
+        if(SceneManager.GetActiveScene() != currentScene)
+        {
+            if(spiritSystem== null)
+            {
+                spiritSystem = FindObjectOfType<SpiritSystem>();
+                if (spiritToEquipInDungeon != null && FindObjectOfType<StateManager>())
+                {
+                    spiritSystem.spiritEquipped = spiritToEquipInDungeon;
+                    spiritSystem.OnEquipSpirit(spiritToEquipInDungeon);
+                }
+            }
+        }
+    }
+
+    public void GameOver(float delay)
+    {
+        StartCoroutine(GameOverAfterDelay(delay));
+    }
 
     public void InstantGameOver()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        CardInventory.instance.Init();
+        //CardInventory.instance.Init();
         //CardInventory.instance.ToggleInventory();
     }
 
@@ -58,11 +96,35 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void LoadScene(string sceneName)
+    {
+        SceneManager.LoadSceneAsync(sceneName);
+    }
+
     private IEnumerator GameOverAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        CardInventory.instance.Init();
+
+        if (SceneManager.GetActiveScene().name == "Tutorial")
+        {
+            SceneManager.LoadScene("Tutorial");
+        }
+        else
+        {
+            SceneManager.LoadScene("BetaHub");
+        }
+
+        if (Cursor.lockState == CursorLockMode.Locked)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+        //CardInventory.instance.Init();
         //CardInventory.instance.ToggleInventory();
     }
 

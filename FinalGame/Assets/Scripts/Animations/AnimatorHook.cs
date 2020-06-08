@@ -65,7 +65,7 @@ namespace ZaldensGambit
                     delta.y = 0;
                     Vector3 velocity = (delta * multiplier) / states.delta;
                     rigidBody.velocity = velocity;
-                }                
+                }    
             }
 
             if (enemyStates != null)
@@ -271,7 +271,28 @@ namespace ZaldensGambit
                 states.actionLockoutDuration = 2f;                
             }
         }
+
+
+        public void ClericHealing()
+        {
+            if (states != null)
+            {
+                SpiritSystem spiritSystem = GetComponentInParent<SpiritSystem>();
+                spiritSystem.ClericHealing();
+            }
+        }
+
+        public void PaladinDamage()
+        {
+            if (states != null)
+            {
+                SpiritSystem spiritSystem = GetComponentInParent<SpiritSystem>();
+                spiritSystem.PaladinDamage();
+            }
+        }
+
     }
+
 }
 
 

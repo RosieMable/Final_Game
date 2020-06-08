@@ -26,6 +26,7 @@ public class CardInventory : MonoBehaviour
     public SpiritDeckUpdated spiritDeckCallback;
     public delegate void DungeonDeckUpdated(Card_ScriptableObj dungeonCard);
     public DungeonDeckUpdated dungeonDeckCallback;
+    private int minimum = 0;
 
     private void Awake()
     {
@@ -39,8 +40,7 @@ public class CardInventory : MonoBehaviour
             Destroy(this);
         }
 
-        DontDestroyOnLoad(gameObject);
-        Init();
+        DontDestroyOnLoad(gameObject);        
     }
 
     public void Init()
@@ -60,6 +60,7 @@ public class CardInventory : MonoBehaviour
 
     private void Start()
     {
+        Init();
         ToggleInventory();
     }
 
@@ -96,10 +97,13 @@ public class CardInventory : MonoBehaviour
 
         for (int i = 0; i < cardPositions.Length; i++)
         {
-            if (spiritCards[i] != null)
+            if (spiritCards.Count > 0)
             {
-                cardPositions[i].GetComponent<Image>().sprite = spiritCards[i]._spiritSpriteCardback;
-                cardPositions[i].GetComponent<InventoryCardUI>().spirit = spiritCards[i];
+                if (spiritCards[i] != null)
+                {
+                    cardPositions[i].GetComponent<Image>().sprite = spiritCards[i]._spiritSpriteCardback;
+                    cardPositions[i].GetComponent<InventoryCardUI>().spirit = spiritCards[i];
+                }
             }
         }
     }
@@ -110,7 +114,7 @@ public class CardInventory : MonoBehaviour
 
         for (int i = 0; i < cardPositions.Length; i++)
         {
-            if (selectedCardPosition == cardPositions[i])
+            if (selectedCardPosition == cardPositions[i] && cardSelectedsInfo.spirit != null)
             {
                 cardSelectedsInfo.spirit = cardPositions[i].GetComponent<InventoryCardUI>().spirit;
                 cardSelected.GetComponent<Image>().sprite = cardSelectedsInfo.spirit._spiritSpriteCardback;
@@ -122,8 +126,6 @@ public class CardInventory : MonoBehaviour
             }
         }
     }
-
-    private int minimum = 0;
 
     public void SortLeft()
     {

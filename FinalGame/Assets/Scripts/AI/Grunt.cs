@@ -92,11 +92,14 @@ namespace ZaldensGambit
                 case State.Attacking:
                     if (!isInvulnerable && !inAction && Time.time > attackDelay)
                     {
+                        print("Attacking");
                         agent.isStopped = true;
-                        bool playerInFront = Physics.Raycast(transform.position, transform.forward, 2, playerLayer);
+                        bool playerInFront = Physics.Raycast(transform.position + transform.up, transform.forward, 2, playerLayer);
+                        Debug.DrawRay(transform.position + transform.up, transform.forward * 2, Color.green);
 
                         if (playerInFront)
                         {
+                            print("Player in front");
                             attackDelay = Time.time + attackCooldown;
                             int animationToPlay = Random.Range(0, attackAnimations.Length);
                             charAnim.CrossFade(attackAnimations[animationToPlay].name, 0.2f);
@@ -104,11 +107,13 @@ namespace ZaldensGambit
                         }
                         else
                         {
+                            print("Player NOT in front");
                             RotateTowardsTarget(player.transform);
                         }                        
                     }
                     else
                     {
+                        print("Can't attack");
                         RotateTowardsTarget(player.transform);
                     }
                     break;

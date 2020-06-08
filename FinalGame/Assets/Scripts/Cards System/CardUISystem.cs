@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 namespace ZaldensGambit
 {
@@ -16,10 +17,13 @@ namespace ZaldensGambit
         [SerializeField]
         List<Card_ScriptableObj> drawnCards;
 
-        public List<CardUI> CardsSelected;
+        public List<DungeonCardUI> DungeonCardsSelected;
 
         [SerializeField]
         List<GameObject> CardsDealt;
+
+        [SerializeField]
+        private List<BaseSpirit> spirits;
 
         public int cardsClickedOn = 0;
 
@@ -36,16 +40,25 @@ namespace ZaldensGambit
         public float totalTwist;
 
         [SerializeField]
-        private Transform HandDeckPos;
+        private Transform HandDeckPos, SpiritCardsPosition;
 
         [SerializeField]
-        GameObject prefabCard;
+        GameObject prefabDungeonCard, prefabSpiritCard;
 
         [Header("Dungeon Cards UI Elements")]
         [SerializeField]
         GameObject DungeonCardssUIElements;
 
+        [SerializeField]
+        GameObject SpiritCardsUIElements;
+
+        public GameObject DungeonUIChoice;
+
+        public GameObject SpiritCardsUIArena;
+
         public int cardsRevealed;
+
+        public bool spiritSelected;
 
         [SerializeField]
         Portal portalToDungeon;
@@ -56,29 +69,60 @@ namespace ZaldensGambit
         void Start()
         {
             Init();
+            DungeonUIChoice.SetActive(false);
+        }
+
+        public void ResetCardDungeonUI()
+        {
+            foreach (var card in DungeonCardsSelected)
+            {
+                Destroy(card);
+            }
+
+            foreach (var card in CardsDealt)
+            {
+                Destroy(card);
+            }
         }
 
         void Init()
         {
+
+                 
             if (dungeonCard == null)
                 dungeonCard = FindObjectOfType<DungeonCardSystem>();
+
+            CardsDealt.Clear();
+            drawnCards.Clear();
 
             howManyAdded = 0.0f;
             currentDeck = CardInventory.instance.dungeonCards;
             HandDeckPos = HandDeck;
 
-            foreach (var card in CardsSelected)
-            {
-                card.selected = false;
-            }
-            CardsSelected.Clear();
-            cardsRevealed = 0;
-            CardUI.selectCardDelegate += CheckCardsSelected;
-            CardUI.revealCardDelegate += AfterSelection;
 
-            portalToDungeon.gameObject.SetActive(false);
+            DungeonCardsSelected.Clear();
+
+            cardsRevealed = 0;
+            DungeonCardUI.selectCardDelegate += CheckCardsSelected;
+            DungeonCardUI.revealCardDelegate += AfterSelection;
+
+            SpiritCardUI.selectCardDelegate += AfterSpiritSelection;
+
+            spirits = CardInventory.instance.spiritCards;
+
+            if (portalToDungeon != null)
+            {
+                portalToDungeon.gameObject.SetActive(false);
+            }
         }
 
+        private void Update()
+        {
+            if (portalToDungeon == null && SceneManager.GetActiveScene().name == "BetaHub")
+            {
+                portalToDungeon = GameObject.Find("PortalToDungeon").GetComponent<Portal>();
+            }
+        }
 
         public void NewDeal()
         {
@@ -90,52 +134,44 @@ namespace ZaldensGambit
         public void CheckCardsSelected()
         {
             cardsClickedOn = 0;
-          //  CenterPoint.position = GetCentreForCards(dungeonCard.DrawnCards.Count);
 
-            foreach (var card in CardsSelected)
+            foreach (var card in DungeonCardsSelected)
             {
-                card.chosenCard = drawnCards[cardsClickedOn++];
-                Vector3 parentPos = CenterPoint.position;
-                Vector3 newPos = parentPos += new Vector3(GapBasedOnCardsamount(dungeonCard.DrawnCards.Count) * cardsClickedOn, 0f, 0f);
-                iTween.MoveTo(card.gameObject, newPos, 0.5f);
-                iTween.RotateTo(card.gameObject, Vector3.zero, 0.25f);
                 card.gameObject.transform.SetParent(CenterPoint);
+                iTween.RotateTo(card.gameObject, Vector3.zero, 0.25f);
                 iTween.ScaleTo(card.gameObject, ScaleBasedNumberOfCards(dungeonCard.DrawnCards.Count), 0.2f);
+                card.chosenCard = drawnCards[cardsClickedOn++];
                 card.selected = true;
-               // print(cardsClickedOn);
+                // print(cardsClickedOn);
 
             }
 
-            if (CardsSelected.Count == dungeonCard.GlobalAmountCD) //if we drawn the needed cards
+            if (DungeonCardsSelected.Count == dungeonCard.GlobalAmountCD) //if we drawn the needed cards
             {
+
                 iTween.MoveTo(HandDeck.gameObject, new Vector3(HandDeck.gameObject.transform.position.x, -300, HandDeck.gameObject.transform.position.z), 1f); //Moves the hand out of the way
-                CardUI.selectCardDelegate -= CheckCardsSelected;
-                cardsClickedOn = 0;
+                DungeonCardUI.selectCardDelegate -= CheckCardsSelected;
             }
+
         }
 
-        private void AddToRevealedCards()
+        public void SpiritSelection()
         {
-           cardsRevealed += 1;
-
-           print(cardsRevealed);
-
-
-                //close ui system
-                //open spirit selection ui
-                //saves all selected options to be carried over
-                //SpiritSelection();
-                 AfterSelection();
-        }
-
-        private void SpiritSelection()
-        {
-            if (CardInventory.instance.spiritCards.Count != 0) //if we have spirit cards
+            if (spirits.Count != 0) //if we have spirit cards
             {
+                SpiritCardsUIElements.SetActive(true);
                 //show spirit choice UI
+                    for (int i = 0; i <= spirits.Count -1; i++)
+                    {
+                        GameObject spiritCard = Instantiate(prefabSpiritCard, SpiritCardsPosition);
+                        SpiritCardUI spirit = spiritCard.GetComponent<SpiritCardUI>();
+                        spirit.SpiritCardImage.sprite = spirits[i]._spiritSpriteCardback;
+                        spirit.chosenSpirit = spirits[i];
+
+                    }
             }
             else //we don't have any spirit cards
-                return;
+                CloseSystem();
         }
 
         private void AfterSelection()
@@ -150,17 +186,29 @@ namespace ZaldensGambit
                 //close UI
                 //after a delay
                 //possible animations?
-                StartCoroutine(CloseDungeonCardsUI(2f));
+                StartCoroutine(CloseDungeonCardsUI(5f));
 
-                //reset interaction system
-                FateWeaver fateWeaver = FindObjectOfType<FateWeaver>();
-                fateWeaver.ResetInteraction();
-
-                cardsRevealed = 0;
-
-                //activate portal
-                portalToDungeon.gameObject.SetActive(true);
+                SpiritSelection();
             }
+        }
+
+        private void AfterSpiritSelection()
+        {
+            StartCoroutine(CloseSpiritCardsUI(2f));
+
+            CloseSystem();
+        }
+
+        private void CloseSystem()
+        {
+            //reset interaction system
+            FateWeaver fateWeaver = FindObjectOfType<FateWeaver>();
+            fateWeaver.ResetInteraction();
+
+            cardsRevealed = 0;
+
+            //activate portal
+            portalToDungeon.gameObject.SetActive(true);
         }
 
         private void FitCards()
@@ -178,10 +226,18 @@ namespace ZaldensGambit
             yield return new WaitForSecondsRealtime(delay);
 
             DungeonCardssUIElements.SetActive(false);
-            foreach (var cardSelected in CardsSelected)
+            foreach (var cardSelected in DungeonCardsSelected)
             {
                 Destroy(cardSelected);
             }
+        }
+
+        IEnumerator CloseSpiritCardsUI(float delay)
+        {
+            yield return new WaitForSecondsRealtime(delay);
+
+            SpiritCardsUIElements.SetActive(false);
+            SpiritCardsUIArena.SetActive(false);
         }
 
         IEnumerator AnimateCardFanning(float _animSpeed, List<Card_ScriptableObj> _cards)
@@ -197,9 +253,8 @@ namespace ZaldensGambit
             {
                 for (int y = 0; y < _cards.Count; y++)
                 {
-                    GameObject cardGO = Instantiate(prefabCard, HandDeck);
-                    cardGO.transform.SetParent(HandDeck);
-                    cardGO.transform.position = start.position; //relocating my card to the Start Position
+                    GameObject cardGO = Instantiate(prefabDungeonCard, HandDeck);
+                    cardGO.transform.position = start.transform.position; //relocating my card to the Start Position
                     float twistForThisCard = startTwist + (howManyAdded * twistPerCard);
                     float scalingFactor = 1.75f;
                     float nudgeThisCard = Mathf.Abs(twistForThisCard);
@@ -220,7 +275,7 @@ namespace ZaldensGambit
                 howManyAdded = 0;
                 foreach (var cardGO in CardsDealt)
                 {
-                    cardGO.transform.position = start.position; //relocating my card to the Start Position
+                    cardGO.transform.position = start.transform.position; //relocating my card to the Start Position
                     cardGO.transform.SetParent(HandDeck);
                     float twistForThisCard = startTwist + (howManyAdded * twistPerCard);
                     float scalingFactor = 1.75f;
@@ -238,33 +293,9 @@ namespace ZaldensGambit
 
         }
 
-        Vector3 GetCentreForCards(float numberOfCards)
-        {
-            Vector3 val = Vector3.zero;
-
-            if (numberOfCards != 0)
-            {
-                float x = Screen.width / numberOfCards;
-                float y = Screen.height / 2;
-
-                val = new Vector3(x, y, -1);
-            }
-
-
-            return val;
-        }
-
         Vector3 ScaleBasedNumberOfCards(float numberOfCards)
         {
             Vector3 val = Vector3.zero;
-
-            //if (numberOfCards != 0)
-            //{
-            //    float height = Camera.main.orthographicSize * 2.0f;
-            //    float width = height * Screen.height / Screen.width;
-            //    val = Vector3.one * width / numberOfCards;
-
-            //}
 
             if (numberOfCards == 3)
             {
@@ -272,39 +303,22 @@ namespace ZaldensGambit
             }
             if (numberOfCards == 6)
             {
-                val = Vector3.one * 1.75f;
+                val = Vector3.one * 1f;
             }
             if (numberOfCards == 9)
             {
-                val = Vector3.one * 1.5f;
+                val = Vector3.one * .7f;
             }
 
-            return val;
-        }
-
-        float GapBasedOnCardsamount(float numberOfCards)
-        {
-            float val = 0;
-
-            if (numberOfCards == 3)
-            {
-                val = 200f;
-            }
-            if (numberOfCards == 6)
-            {
-                val = 175f;
-            }
-            if (numberOfCards == 9)
-            {
-                val = 150f;
-            }
             return val;
         }
 
         private void OnDisable()
         {
-            CardUI.selectCardDelegate -= CheckCardsSelected;
-            CardUI.revealCardDelegate -= AfterSelection;
+            DungeonCardUI.selectCardDelegate -= CheckCardsSelected;
+            DungeonCardUI.revealCardDelegate -= AfterSelection;
+
+            SpiritCardUI.selectCardDelegate -= AfterSpiritSelection;
         }
     }
 }

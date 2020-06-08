@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 
 namespace ZaldensGambit
@@ -19,6 +20,7 @@ namespace ZaldensGambit
 
         [SerializeField] private float maxStepHeight = 0.4f;        // The maximum a player can step upwards in units when they hit a wall that's potentially a step
         [SerializeField] private float stepSearchOvershoot = 0.01f; // How much to overshoot into the direction a potential step in units when testing. High values prevent player from walking up tiny steps but may cause problems.
+        [SerializeField] private float maxSlopeAngle = 45.0f;
         private List<ContactPoint> contactPoints = new List<ContactPoint>();
 
         public float maximumHealth = 100;
@@ -127,7 +129,7 @@ namespace ZaldensGambit
         /// <summary>
         /// Deals damage to the player unless invulnerable or the damageSource is directly in front of the player whilst they are blocking.
         /// </summary>
-        public void TakeDamage(float damageValue, Transform damageSource)
+        public void TakeDamage(float damageValue, Transform damageSource, bool isBlockable, bool playHurtAnimation)
         {
             Enemy enemy = damageSource.GetComponent<Enemy>();
 
@@ -137,7 +139,7 @@ namespace ZaldensGambit
                 return;
             }
 
-            if (isBlocking && !shieldBashing)
+            if (isBlocking && !shieldBashing && isBlockable)
             {
                 RaycastHit[] hits = Physics.BoxCastAll(transform.position + transform.forward, transform.localScale / 2, transform.forward, transform.rotation, 5, ignoredLayers);
 
@@ -152,7 +154,7 @@ namespace ZaldensGambit
 
                         if (enemy)
                         {
-                            enemy.attackDelay = Time.time + enemy.attackCooldown * 2f;
+                            enemy.attackDelay = Time.time + (enemy.attackCooldown * 2f);
                         }
                         return;
                     }
@@ -215,21 +217,32 @@ namespace ZaldensGambit
                 collider.enabled = false;
                 rigidBody.isKinematic = true;
                 charAnim.Play("Death");
-                GameManager.instance.GameOver();
+                GameManager.instance.GameOver(3);
             }
 
             int audioClipToPlay = Random.Range(0, hurtAudioClips.Length);
             characterAudioSource.clip = hurtAudioClips[audioClipToPlay];
             characterAudioSource.Play();
 
-            int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length);
-            charAnim.CrossFade(hurtAnimations[hurtAnimationToPlay].name, 0.1f);
-            charAnim.applyRootMotion = true;
+            if (playHurtAnimation)
+            {
+                int hurtAnimationToPlay = Random.Range(0, hurtAnimations.Length);
+                charAnim.CrossFade(hurtAnimations[hurtAnimationToPlay].name, 0.1f);
+                charAnim.applyRootMotion = true;
+            }
+            
         }
 
         public void RestoreHealth(float amountToRestore)
         {
-            currentHealth = Mathf.Lerp(currentHealth, currentHealth + amountToRestore, 1f);
+            if (currentHealth + amountToRestore >= maximumHealth)
+            {
+                currentHealth = Mathf.Lerp(currentHealth, maximumHealth, 1f);
+            }
+            else
+            {
+                currentHealth = Mathf.Lerp(currentHealth, currentHealth + amountToRestore, 1f);
+            }
         }
 
         /// <summary>
@@ -276,7 +289,9 @@ namespace ZaldensGambit
                 moveSpeed = originalSpeed;
             }
 
-            grounded = IsGrounded();
+            // Use a ray-cast as a fallback for if the player comes slightly out of contact with the floor
+            // or'd with grounded from FixedUpdate so that it works for physical contact as well when partially hanging off a ledge
+            grounded |= IsGrounded();
             charAnim.SetBool("grounded", grounded);
 
             if (grounded && !isInvulnerable)
@@ -317,20 +332,25 @@ namespace ZaldensGambit
 
             // Do stair step
             ContactPoint groundCP;
-            bool grounded = FindGround(out groundCP, contactPoints);
-            Vector3 stepUpOffset = Vector3.zero;
-            Vector3 currentVelocity = rigidBody.velocity;
-            bool stepUp = false;
-            if (grounded)
-                stepUp = FindStep(out stepUpOffset, contactPoints, groundCP, out currentVelocity);
+            grounded = FindGround(out groundCP, contactPoints);
 
-            if (stepUp)
+            //if (!grounded) print("Not grounded!");
+
+            /*bool stepUp = false;
+            Vector3 stepUpOffset = Vector3.zero;*/
+            Vector3 currentVelocity = rigidBody.velocity;
+            if (grounded)
+                StepUp(contactPoints);
+                //stepUp = FindStep(out stepUpOffset, contactPoints, groundCP, out currentVelocity);
+
+            /*if (stepUp)
             {
                 //Take the RigidBody and apply the stepUpOffset to its position
-                transform.position += stepUpOffset;
+                transform.position += stepUpOffset;                
+                //rigidBody.MovePosition(transform.position += stepUpOffset);
                 //When it hit the stair, it stopped our player, so reapply their last velocity
                 rigidBody.velocity = currentVelocity; //You'll need to store this from the last physics frame...
-            }
+            }*/
             contactPoints.Clear();
 
             //if (grounded)
@@ -369,14 +389,15 @@ namespace ZaldensGambit
             }
             else
             {
-                rigidBody.drag = 4;                
+                rigidBody.drag = 999;                
             }
 
             if (grounded)
             {
                 rigidBody.velocity = movementDirection * (moveSpeed * moveAmount); // Apply force in the direction the player is heading
-                rigidBody.velocity = new Vector3(rigidBody.velocity.x, rigidBody.velocity.y * 200, rigidBody.velocity.z);
+                rigidBody.velocity = new Vector3(rigidBody.velocity.x, currentVelocity.y, rigidBody.velocity.z);
             }
+            rigidBody.AddForce(Physics.gravity, ForceMode.Acceleration);
 
             Vector3 targetDirection = movementDirection;
             targetDirection.y = 0;
@@ -435,7 +456,7 @@ namespace ZaldensGambit
                 collider.enabled = false;
                 rigidBody.isKinematic = true;
                 charAnim.Play("Death");
-                GameManager.instance.GameOver();
+                GameManager.instance.GameOver(3);
             }
         }
 
@@ -466,23 +487,22 @@ namespace ZaldensGambit
         /// </summary>
         public bool IsGrounded()
         {
-            bool grounded = false;
-
-            Vector3 origin = transform.position + (Vector3.up * 0.5f);
+            Vector3 origin = collider.bounds.center;
+            origin.y = collider.bounds.min.y + maxStepHeight;
             Vector3 direction = Vector3.down;
-            float distance = 0.8f;
+            float distance = maxStepHeight * 2;
 
             RaycastHit hit;
 
-            Debug.DrawRay(origin, direction * distance);
+            Debug.DrawRay(origin, direction * distance, Color.red);
 
             if (Physics.Raycast(origin, direction, out hit, distance, ignoredLayers)) // Possibly change to a boxcast later if raycast seems too inaccurate on ledges etc.
             {
-                grounded = true;
                 Vector3 targetPosition = hit.point;
-                transform.position = targetPosition;
+                //transform.position = targetPosition; // WTF!?                 
+                return true;
             }
-            return grounded;
+            return false;
         }
 
         /// <summary>
@@ -553,7 +573,7 @@ namespace ZaldensGambit
                     desiredAnimation = slot.desiredAnimation;           
                 }
 
-                if (specialAttack)
+                if (specialAttack && !inAction)
                 {
                     listenForCombos = false;
                     SpiritSystem spiritSystem = GetComponent<SpiritSystem>();
@@ -562,6 +582,7 @@ namespace ZaldensGambit
                         return;
                     }
                     spiritSystem.ActiveAbility(spiritSystem.spiritEquipped);
+                    animationClipIndex = 0;
                 }
 
                 // Light Attack Combo
@@ -630,7 +651,7 @@ namespace ZaldensGambit
                 desiredAnimation = slot.desiredAnimation;
             }
 
-            if (specialAttack)
+            if (specialAttack && !inAction)
             {
                 SpiritSystem spiritSystem = GetComponent<SpiritSystem>();
                 if (!spiritSystem.CheckAbilityCooldown())
@@ -682,7 +703,7 @@ namespace ZaldensGambit
             
         }
 
-        private bool FindGround(out ContactPoint groundCP, List<ContactPoint> allCPs)
+        /*private bool FindGround(out ContactPoint groundCP, List<ContactPoint> allCPs)
         {
             groundCP = default(ContactPoint);
             bool found = false;
@@ -697,13 +718,84 @@ namespace ZaldensGambit
             }
             //print("Grounded");
             return found;
+        }*/
+
+        private bool IsPotentialGround(ContactPoint cp)
+        {
+            return IsPotentialGround(cp.thisCollider.bounds, cp.point, cp.normal);
         }
 
-        private bool FindStep(out Vector3 stepUpOffset, List<ContactPoint> allCPs, ContactPoint groundCP, out Vector3 currentVelocity)
+        private bool IsPotentialGround(Bounds worldBounds, Vector3 point, Vector3 normal )
+        {
+            bool isInRange = point.y <= worldBounds.min.y + maxStepHeight;                                      // Lower than the players step height
+            bool isFlatEnough = Vector3.Dot(normal, Vector3.up) >= Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad);  // Must not be more steep than maxSlopeAngle
+            return isInRange && isFlatEnough;
+        }
+
+        private bool FindGround(out ContactPoint groundCP, List<ContactPoint> allCPs)
+        {
+            // Only consider contacts that could be ground 
+            // They must be lower than the players step and not be too steep
+            var groundCPs = allCPs.Where(IsPotentialGround);
+
+            // Take the lowest contact point (or default)
+            groundCP = groundCPs.OrderBy(cp => cp.point.y).FirstOrDefault();
+            
+            // Return whether any contact points existed that met our criteria (found a ground)
+            return groundCPs.Any();
+        }
+
+        private bool IsPotentialStep(ContactPoint cp)
+        {
+            bool isInRange = (cp.point.y <= cp.thisCollider.bounds.min.y + maxStepHeight);
+            bool isNotWalkable = Vector3.Dot(cp.normal, Vector3.up) < Mathf.Cos(maxSlopeAngle * Mathf.Deg2Rad); 
+            return isInRange && isNotWalkable;
+        }
+
+        private void StepUp(List<ContactPoint> allCPs)
+        {
+            if (movementDirection.sqrMagnitude < 0.0001f)
+            {
+                return;
+            }
+
+            // Are we walking into a potential step?
+            if(allCPs.Any(cp => IsPotentialStep(cp)))
+            {
+                const float excess = 0.05f;
+                var capsule = (CapsuleCollider)collider;
+                Vector3 bottom = transform.position + capsule.center + Vector3.up * -(capsule.height * 0.5f - capsule.radius);  // Get Capsule lowest point
+                bottom += Vector3.up * (maxStepHeight + excess);                                                                // adjust for step height
+                bottom += transform.forward * (capsule.radius + stepSearchOvershoot);                                           // adjust forward search distance
+                
+                Vector3 top = bottom + Vector3.up * capsule.height;                                                              // Get capsule top point (bottom + height)
+
+                RaycastHit hit;
+                // Make sure there is nothing blocking us from moving into the step position by overlapping at the step location
+                if (!Physics.OverlapCapsule(bottom, top, capsule.radius, LayerMask.GetMask("Default")).Any()) 
+                {
+                    // Cast a capsule down to find the resting location of the capsule
+                    if (Physics.CapsuleCast(bottom, top, capsule.radius, Vector3.down, out hit, maxStepHeight + excess))
+                    {
+                        // Check if the capsule cast hit a surface within our height tolerance, and make sure the location is potential ground
+                        if (hit.distance > excess && hit.distance < maxStepHeight && IsPotentialGround(collider.bounds, hit.point, hit.normal))
+                        {
+                            Debug.DrawRay(bottom, Vector3.down * maxStepHeight, Color.green, 3.0f, true);
+
+                            // Lower the bottom of the target location based on the distance to the hit surface and move the character transform to the new step location
+                            bottom.y -= (hit.distance + capsule.radius);
+                            transform.position = bottom;
+                        }
+                    }
+                }
+            }
+        }
+
+        /*private bool FindStep(out Vector3 stepUpOffset, List<ContactPoint> allCPs, ContactPoint groundCP, out Vector3 currentVelocity)
         {
             stepUpOffset = default(Vector3);
             currentVelocity = rigidBody.velocity;
-
+            
             //No chance to step if the player is not moving
             Vector2 velocityXZ = new Vector2(currentVelocity.x, currentVelocity.z);
             if (velocityXZ.sqrMagnitude < 0.0001f)
@@ -722,7 +814,7 @@ namespace ZaldensGambit
             //print("Step not found");
             return false;
         }
-
+        
         private bool ResolveStepUp(out Vector3 stepUpOffset, ContactPoint stepTestCP, ContactPoint groundCP)
         {
             stepUpOffset = default(Vector3);
@@ -731,7 +823,7 @@ namespace ZaldensGambit
             //( 1 ) Check if the contact point normal matches that of a step (y close to 0)
             if (Mathf.Abs(stepTestCP.normal.y) <= 0.01f)
             {
-               // print("Failed 1");
+                print("Failed 1");
                 return false;
             }
 
@@ -771,7 +863,7 @@ namespace ZaldensGambit
            // print("Stepping up");
             stepUpOffset = stepUpPointOffset;
             return true; //We're going to step up!
-        }
+        }*/
 
         /// <summary>
         /// Checks if the player has enough experience to levle up, if so increases their level and sets experienced needed for the next level up.
@@ -807,7 +899,7 @@ namespace ZaldensGambit
                 }
                 else
                 {
-                    TakeDamage(other.GetComponent<Projectile>().damageValue, other.transform);
+                    TakeDamage(other.GetComponent<Projectile>().damageValue, other.transform, true, true);
                 }
             }
 

@@ -16,6 +16,7 @@ namespace ZaldensGambit
         protected override void Start()
         {
             base.Start();
+            ignoreCombatCircle = true;
             agent.stoppingDistance = 1;
         }
 

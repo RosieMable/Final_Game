@@ -11,7 +11,7 @@ namespace ZaldensGambit
         {
             if (other.GetComponent<StateManager>())
             {
-                GameManager.instance.InstantGameOver();
+                GameManager.instance.GameOver(1f);
             }
         }
     }

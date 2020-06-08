@@ -9,63 +9,33 @@ namespace ZaldensGambit
 {
     public class CardUI : MonoBehaviour
     {
-        [Header("Cards Details")]
-        [SerializeField]
-        Sprite backCard;
+
 
         [SerializeField]
-        Sprite frontCard;
+        protected CardUISystem UI;
 
         [SerializeField]
-        private CardUISystem UI;
+        protected SpiritSystem spiritSystem;
 
         public Card_ScriptableObj chosenCard;
 
         public bool selected;
 
+        protected UIShadow shadow;
 
-        public delegate void OnSelectCardDelegate();
-        public static OnSelectCardDelegate selectCardDelegate;
-
-        public delegate void OnRevealCardDelegate();
-        public static OnRevealCardDelegate revealCardDelegate;
-
-        [SerializeField]
-        private Image[] suitImages;
-
-        [SerializeField]
-        private Text valueText;
-
-        public Image selfImage;
-
-        private UIShadow shadow;
-
-        [SerializeField]
-        bool revealed;
-
-        CardUISystem cardUI;
-
-        private void Start()
+        protected virtual void Start()
         {
             if (UI == null)
                 UI = FindObjectOfType<CardUISystem>();
             selected = false;
 
-            foreach (var suit in suitImages)
-            {
-                suit.gameObject.SetActive(false);
-            }
-            valueText.gameObject.SetActive(false);
-
-            selfImage.sprite = backCard;
-
+            if(spiritSystem == null)
+                spiritSystem = FindObjectOfType<SpiritSystem>();
+           
             shadow = FindObjectOfType<UIShadow>();
 
             shadow.effectColor = new Color(shadow.effectColor.r, shadow.effectColor.g, shadow.effectColor.b, 0);
 
-            revealed = false;
-
-             cardUI = FindObjectOfType<CardUISystem>();
         }
 
 
@@ -77,7 +47,7 @@ namespace ZaldensGambit
             }
             else
             {
-                iTween.ScaleTo(this.gameObject, new Vector3(2.2f, 2.2f, 2.2f), .2f);
+                iTween.ScaleTo(this.gameObject, new Vector3(1.2f, 1.2f, 1.2f), .2f);
             }
 
             shadow.effectColor = new Color(shadow.effectColor.r, shadow.effectColor.g, shadow.effectColor.b, 1);
@@ -91,58 +61,13 @@ namespace ZaldensGambit
             }
             else
             {
-                iTween.ScaleTo(this.gameObject, new Vector3(2f, 2f, 2f), .2f);
+                iTween.ScaleTo(this.gameObject, new Vector3(1f, 1f, 1f), .2f);
             }
 
             shadow.effectColor = new Color(shadow.effectColor.r, shadow.effectColor.g, shadow.effectColor.b, 0);
         }
 
-        public void OnClickCard()
-        {
-            if (chosenCard == null)
-            {
-                if (selectCardDelegate != null)
-                {
-                    if (selected == false)
-                    {
-                        UI.CardsSelected.Add(this);
-                    }
-
-                    selectCardDelegate();
-
-                }
-            }
-            else
-            {
-                iTween.RotateTo(this.gameObject, new Vector3(0, 358, 0), 2f);
-
-                foreach (var suit in suitImages)
-                {
-                    suit.sprite = chosenCard.CardSprite;
-                    suit.gameObject.SetActive(true);
-                    revealed = true;
-                }
-
-                valueText.text = chosenCard.CardValue.ToString();
-                valueText.gameObject.SetActive(true);
-
-                selfImage.sprite = frontCard;
-
-                if (revealed)
-                {
-                    cardUI.cardsRevealed += 1;
-                    print(cardUI.cardsRevealed);
-
-                    if (revealCardDelegate != null)
-                    {
-                        revealCardDelegate();
-                    }
-                }
-
-            }
-
 
         }
 
     }
-}

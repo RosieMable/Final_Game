@@ -16,4 +16,12 @@ public class Button : MonoBehaviour
     {
         Application.Quit();
     }
+
+    public void Resume()
+    {
+        Time.timeScale = 1;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        transform.parent.gameObject.SetActive(false);
+    }
 }

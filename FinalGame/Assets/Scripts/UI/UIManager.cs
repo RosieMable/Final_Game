@@ -3,19 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.SceneManagement;
 
 namespace ZaldensGambit
 {
     public class UIManager : Singleton<UIManager>
     {
-        private static UIManager _instance;
+        public static UIManager Instance;
 
         private Image healthBar;
         private TextMeshProUGUI healthText;
         private StateManager player;
         private TextMeshProUGUI dialogueText;
         private GameObject dialoguePanel;
+        private Coroutine abilityCooldownCoroutine;
+
+        private Image spiritBar;
 
         #region "Spirit UI Variables"
 
@@ -26,15 +28,24 @@ namespace ZaldensGambit
 
         #endregion
 
-        private void Awake()
+        private new void Awake()
         {
-            base.Awake();
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+            else if (Instance != this)
+            {
+                Destroy(gameObject);
+            }
+
             healthBar = GameObject.Find("HealthBar").GetComponent<Image>();
             healthText = GameObject.Find("HealthText").GetComponent<TextMeshProUGUI>();
             dialoguePanel = GameObject.Find("DialoguePanel");
             dialogueText = GameObject.Find("DialogueText").GetComponent<TextMeshProUGUI>();
+            spiritBar = GameObject.Find("SpiritBar").GetComponent<Image>();
             player = FindObjectOfType<StateManager>();
-            DontDestroyOnLoad(this);
+            DontDestroyOnLoad(this);            
         }
 
         private void Start()
@@ -45,6 +56,11 @@ namespace ZaldensGambit
 
         private void Update()
         {
+            if (!player)
+            {
+                player = FindObjectOfType<StateManager>();
+            }
+
             UpdateHealthUI();
 
             //if (Input.GetKeyDown(KeyCode.Escape))
@@ -65,6 +81,22 @@ namespace ZaldensGambit
         {
             dialogueText.text = dialogueToShow;
             dialoguePanel.SetActive(true);
+        }
+
+        public void DisplayDialogue(string[] dialogueToShow, float duration)
+        {
+            StartCoroutine(DisplayTextForDuration(dialogueToShow, duration));
+        }
+
+        private IEnumerator DisplayTextForDuration(string[] text, float duration)
+        {
+            for (int i = 0; i < text.Length; i++)
+            {
+                dialogueText.text = text[i];
+                dialoguePanel.SetActive(true);
+                yield return new WaitForSeconds(duration);
+                HideDialogue();
+            }
         }
 
         public void HideDialogue()
@@ -89,6 +121,30 @@ namespace ZaldensGambit
                 }
             }                     
         }
+
+        public void UpdateAbilityBar(float abilityCooldown)
+        {
+            if (abilityCooldownCoroutine != null)
+            {
+                StopCoroutine(abilityCooldownCoroutine);
+            }
+
+            abilityCooldownCoroutine = StartCoroutine(AbilityCooldown(abilityCooldown));
+        }
+
+        IEnumerator AbilityCooldown(float countdownValue)
+        {
+            float currentValue = 0;
+            spiritBar.fillAmount = 0;
+            while (currentValue < countdownValue)
+            {
+                yield return new WaitForSecondsRealtime(1.0f);
+                currentValue++;
+                spiritBar.fillAmount = 1 / countdownValue * currentValue;
+            }
+            abilityCooldownCoroutine = null;
+        }
+
 
         public void ManageSpiritUI(BaseSpirit _spiritToDisplay)
         {

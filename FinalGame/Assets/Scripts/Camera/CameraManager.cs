@@ -11,6 +11,7 @@ namespace ZaldensGambit
         public static CameraManager instance; // Singleton
         
         public bool lockedOn;
+        private StateManager player;
 
         [SerializeField] private float followSpeed = 10;
         [SerializeField] private float mouseSpeed = 4;
@@ -39,6 +40,7 @@ namespace ZaldensGambit
         private float smoothYVelocity;
         private float lookAngle; // Rotation on the X axis
         private float tiltAngle; // Rotation on the Y axis
+        [SerializeField] private LayerMask cameraCollisionLayers;
         #endregion
 
         private void Awake()
@@ -69,7 +71,7 @@ namespace ZaldensGambit
             lockOnPrefab.transform.SetParent(this.transform);
             lockOnPrefab.transform.position = Vector3.zero;
             lockOnPrefab.SetActive(false);
-
+            player = FindObjectOfType<StateManager>();
         }
 
         /// <summary>
@@ -85,7 +87,7 @@ namespace ZaldensGambit
 
             FollowTarget(deltaTime);
 
-            if (CardInventory.instance.inventoryOpen)
+            if (CardInventory.instance.inventoryOpen || player.interacting)
             {
                 return;
             }
@@ -198,18 +200,19 @@ namespace ZaldensGambit
             Vector3 direction = -pivotPoint.forward;
 
             //Debug.DrawRay(origin, direction * step, Color.blue);
-
-            if (Physics.Raycast(origin, direction, out hit, step, states.ignoredLayers)) // Raycast, ignoring the same layers as the player
+            if (Physics.Raycast(origin, direction, out hit, step, cameraCollisionLayers)) // Raycast, ignoring the same layers as the player
             {
-                if (!hit.transform.GetComponent<StateManager>() && !hit.transform.GetComponent<Enemy>()) // If the raycast returns an object which is not a player or enemy
+                if (!hit.transform.GetComponent<Enemy>()) // If the raycast returns an object which is not a player or enemy
                 {
                     //Debug.Log(hit.transform.root.name);
                     float distance = Vector3.Distance(hit.point, origin); // Calculate distance from the point hit and the origin
                     actualZ = -(distance / 2); // Halve the distance and convert to negative value
-                }               
+                }
+                //Debug.Log(hit.transform.name + " was hit!");
             }
             else // If nothing is hit by the raycast...
             {
+                //print("Nothing hit");
                 for (int s = 0; s < stepCount + 1; s++)
                 {
                     for (int i = 0; i < 4; i++) // Loop 4 times to raycast out in 4 different directions to check for additional obstacles to the camera
@@ -235,9 +238,9 @@ namespace ZaldensGambit
 
                         //Debug.DrawRay(secondOrigin, dir * 0.5f, Color.red);
 
-                        if (Physics.Raycast(secondOrigin, dir, out hit, 0.5f, states.ignoredLayers)) // Raycast, ignoring the same layers as the player
+                        if (Physics.Raycast(secondOrigin, dir, out hit, 0.5f, cameraCollisionLayers)) // Raycast, ignoring the same layers as the player
                         {
-                            if (!hit.transform.GetComponent<StateManager>() && !hit.transform.GetComponent<Enemy>()) // If the raycast returns an object which is not a player or enemy
+                            if (!hit.transform.GetComponent<Enemy>()) // If the raycast returns an object which is not a player or enemy
                             {
                                 //Debug.Log(hit.transform.root.name);
                                 float distance = Vector3.Distance(secondOrigin, origin); // Calculate distance from both origins

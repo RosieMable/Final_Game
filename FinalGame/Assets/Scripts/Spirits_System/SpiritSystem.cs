@@ -35,9 +35,13 @@ namespace ZaldensGambit
         UpdateShieldMesh shieldMesh;
 
         UpdateSwordMesh swordMesh;
+
+        [SerializeField]
+        bool DebugTesting;
+
         private void OnEnable()
         {
-            onSpiritChanged += UIManager.Instance.ManageSpiritUI;
+            //onSpiritChanged += UIManager.Instance.ManageSpiritUI; // - Moved to start as UIManager Instance reference is not initialised when OnEnable() runs
             onSpiritChanged += Spirits_PlayerModel.Instance.SetCorrectProps;
         }
         private void Awake()
@@ -52,54 +56,74 @@ namespace ZaldensGambit
         //for now it is going to be in update, but once the inventory system is on, this should happen when "equipping" the spirit
         private void Start()
         {
+            onSpiritChanged += UIManager.Instance.ManageSpiritUI;
             OnEquipSpirit(spirit);
         }
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+            if (DebugTesting)
             {
-                spiritEquipped = DemoSpirits[0];
-                OnEquipSpirit(spiritEquipped);
+                if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    spiritEquipped = DemoSpirits[0];
+                    OnEquipSpirit(spiritEquipped);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha2))
+                {
+                    spiritEquipped = DemoSpirits[1];
+                    OnEquipSpirit(spiritEquipped);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha3))
+                {
+                    spiritEquipped = DemoSpirits[2];
+                    OnEquipSpirit(spiritEquipped);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha4))
+                {
+                    spiritEquipped = DemoSpirits[3];
+                    OnEquipSpirit(spiritEquipped);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha5))
+                {
+                    spiritEquipped = DemoSpirits[4];
+                    OnEquipSpirit(spiritEquipped);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha6))
+                {
+                    spiritEquipped = DemoSpirits[5];
+                    OnEquipSpirit(spiritEquipped);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha0))
+                {
+                    OnEquipSpirit(spirit);
+                }
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha2))
+           
+
+            if(spiritEquipped != null)
             {
-                spiritEquipped = DemoSpirits[1];
-                OnEquipSpirit(spiritEquipped);
+                if (spiritEquipped.abilityEvoked == false)
+                {
+                    swordMesh.RevertToOriginalMat();
+                    shieldMesh.RevertToOriginalMat();
+                }
+
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha3))
-            {
-                spiritEquipped = DemoSpirits[2];
-                OnEquipSpirit(spiritEquipped);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha4))
-            {
-                spiritEquipped = DemoSpirits[3];
-                OnEquipSpirit(spiritEquipped);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha5))
-            {
-                spiritEquipped = DemoSpirits[4];
-                OnEquipSpirit(spiritEquipped);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha6))
-            {
-                spiritEquipped = DemoSpirits[5];
-                OnEquipSpirit(spiritEquipped);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha0))
-            {
-                OnEquipSpirit(spirit);
-            }
+
+
+
         }
 
         public void ActiveAbility(BaseSpirit _CurrentSpirit)
         {
             if (canUseAbility)
             {
+                PlayAbilitySound(_CurrentSpirit);
                 //Active Ability logic
                 UpdateVFXScript(_CurrentSpirit);
                 AbilityCooldown(_CurrentSpirit);
+                _CurrentSpirit.abilityEvoked = true;
             }
 
         }
@@ -130,7 +154,7 @@ namespace ZaldensGambit
                     shieldMesh.RevertToOriginalMat();
                     swordMesh.VFXPrefab = _EquippedSpirit.VFXPrefab;
                     _EffectEvent.MainEffect = null;
-                   swordMesh.UpdateMeshEffect();
+                    swordMesh.UpdateMeshEffect();
                     break;
                 case BaseSpirit.SpiritClass.Sellsword:
                     swordMesh.RevertToOriginalMat();
@@ -151,7 +175,9 @@ namespace ZaldensGambit
         void AbilityCooldown(BaseSpirit _EquippedSpirit)
         {
             canUseAbility = false;
+            UIManager.Instance.UpdateAbilityBar(_EquippedSpirit.ActiveAbilityCooldown);
             StartCoroutine(DoAfter(_EquippedSpirit.ActiveAbilityCooldown, () => canUseAbility = true));
+
         }
 
         public bool CheckAbilityCooldown()
@@ -183,22 +209,83 @@ namespace ZaldensGambit
             }
         }
 
-        public void DoDamageToEnemy(GameObject enemy)
-        {
-            enemy.gameObject.GetComponent<Enemy>();
-        }
-
-        void PopulateCardStats(BaseSpirit spirit)
-        {
-
-        }
-
         IEnumerator DoAfter(float _delayTime, System.Action _actionToDo)
         {
             yield return new WaitForSecondsRealtime(_delayTime);
             _actionToDo();
         }
 
+        public void ClericHealing()
+        {
+            PlayerCharacter.RestoreHealth(spiritEquipped.HealthModifier);
+            print("Healed for " + spiritEquipped.HealthModifier);
+        }
+
+
+        public void PaladinDamage()
+        {
+            // Deal damage to characters hit in front, then apply stun
+
+            RaycastHit[] hits = Physics.BoxCastAll(transform.position + transform.forward, transform.localScale, transform.forward, transform.rotation, 5);
+            List<Enemy> enemiesHit = new List<Enemy>();
+
+            foreach (RaycastHit hit in hits)
+            {
+                if (hit.collider.gameObject.GetComponent<Enemy>())
+                {
+                    enemiesHit.Add(hit.collider.gameObject.GetComponent<Enemy>());
+                }
+            }
+
+            foreach (Enemy enemy in enemiesHit)
+            {
+                enemy.TakeDamage(spiritEquipped.AOEDamageModifier);
+                enemy.ApplyStun(spiritEquipped.StunModifier);
+            }
+
+            print("Deal Damage Paladin!");
+        }
+
+        public void MageDamage(Vector3 position)
+        {
+            // Deal damage to character hit, then deal AoE damage to everyone else within a radius
+
+            Collider[] collidersInRange = Physics.OverlapSphere(position, 2.5f);
+            List<Enemy> enemiesHit = new List<Enemy>();
+
+            foreach (Collider collider in collidersInRange)
+            {
+                if (collider.GetComponent<Enemy>())
+                {
+                    enemiesHit.Add(collider.GetComponent<Enemy>());
+                }
+            }
+
+            foreach (Enemy enemy in enemiesHit)
+            {
+                enemy.TakeDamage(spiritEquipped.AOEDamageModifier);
+            }
+
+            print("Deal Damage Mage!");
+        }
+
+        public void RangerDamage(Enemy enemy)
+        {
+            // Deal damage to character hit and stun
+            enemy.TakeDamage(spiritEquipped.DamageModifier);
+            enemy.ApplyStun(spiritEquipped.StunModifier);
+
+            print("Deal Damage Ranger!");
+        }
+
+        private void PlayAbilitySound(BaseSpirit spirit)
+        {
+            if(spirit.AbilitySound != null)
+            {
+                AudioSource source = GetComponentInChildren<AudioSource>();
+                source.PlayOneShot(spirit.AbilitySound);
+            }
+        }
         private void OnDisable()
         {
             //   UIDelegate -= UIManager.Instance.ManageSpiritUI;

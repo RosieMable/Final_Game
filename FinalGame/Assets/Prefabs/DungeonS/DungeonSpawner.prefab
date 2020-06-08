@@ -49,7 +49,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8434874651911879718}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -89,7 +89,7 @@ BoxCollider:
   m_GameObject: {fileID: 8434874651911879718}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
@@ -110,10 +110,14 @@ MonoBehaviour:
   enemySuit: 0
   numEnemiesToSpawn: 0
   FamineEnemies:
-  - {fileID: 5549502852493679761, guid: 762b45fa759ac024e8b502cb488af687, type: 3}
+  - {fileID: 5431157800810194069, guid: fa52aec3026e743429f865ed14754913, type: 3}
+  - {fileID: 1579507755986370754, guid: 6f3b8e368c556804982ac36d12735d73, type: 3}
   PestilenceEnemies:
-  - {fileID: 4584454962274531796, guid: cb7d447c1b189a342b2d54db59f842b5, type: 3}
+  - {fileID: 4928872685063479259, guid: 07bf8f481ccce2245a9737ef2008eb36, type: 3}
+  - {fileID: 7532224462084234703, guid: 58434203948b21448a17b360243ea657, type: 3}
   WarEnemies:
-  - {fileID: 4584454962274531796, guid: dd3dd5671cc3f9d44a967856fb5a02eb, type: 3}
+  - {fileID: 1000189985177131491, guid: 79c8e70748356c748a289edf43c47796, type: 3}
+  - {fileID: 2474525796282417430, guid: 6952815b856869f4e9cb2b6cfc1a6d0b, type: 3}
   DeathEnemies:
-  - {fileID: 4584454962274531796, guid: 07453b97890f64b47aa43d8c200c975b, type: 3}
+  - {fileID: 2292016749113724042, guid: 828829923c8097d49992723374689ac3, type: 3}
+  - {fileID: 9151312309223914669, guid: 5fdd32c7e830bd046aec29944737f1bb, type: 3}

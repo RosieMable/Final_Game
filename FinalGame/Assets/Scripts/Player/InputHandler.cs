@@ -189,6 +189,14 @@ namespace ZaldensGambit
                 }
             }
         }
+
+        public void ClearLockOn()
+        {
+            states.lockOn = false;
+            states.lockOnTarget = null;
+            cameraManager.lockOnTarget = null;
+            cameraManager.lockedOn = false;
+        }
     }
 }
 
